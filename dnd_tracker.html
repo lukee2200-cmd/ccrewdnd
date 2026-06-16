@@ -341,6 +341,20 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .modal select.multi-select{min-height:90px}
 .autofill-note{font-size:10px;color:#777;margin-top:4px;line-height:1.35}
 
+
+/* ── V4 ADDITIONS ── */
+.reaction-bar{display:flex;gap:5px;flex-wrap:wrap}
+.reaction-btn{font-size:15px;cursor:pointer;padding:3px 6px;border-radius:8px;border:1px solid transparent;transition:all .15s;background:rgba(255,255,255,.06)}
+.reaction-btn:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.12);transform:scale(1.2)}
+.reaction-bubble{position:fixed;pointer-events:none;z-index:1000;font-size:26px;animation:reactionFloat 2.2s ease-out forwards}
+@keyframes reactionFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-110px) scale(1.5)}}
+.reaction-toast{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);background:#111;border:1px solid #444;color:#eee;font-size:13px;padding:6px 16px;border-radius:10px;z-index:998;pointer-events:none}
+.dock-collapse-btn{padding:3px 8px;border:1px solid #444;background:#1e1e1e;color:#ccc;border-radius:6px;cursor:pointer;font-size:11px}
+#reaction-dock{position:fixed;bottom:0;left:0;right:0;background:#0d0d0d;border-top:1px solid #222;padding:5px 12px;display:flex;align-items:center;gap:8px;z-index:80;flex-wrap:wrap}
+.quick-hp-row{display:flex;gap:3px;margin-bottom:5px;flex-wrap:wrap}
+.quick-dmg{padding:1px 6px;border:1px solid #E24B4A44;border-radius:5px;font-size:9px;cursor:pointer;background:#2a0a0a;color:#f09595}
+.quick-heal{padding:1px 6px;border:1px solid #1D9E7544;border-radius:5px;font-size:9px;cursor:pointer;background:#0a2a1a;color:#5dcaa5}
+.archive-row{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid #222}
 </style>
 </head>
 <body>
@@ -483,6 +497,17 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
     <div><label>Species / Subspecies</label><select id="modal-species" onchange="autoFillFeatures();autoCalcStats()"></select></div>
     <div><label>Background</label><input type="text" id="modal-background"></div>
     <div><label>Optional Character PIN (4 digits)</label><input type="text" id="modal-charpin" maxlength="4" placeholder="Leave blank for no PIN"></div>
+    <div><label>Card font</label>
+      <select id="modal-font" style="width:100%;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:13px;background:#111;color:#eee">
+        <option value="system-ui">Default (System)</option>
+        <option value="Georgia, serif">Georgia (Elegant)</option>
+        <option value="Palatino, serif">Palatino (Classic)</option>
+        <option value="Courier New, monospace">Courier (Typewriter)</option>
+        <option value="Impact, sans-serif">Impact (Bold)</option>
+        <option value="fantasy">Fantasy</option>
+        <option value="cursive">Cursive</option>
+      </select>
+    </div>
     <div><label>Card color</label><div class="color-row" id="modal-colors"></div>
       <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:7px">
         <input type="color" id="custom-bg-color" value="#1a2a3a" style="width:32px;height:32px;border-radius:50%;border:2px solid #555;cursor:pointer;padding:0">
@@ -518,7 +543,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
     <div><label>Features &amp; traits (one per line)</label><textarea id="modal-features" style="width:100%;height:80px;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:12px;background:#111;color:#eee;resize:vertical" placeholder="Sneak Attack: 3d6 extra damage&#10;Cunning Action: Dash/Disengage/Hide as bonus action"></textarea></div>
     <div><label>Equipment (one per line, format: Name | detail)</label><textarea id="modal-equipment" style="width:100%;height:70px;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:12px;background:#111;color:#eee;resize:vertical" placeholder="Shortsword | 1d6 piercing, finesse&#10;Studded Leather | AC 12+DEX"></textarea></div>
     <div><label>Inventory items (one per line)</label><textarea id="modal-inventory" style="width:100%;height:65px;border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:11px;background:#111;color:#eee;resize:vertical" placeholder="Healing Potion&#10;Rope (50ft)&#10;Torch x5"></textarea></div>
-    <div><label>Known spells (one per line, format: Level | Name | School)</label><textarea id="modal-spells" style="width:100%;height:70px;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:12px;background:#111;color:#eee;resize:vertical" placeholder="0 | Fire Bolt | Evocation&#10;1 | Mage Armor | Abjuration&#10;2 | Misty Step | Conjuration"></textarea></div>
+    <div><label>Known spells (one per line, format: Level | Name | School) <button type="button" onclick="autoFillSpellsFromAPI()" style="padding:2px 8px;border:1px solid #7F77DD;border-radius:5px;font-size:10px;cursor:pointer;background:#1e1a3a;color:#b8b4f8;margin-left:6px">🔍 Auto-fill from API</button></label><textarea id="modal-spells" style="width:100%;height:70px;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:12px;background:#111;color:#eee;resize:vertical" placeholder="0 | Fire Bolt | Evocation&#10;1 | Mage Armor | Abjuration&#10;2 | Misty Step | Conjuration"></textarea></div>
     <div class="modal-actions">
       <button class="delete-char-btn" onclick="deleteCurrentCharacter()">Delete Character</button>
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
@@ -604,8 +629,11 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
       <div class="dash-card">
         <h3>Character Management</h3>
         <select id="dash-delete-target"></select>
-        <button type="button" onclick="deleteCharacterFromDashboard()" style="border-color:#E24B4A;background:#3a0a0a;color:#f09595">🗑 Delete Character</button>
-        <p style="font-size:11px;color:#777;margin-top:6px">Use this only when a character should be removed from the party tracker.</p>
+        <button type="button" onclick="deleteCharacterFromDashboard()" style="border-color:#E24B4A;background:#3a0a0a;color:#f09595;margin-bottom:8px">🗑 Archive / Delete</button>
+        <div style="border-top:1px solid #333;padding-top:8px;margin-top:6px">
+          <p style="font-size:10px;color:#666;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Archived Characters</p>
+          <div id="archive-list"><span style="font-size:11px;color:#555">Loading...</span></div>
+        </div>
       </div>
       <div class="dash-card">
         <h3>Session Controls</h3>
@@ -760,9 +788,23 @@ const SKILLS = [
 
 // ── FULL SPELL SLOT TABLE ─────────────────────────────────────────────
 const SPELL_SLOTS = {
-  full: [[0],[2],[3],[4,2],[4,3],[4,3,2],[4,3,3],[4,3,3,1],[4,3,3,2],[4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2,1],[4,3,3,3,2,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1,1],[4,3,3,3,2,1,1,1],[4,3,3,3,2,1,1,1,1],[4,3,3,3,3,1,1,1,1],[4,3,3,3,3,2,1,1,1],[4,3,3,3,3,2,2,1,1]],
-  half: [[0],[0],[2],[3],[3],[4,2],[4,2],[4,3],[4,3],[4,3,2],[4,3,2],[4,3,3],[4,3,3],[4,3,3,1],[4,3,3,1],[4,3,3,2],[4,3,3,2],[4,3,3,3,1],[4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2]],
-  pact: [[0],[1],[2],[2],[2],[2,1,0,0,0],[2,1,0,0,0],[2,0,1,0,0],[2,0,1,0,0],[2,0,0,1,0],[2,0,0,1,0],[2,0,0,0,1],[2,0,0,0,1],[2,0,0,0,2],[2,0,0,0,2],[2,0,0,0,2],[2,0,0,0,2],[2,0,0,0,3],[2,0,0,0,3],[2,0,0,0,3],[2,0,0,0,3]],
+  // Index = character level 1-20
+  full: [
+    null,[2],[3],[4,2],[4,3],[4,3,2],[4,3,3],[4,3,3,1],[4,3,3,2],
+    [4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2,1],[4,3,3,3,2,1],
+    [4,3,3,3,2,1,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1,1],[4,3,3,3,2,1,1,1],
+    [4,3,3,3,2,1,1,1,1],[4,3,3,3,3,1,1,1,1],[4,3,3,3,3,2,1,1,1],[4,3,3,3,3,2,2,1,1],
+  ],
+  half: [
+    null,[0],[0],[2],[3],[4,2],[4,2],[4,3],[4,3],[4,3,2],[4,3,2],
+    [4,3,3],[4,3,3],[4,3,3,1],[4,3,3,1],[4,3,3,2],[4,3,3,2],
+    [4,3,3,3,1],[4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2],
+  ],
+  // Pact: warlock gets N slots all of same level
+  pact: [
+    null,[1],[2],[2],[2],[2],[2],[2],[2],[2],[2],
+    [2],[2],[2],[2],[2],[2],[2],[2],[2],[2],
+  ],
 };
 
 function dieSVG(sides){
@@ -880,9 +922,19 @@ function isProfSave(p,ab){const cls=p.cls.split('·')[0].trim();return (CLASS_SA
 function getSpellSlots(p){
   const ctype=p.caster||'none';
   if(ctype==='none')return null;
-  const lvl=parseInt((p.cls||'').match(/\d+/)?.[0])||1;
+  const lvl=Math.min(parseInt((p.cls||'').match(/\d+/)?.[0])||1,20);
   const tbl=SPELL_SLOTS[ctype];
-  return tbl?tbl[Math.min(lvl,20)]||null:null;
+  if(!tbl)return null;
+  if(ctype==='pact'){
+    // Warlock pact slots: determine level and count by character level
+    const slotLvl=lvl<=4?1:lvl<=6?2:lvl<=8?3:lvl<=9?4:5;
+    const count=lvl===1?1:lvl<=10?2:lvl<=16?3:4;
+    const result=Array(9).fill(0);result[slotLvl-1]=count;
+    return result;
+  }
+  const slots=tbl[lvl];
+  if(!slots)return null;
+  return slots;
 }
 function getLevel(p){return parseInt((p.cls||'').match(/\d+/)?.[0])||1;}
 function getClass(p){return p.cls.split('·')[0].trim();}
@@ -912,6 +964,7 @@ function initDb(){
   dbListen('musicState',data=>{musicState=data||{playing:false,videoId:null,label:null,ts:0};applyMusicStateFromDB();});
   dbListen('inventoryEvents/latest',ev=>{if(ev&&Date.now()-(ev.ts||0)<10000)showItemBanner(ev.playerName||'Player',ev.itemName||'Item');});
   dbListen('levelEvents/latest',ev=>{if(ev&&Date.now()-(ev.ts||0)<10000)showLevelUpCelebration(ev.name||'Player',ev.level||'');});
+  initReactionListener();
   setSyncStatus('live');
 }
 
@@ -979,7 +1032,7 @@ function playerCard(p,i){
     <div class="card-header">
       <div class="avatar" style="background:${c.bg};color:${c.color};border-color:${c.border}">${av}</div>
       <div>
-        <div class="card-name">${p.name}</div>
+        <div class="card-name" style="font-family:${p.cardFont||'system-ui'}">${p.name}</div>
         <div class="card-sub">${cls} ${lvl} · ${p.species||''}</div>
       </div>
     </div>
@@ -992,6 +1045,10 @@ function playerCard(p,i){
       <input class="hp-input" type="number" id="hpval-${i}" placeholder="amt" min="1" onclick="event.stopPropagation()">
       <button onclick="event.stopPropagation();changeHp(${i},'dmg')">− dmg</button>
       <button onclick="event.stopPropagation();changeHp(${i},'heal')">+ heal</button>
+    </div>
+    <div class="quick-hp-row">
+      ${[1,5,10].map(n=>`<button class="quick-dmg" onclick="event.stopPropagation();quickHp(${i},'dmg',${n})">-${n}</button>`).join('')}
+      ${[1,5,10].map(n=>`<button class="quick-heal" onclick="event.stopPropagation();quickHp(${i},'heal',${n})">+${n}</button>`).join('')}
     </div>
     <div class="mini-stats">
       <div class="mini-stat"><div class="mini-stat-val">${p.ac}</div><div class="mini-stat-lbl">AC</div></div>
@@ -1007,15 +1064,29 @@ function xpForNextLevel(p){const lvl=getLevel(p);return Math.max(50,lvl*100);}
 function renderXPBar(p){const xp=p.xp||0,next=xpForNextLevel(p),pct=Math.min(100,(xp%next)/next*100);return `<div class="xp-card-line"><span>✨ XP</span><span>${xp} / ${next}</span></div><div class="xp-bar-wrap"><div class="xp-bar-fill" style="width:${pct}%"></div></div>`;}
 function renderInventoryPreview(p,c){
   const inv=p.inventory||[];
-  const items=inv.slice(0,4).map(it=>`<div style="font-size:9px;color:${c.color}dd;padding:2px 5px;background:rgba(0,0,0,.22);border-radius:4px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">📦 ${it}</div>`).join('');
-  const more=inv.length>4?`<div style="font-size:9px;color:${c.color}88">+${inv.length-4} more...</div>`:'';
-  return `<div class="inventory-card"><div class="inventory-card-title">Inventory</div>${items||'<div style="font-size:9px;color:#555">No items yet</div>'}${more}</div>`;
+  const pi=party.indexOf(p);
+  const items=inv.slice(0,4).map((it,j)=>`
+    <div style="display:flex;align-items:center;gap:3px;margin-top:2px">
+      <div style="flex:1;font-size:9px;color:${c.color}dd;padding:2px 5px;background:rgba(0,0,0,.22);border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">📦 ${it}</div>
+      <button onclick="event.stopPropagation();removeInventoryItem(${pi},${j})" style="background:rgba(200,50,50,.35);border:none;color:#f09595;border-radius:3px;cursor:pointer;font-size:9px;padding:1px 4px;flex-shrink:0">✕</button>
+    </div>`).join('');
+  const more=inv.length>4?`<div style="font-size:9px;color:${c.color}88">+${inv.length-4} more (see full sheet)</div>`:'';
+  return `<div class="inventory-card"><div class="inventory-card-title">Inventory (${inv.length})</div>${items||'<div style="font-size:9px;color:#555">No items yet</div>'}${more}</div>`;
 }
 function changeHp(i,type){
   const inp=document.getElementById('hpval-'+i);
   const amt=parseInt(inp.value)||0;if(!amt)return;
   party[i].hp=type==='dmg'?Math.max(0,party[i].hp-amt):Math.min(party[i].maxHp,party[i].hp+amt);
   inp.value='';dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
+}
+function quickHp(i,type,amt){
+  party[i].hp=type==='dmg'?Math.max(0,party[i].hp-amt):Math.min(party[i].maxHp,party[i].hp+amt);
+  dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
+}
+function removeInventoryItem(partyIdx,itemIdx){
+  if(!party[partyIdx])return;
+  party[partyIdx].inventory.splice(itemIdx,1);
+  dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
 }
 function toggleCond(i,c){
   if(!party[i].conds)party[i].conds=[];
@@ -1362,6 +1433,7 @@ function openModal(i){
   document.getElementById('custom-text-color').value=card.color;
   document.getElementById('custom-border-color').value=card.border;
   document.getElementById('modal-pfp-preview').innerHTML=p.pfp?`<img src="${p.pfp}">`:'🧙';
+  const fontSel=document.getElementById('modal-font');if(fontSel)fontSel.value=p.cardFont||'system-ui';
   document.getElementById('modal-colors').innerHTML=COLORS.map((c,ci)=>
     `<div class="color-swatch${ci===p.color?' selected':''}" style="background:${c.border}" onclick="selectColor(${ci})"></div>`).join('');
   document.getElementById('modal-bg').style.display='flex';
@@ -1402,6 +1474,7 @@ function saveModal(){
   p.cardColor={bg:document.getElementById('custom-bg-color').value,color:document.getElementById('custom-text-color').value,border:document.getElementById('custom-border-color').value};
   p.spells=document.getElementById('modal-spells').value;
   if(pendingPfp)p.pfp=pendingPfp;
+  p.cardFont=document.getElementById('modal-font')?.value||'system-ui';
   dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
   closeModal();renderParty();if(viewingCharIdx===editingIdx)renderSheetBody();
 }
@@ -1614,6 +1687,23 @@ function endSessionDiceReport(){
 }
 
 
+function playInitiativeMusic(){
+  try{
+    const videoId='OMJLxfCWVb8'; // FF7 Battle Theme
+    const savedState={...musicState};
+    if(ytApiReady&&ytPlayer&&ytPlayer.loadVideoById){
+      ytPlayer.loadVideoById({videoId,startSeconds:0});
+      ytPlayer.playVideo();
+      setTimeout(()=>{
+        try{ytPlayer.stopVideo();}catch(e){}
+        // Resume previous music if DM had something playing
+        if(savedState.playing&&savedState.videoId&&savedState.videoId!==videoId){
+          setTimeout(()=>localLoadMusic(savedState.videoId,savedState.label||'Custom',true),600);
+        }
+      },10000);
+    }
+  }catch(e){}
+}
 function playBattleStartSound(){
   try{
     const ctx=new(window.AudioContext||window.webkitAudioContext)();
@@ -1668,10 +1758,11 @@ function renderInit(){
     <div class="init-list">${sorted.map((c,i)=>initRow(c,i,sorted)).join('')}</div>
     ${isDM?`<p class="section-title" style="margin-top:1rem">Add enemy</p>
     <div class="add-enemy-form">
-      <input id="enemy-name" placeholder="Name" style="width:100px">
-      <input id="enemy-init" type="number" placeholder="Init" style="width:55px">
-      <input id="enemy-hp" type="number" placeholder="HP" style="width:55px">
+      <input id="enemy-name" placeholder="Monster name" style="width:115px">
+      <input id="enemy-init" type="number" placeholder="Init" style="width:50px">
+      <input id="enemy-hp" type="number" placeholder="HP" style="width:50px">
       <button onclick="addEnemy()">+ Add</button>
+      <button onclick="addMonsterFromAPI()" style="border-color:#7F77DD;color:#b8b4f8;background:#1e1a3a">🔍 API</button>
     </div>`:''}`;
 }
 function initRow(c,i,sorted){
@@ -1697,7 +1788,8 @@ function rollMyInit(){
 function rollAllInit(evt){
   if(evt&&evt.preventDefault)evt.preventDefault();
   if(!isDM){showToast('Only the DM can roll initiative for everyone.','#E24B4A','#f09595');return;}
-  playBattleStartSound();
+  // Play first 10s of FF7 battle theme on initiative roll
+  playInitiativeMusic();
   showToast('⚔️ Rolling initiative for everyone!','#E24B4A','#f09595');
 
   const previousEnemies=initiative.filter(c=>c.type==='enemy');
@@ -1863,7 +1955,7 @@ function makeDraggable(el,tokId){
 
 
 // ── DM DASHBOARD, ASSET REPOSITORY, SCENE IMAGE ───────────────────────
-function openDMDashboard(){if(!isDM)return;populateDMControls();renderAssetRepo();document.getElementById('dm-dashboard-bg').style.display='flex';}
+function openDMDashboard(){if(!isDM)return;populateDMControls();renderAssetRepo();renderArchiveList();document.getElementById('dm-dashboard-bg').style.display='flex';}
 function closeDMDashboard(){document.getElementById('dm-dashboard-bg').style.display='none';}
 function closeDMDashboardOnBg(e){if(e.target===document.getElementById('dm-dashboard-bg'))closeDMDashboard();}
 function fileToDataURL(file,cb){const r=new FileReader();r.onload=ev=>cb(ev.target.result);r.readAsDataURL(file);}
@@ -1887,7 +1979,12 @@ function renderDockedDashboard(){
     populateDMControls();renderAssetRepo();
     dock.style.display='block';map.classList.add('dm-docked');
     const grid=document.querySelector('#dm-dashboard-bg .dashboard-grid');
-    dock.innerHTML=grid?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b style="color:#b8b4f8;font-size:12px">👑 DM Quick Dashboard</b><button onclick="openDMDashboard()" style="margin-left:auto;padding:3px 8px;border:1px solid #444;background:#1e1e1e;color:#ccc;border-radius:6px;cursor:pointer;font-size:11px">Open Full Dashboard</button></div><div class="dashboard-grid">${grid.innerHTML}</div>`:'';
+    dock.innerHTML=grid?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+    <b style="color:#b8b4f8;font-size:12px">👑 DM Quick Dashboard</b>
+    <button class="dock-collapse-btn" id="dock-collapse-btn" onclick="toggleDockCollapse()">▼ Collapse</button>
+    <button onclick="openDMDashboard()" style="margin-left:auto;padding:3px 8px;border:1px solid #444;background:#1e1e1e;color:#ccc;border-radius:6px;cursor:pointer;font-size:11px">Full Dashboard</button>
+  </div>
+  <div id="dock-content" class="dashboard-grid">${grid.innerHTML}</div>`:'';
   } else {dock.style.display='none';dock.innerHTML='';map.classList.remove('dm-docked');}
 }
 function levelUpFromDashboard(){
@@ -1923,16 +2020,60 @@ function deleteCharacterFromDashboard(){
 function deleteCharacterAt(idx){
   if(!isDM||!party[idx])return;
   const p=party[idx];
-  if(!confirm(`Delete ${p.name}? This cannot be undone.`))return;
-  party.splice(idx,1);
-  initiative=initiative.filter(c=>!(c.id===p.id||c.name===p.name));
-  dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
-  pushInit();
-  if(editingIdx===idx)closeModal();
-  if(viewingCharIdx===idx)closeSheet();
-  viewingCharIdx=null;editingIdx=null;activeCharacter='spectator';
-  renderParty();renderCurrentPanel();populateDMControls();renderDockedDashboard();
-  showToast(`🗑 ${p.name} deleted.`,'#E24B4A','#f09595');
+  if(!confirm(`Remove ${p.name} from the party?\n\nClick OK to choose archive or permanent delete.`))return;
+  const archive=confirm(`Click OK to ARCHIVE ${p.name} (restorable later)\nClick Cancel to PERMANENTLY DELETE (cannot be undone)`);
+  if(archive){
+    const archived={...p,archivedAt:Date.now()};
+    dbUpdate('archive/'+p.id,archived);
+    party.splice(idx,1);
+    initiative=initiative.filter(c=>!(c.id===p.id||c.name===p.name));
+    dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
+    pushInit();
+    if(editingIdx===idx)closeModal();
+    if(viewingCharIdx===idx)closeSheet();
+    viewingCharIdx=null;editingIdx=null;activeCharacter='spectator';
+    renderParty();renderCurrentPanel();populateDMControls();renderDockedDashboard();
+    showToast(`📦 ${p.name} archived. Restore from DM Dashboard.`,'#EF9F27','#f5c87a');
+  } else {
+    if(!confirm(`FINAL WARNING: Permanently delete ${p.name}? This truly cannot be undone.`))return;
+    party.splice(idx,1);
+    initiative=initiative.filter(c=>!(c.id===p.id||c.name===p.name));
+    dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
+    pushInit();
+    if(editingIdx===idx)closeModal();
+    if(viewingCharIdx===idx)closeSheet();
+    viewingCharIdx=null;editingIdx=null;activeCharacter='spectator';
+    renderParty();renderCurrentPanel();populateDMControls();renderDockedDashboard();
+    showToast(`🗑 ${p.name} permanently deleted.`,'#E24B4A','#f09595');
+  }
+}
+function renderArchiveList(){
+  const list=document.getElementById('archive-list');if(!list)return;
+  dbListen('archive',data=>{
+    if(!data||!Object.keys(data).length){list.innerHTML='<span style="font-size:11px;color:#555">No archived characters.</span>';return;}
+    list.innerHTML=Object.values(data).map(p=>`
+      <div class="archive-row">
+        <span style="font-size:12px;color:#aaa;flex:1">${p.name} (${getClass(p)} ${getLevel(p)})</span>
+        <button onclick="restoreCharacter('${p.id}')" style="padding:2px 8px;border:1px solid #1D9E75;border-radius:6px;background:#0a2a1a;color:#5dcaa5;font-size:10px;cursor:pointer">Restore</button>
+        <button onclick="permanentDeleteArchived('${p.id}')" style="padding:2px 8px;border:1px solid #E24B4A;border-radius:6px;background:#3a0a0a;color:#f09595;font-size:10px;cursor:pointer;margin-left:4px">Delete</button>
+      </div>`).join('');
+  });
+}
+function restoreCharacter(id){
+  dbListen('archive/'+id,data=>{
+    if(!data)return;
+    const p=normalizeCharacter({...data});delete p.archivedAt;
+    party.push(p);
+    dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
+    dbRemove('archive/'+id);
+    renderParty();populateDMControls();
+    showToast(`✅ ${p.name} restored to party!`,'#1D9E75','#5dcaa5');
+  });
+}
+function permanentDeleteArchived(id){
+  if(!confirm('Permanently delete this archived character?'))return;
+  dbRemove('archive/'+id);
+  showToast('🗑 Archived character deleted.','#E24B4A','#f09595');
 }
 
 // ── MUSIC ─────────────────────────────────────────────────────────────
@@ -1966,14 +2107,113 @@ function enablePlayerAudio(){if(musicState?.videoId)localLoadMusic(musicState.vi
 function setVol(v){if(ytPlayer&&ytPlayer.setVolume)ytPlayer.setVolume(parseInt(v));}
 function wireAutoCalc(){['modal-class','modal-species','modal-dex','modal-con','modal-wis','modal-armor','modal-class-name','modal-subclass-name','modal-level'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',autoCalcStats);});}
 
+
+// ── 5E DATABASE API ───────────────────────────────────────────────────
+const DND_API='https://www.dnd5eapi.co/api';
+const _apiCache={};
+async function apiGet(path){
+  if(_apiCache[path])return _apiCache[path];
+  try{const r=await fetch(DND_API+path);if(!r.ok)return null;const d=await r.json();_apiCache[path]=d;return d;}
+  catch(e){return null;}
+}
+async function lookupSpell(name){
+  const slug=name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+  const data=await apiGet('/spells/'+slug);
+  if(!data||data.error)return null;
+  return {name:data.name,level:data.level,school:data.school?.name||''};
+}
+async function autoFillSpellsFromAPI(){
+  const box=document.getElementById('modal-spells');if(!box)return;
+  const lines=box.value.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!lines.length)return;
+  showToast('🔍 Looking up spells from D&D API...','#7F77DD','#b8b4f8');
+  const filled=await Promise.all(lines.map(async line=>{
+    const parts=line.split('|').map(x=>x.trim());
+    if(parts.length>=3&&parts[1])return line; // already formatted with school
+    const name=parts.length>=2?parts[1]:parts[0];
+    const spell=await lookupSpell(name||line);
+    if(!spell)return line;
+    return `${spell.level}|${spell.name}|${spell.school}`;
+  }));
+  box.value=filled.join('\n');
+  showToast('✅ Spells filled! Check and adjust as needed.','#1D9E75','#5dcaa5');
+}
+async function lookupMonster(name){
+  const slug=name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+  return await apiGet('/monsters/'+slug);
+}
+async function addMonsterFromAPI(){
+  const nameEl=document.getElementById('enemy-name');const name=nameEl?.value||'';
+  if(!name){showToast('Enter a monster name first','#E24B4A','#f09595');return;}
+  showToast('🔍 Looking up '+name+'...','#7F77DD','#b8b4f8');
+  const m=await lookupMonster(name);
+  if(!m||m.error){showToast('Not found in API — adding manually.','#EF9F27','#f5c87a');addEnemy();return;}
+  const hp=m.hit_points||10;const ac=(m.armor_class?.[0]?.value)||10;const dex=m.dexterity||10;
+  const initVal=parseInt(document.getElementById('enemy-init')?.value)||Math.ceil(Math.random()*20)+Math.floor((dex-10)/2);
+  initiative.push({id:'enemy_'+Date.now(),name:m.name,type:'enemy',init:initVal,hp,maxHp:hp,ac,dex,color:6});
+  pushInit();renderInit();
+  showToast(`💀 ${m.name} added! HP:${hp} AC:${ac}`,'#E24B4A','#f09595');
+}
+
+// ── REACTIONS ─────────────────────────────────────────────────────────
+const REACTIONS=[
+  {emoji:'👍',label:'Nice!'},{emoji:'❤️',label:'Love it'},{emoji:'😂',label:'LOL'},
+  {emoji:'😮',label:'Wow!'},{emoji:'😱',label:'OMG!'},{emoji:'🎉',label:'Hype!'},
+  {emoji:'💀',label:'RIP'},{emoji:'⚔️',label:'Attack!'},{emoji:'🎲',label:'Roll!'},
+  {emoji:'🔥',label:'Fire!'},{emoji:'❄️',label:'Ice!'},{emoji:'🛡️',label:'Block!'},
+  {emoji:'🧙',label:'Magic!'},{emoji:'🏃',label:'Run!'},{emoji:'🤣',label:'Haha!'},
+];
+let reactionLog=[];
+function renderReactionBar(){
+  const btns=document.getElementById('reaction-btns');if(!btns)return;
+  btns.innerHTML=REACTIONS.map(r=>`<button class="reaction-btn" onclick="sendReaction('${r.emoji}','${r.label}')" title="${r.label}">${r.emoji}</button>`).join('');
+}
+function sendReaction(emoji,label){
+  const who=activeCharacter!=='spectator'&&party[parseInt(activeCharacter)]?party[parseInt(activeCharacter)].name:isDM?'DM':'Spectator';
+  const reaction={emoji,label,who,ts:Date.now()};
+  dbSet('reactions/latest',reaction);
+  showReactionLocally(reaction);
+}
+function showReactionLocally(reaction){
+  const bubble=document.createElement('div');bubble.className='reaction-bubble';
+  bubble.textContent=reaction.emoji;bubble.style.left=(15+Math.random()*65)+'vw';bubble.style.bottom='55px';
+  document.body.appendChild(bubble);setTimeout(()=>bubble.remove(),2400);
+  const toast=document.createElement('div');toast.className='reaction-toast';
+  toast.textContent=`${reaction.emoji}  ${reaction.who}: ${reaction.label}`;
+  document.body.appendChild(toast);setTimeout(()=>toast.remove(),2100);
+  reactionLog.unshift(reaction);if(reactionLog.length>6)reactionLog.pop();
+  const recent=document.getElementById('recent-reactions');
+  if(recent)recent.innerHTML=reactionLog.map(r=>`<span title="${r.who}: ${r.label}" style="cursor:default;font-size:16px">${r.emoji}</span>`).join('');
+}
+function initReactionListener(){
+  dbListen('reactions/latest',data=>{if(data&&Date.now()-(data.ts||0)<8000)showReactionLocally(data);});
+}
+
+// ── COLLAPSIBLE DOCK ──────────────────────────────────────────────────
+let dockCollapsed=false;
+function toggleDockCollapse(){
+  dockCollapsed=!dockCollapsed;
+  const content=document.getElementById('dock-content');
+  const btn=document.getElementById('dock-collapse-btn');
+  if(content)content.style.display=dockCollapsed?'none':'';
+  if(btn)btn.textContent=dockCollapsed?'▶ Expand':'▼ Collapse';
+}
+
 // ── BOOT ─────────────────────────────────────────────────────────────
 document.getElementById('upload-map-btn').style.display='none';
 document.getElementById('add-token-btn').style.display='none';
 document.getElementById('clear-map-btn').style.display='none';
-party=party.map(normalizeCharacter);renderParty();renderDice();wireAutoCalc();renderXPHotButtons();applyRole();applySceneImage(sceneImageData);updateMusicPermissions();renderDockedDashboard();
+party=party.map(normalizeCharacter);renderParty();renderDice();wireAutoCalc();renderXPHotButtons();applyRole();applySceneImage(sceneImageData);updateMusicPermissions();renderDockedDashboard();renderReactionBar();
 
 if(window._dbReady){dbReady=true;initDb();}
 else window.addEventListener('db-ready',()=>{dbReady=true;initDb();});
 </script>
+
+<div id="reaction-dock">
+  <span style="font-size:10px;color:#555;flex-shrink:0">React:</span>
+  <div class="reaction-bar" id="reaction-btns"></div>
+  <div id="recent-reactions" style="margin-left:auto;font-size:12px;color:#666;display:flex;gap:5px;align-items:center"></div>
+</div>
+
 </body>
 </html>
