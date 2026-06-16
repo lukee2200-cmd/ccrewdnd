@@ -64,14 +64,15 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .player-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:.9rem;position:relative;cursor:pointer;transition:border-color .15s}
 .player-card:hover{border-color:#555}
 .player-card.downed{opacity:.6;border-color:#E24B4A}
-.view-sheet-btn{position:absolute;top:10px;right:36px;background:transparent;border:none;cursor:pointer;font-size:13px;color:#666;padding:2px}
-.view-sheet-btn:hover{color:#aaa}
-.edit-btn{position:absolute;top:10px;right:10px;background:transparent;border:none;cursor:pointer;font-size:13px;color:#666}
+.view-sheet-btn{position:absolute;top:10px;right:36px;background:transparent;border:none;cursor:pointer;font-size:13px;color:#888;padding:4px;z-index:10;}
+.view-sheet-btn:hover{color:#fff}
+.edit-btn{position:absolute;top:10px;right:10px;background:transparent;border:none;cursor:pointer;font-size:13px;color:#888;padding:4px;z-index:10;}
+.edit-btn:hover{color:#fff}
 .card-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;overflow:hidden;border:2px solid transparent}
 .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .card-name{font-size:14px;font-weight:500;color:#fff}
-.card-sub{font-size:11px;color:#888}
+.card-sub Dino{font-size:11px;color:#888}
 .hp-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .hp-label{font-size:11px;color:#666;width:22px}
 .hp-bar-wrap{flex:1;height:6px;background:#2a2a2a;border-radius:4px;overflow:hidden}
@@ -110,7 +111,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .stat-block{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
 .stat-box{text-align:center;background:#111;border-radius:8px;padding:8px 4px}
 .stat-name{font-size:9px;color:#666;text-transform:uppercase;letter-spacing:.05em}
-.stat-score{font-size:20px;font-weight:700;color:#fff;line-height:1}
+.stat-score覆{font-size:20px;font-weight:700;color:#fff;line-height:1}
 .stat-mod{font-size:12px;color:#7F77DD;margin-top:1px}
 .combat-row{display:flex;gap:8px;flex-wrap:wrap}
 .combat-box{flex:1;min-width:70px;text-align:center;background:#111;border-radius:8px;padding:8px 4px}
@@ -242,7 +243,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .sync-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;background:#666}
 .sync-dot.live{background:#1D9E75}
 
-/* ── ADDED: PARTY TOOLS, PIN, XP, INVENTORY, MUSIC ── */
+/* ── PARTY TOOLS, PIN, XP, INVENTORY, MUSIC ── */
 .party-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
 .add-char-btn{padding:6px 12px;border-radius:8px;border:1px solid #7F77DD;font-size:12px;cursor:pointer;background:#1e1a3a;color:#b8b4f8}
 .item-banner{position:fixed;top:60px;left:50%;transform:translateX(-50%) scale(.7);background:linear-gradient(135deg,#2a1e0a,#3a2a10);border:2px solid #EF9F27;border-radius:12px;padding:10px 22px;z-index:999;pointer-events:none;opacity:0;animation:bannerPop 3.5s ease-out forwards;text-align:center;box-shadow:0 0 30px #EF9F2744}
@@ -255,7 +256,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .pin-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-width:200px;margin:12px auto}.pin-key{padding:12px;border-radius:9px;border:1px solid #333;font-size:17px;font-weight:600;cursor:pointer;background:#2a2a2a;color:#fff}.pin-key:active{background:#7F77DD}
 .music-bar{background:#0d0d0d;border-top:1px solid #222;padding:7px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0}.music-bar button{padding:3px 9px;border-radius:6px;border:1px solid #333;font-size:11px;cursor:pointer;background:#1e1e1e;color:#ccc}.music-bar input[type=text]{flex:1;min-width:140px;border:1px solid #333;border-radius:6px;padding:3px 7px;font-size:11px;background:#111;color:#eee}
 
-
 /* ── V3.1 FIXES: XP, METALLIC DICE, DASHBOARD, SCENE ── */
 .xp-bar-wrap{height:7px;background:#2a2a2a;border-radius:6px;overflow:hidden;margin-top:6px;border:1px solid #333}
 .xp-bar-fill{height:100%;background:linear-gradient(90deg,#EF9F27,#f5c87a,#7F77DD);box-shadow:0 0 10px #EF9F2777;transition:width .35s}
@@ -273,57 +273,17 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .die-btn:nth-child(7){background:linear-gradient(135deg,#777,#fff 45%,#333);border-color:#eee}
 .die-btn svg polygon,.die-btn svg rect,.die-btn svg circle{stroke:#fff!important;fill:rgba(255,255,255,.16)!important}.die-btn svg text{fill:#fff!important;text-shadow:0 1px 3px #000}
 @keyframes twinkle{0%,100%{opacity:.25;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.25) rotate(25deg)}}
-.dashboard-modal{background:#141414;border:1px solid #444;border-radius:16px;width:min(920px,96vw);max-height:90vh;overflow-y:auto;padding:1rem}
-.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.dash-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:12px}.dash-card h3{font-size:12px;color:#b8b4f8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}.dash-card input,.dash-card select{border:1px solid #333;border-radius:7px;padding:6px 8px;font-size:12px;background:#111;color:#eee}.dash-card button{padding:5px 10px;border-radius:7px;border:1px solid #444;background:#2a2a2a;color:#ccc;cursor:pointer;font-size:12px;margin:2px}.asset-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.asset-pill{border-color:#7F77DD!important;background:#1e1a3a!important;color:#b8b4f8!important}.scene-panel{position:absolute;right:12px;bottom:12px;max-width:260px;max-height:180px;background:#111;border:2px solid #7F77DD;border-radius:12px;padding:6px;z-index:20;box-shadow:0 0 24px #000;display:none}.scene-panel img{max-width:100%;max-height:150px;border-radius:8px;display:block}.scene-panel-title{font-size:10px;color:#b8b4f8;margin-bottom:4px;text-align:center}.scene-close{position:absolute;top:-8px;right:-8px;border:1px solid #444;background:#111;color:#aaa;border-radius:50%;width:22px;height:22px;cursor:pointer}.toast{position:fixed;top:55px;left:50%;transform:translateX(-50%);background:#111;border:1px solid #7F77DD;color:#b8b4f8;font-size:13px;font-weight:600;padding:8px 18px;border-radius:10px;z-index:998;pointer-events:none;box-shadow:0 0 18px #000}
+.dashboard-modal{background:#141414;border:1px solid #444;border-radius:16px;width:min(920px,96vw);max-height:90vh;overflow-y:auto;padding:1.5rem}
+.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.dash-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}.dash-card h3{font-size:12px;color:#b8b4f8;margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em}.dash-card input,.dash-card select{border:1px solid #333;border-radius:7px;padding:6px 8px;font-size:12px;background:#111;color:#eee;width:100%}.dash-card button{padding:6px 10px;border-radius:7px;border:1px solid #444;background:#2a2a2a;color:#ccc;cursor:pointer;font-size:12px;margin:2px 0}.asset-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}.asset-pill{border-color:#7F77DD!important;background:#1e1a3a!important;color:#b8b4f8!important}.scene-panel{position:absolute;right:12px;bottom:12px;max-width:260px;max-height:180px;background:#111;border:2px solid #7F77DD;border-radius:12px;padding:6px;z-index:20;box-shadow:0 0 24px #000;display:none}.scene-panel img{max-width:100%;max-height:150px;border-radius:8px;display:block}.scene-panel-title{font-size:10px;color:#b8b4f8;margin-bottom:4px;text-align:center}.scene-close{position:absolute;top:-8px;right:-8px;border:1px solid #444;background:#111;color:#aaa;border-radius:50%;width:22px;height:22px;cursor:pointer}.toast{position:fixed;top:55px;left:50%;transform:translateX(-50%);background:#111;border:1px solid #7F77DD;color:#b8b4f8;font-size:13px;font-weight:600;padding:8px 18px;border-radius:10px;z-index:998;pointer-events:none;box-shadow:0 0 18px #000}
 
 ::-webkit-scrollbar{width:5px;height:5px}
-/* ── V3.1 FIXES: XP, METALLIC DICE, DASHBOARD, SCENE ── */
-.xp-bar-wrap{height:7px;background:#2a2a2a;border-radius:6px;overflow:hidden;margin-top:6px;border:1px solid #333}
-.xp-bar-fill{height:100%;background:linear-gradient(90deg,#EF9F27,#f5c87a,#7F77DD);box-shadow:0 0 10px #EF9F2777;transition:width .35s}
-.xp-card-line{display:flex;justify-content:space-between;font-size:10px;color:#EF9F27;margin-top:6px}
-.inventory-card{margin-top:7px;background:rgba(0,0,0,.18);border:1px solid #333;border-radius:7px;padding:5px}
-.inventory-card-title{font-size:9px;color:#777;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
-.die-btn{position:relative;overflow:hidden;border-width:2px;color:white;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 12px rgba(127,119,221,.18)}
-.die-btn:before{content:'✦';position:absolute;right:5px;top:2px;font-size:10px;color:#fff9;animation:twinkle 1.4s infinite}
-.die-btn:nth-child(1){background:linear-gradient(135deg,#7F77DD,#c7c2ff 45%,#413894);border-color:#c7c2ff}
-.die-btn:nth-child(2){background:linear-gradient(135deg,#1D9E75,#88ffd7 45%,#0b5c42);border-color:#88ffd7}
-.die-btn:nth-child(3){background:linear-gradient(135deg,#D4537E,#ffc2d7 45%,#74233f);border-color:#ffc2d7}
-.die-btn:nth-child(4){background:linear-gradient(135deg,#EF9F27,#ffe1a1 45%,#8a5209);border-color:#ffe1a1}
-.die-btn:nth-child(5){background:linear-gradient(135deg,#378ADD,#b9ddff 45%,#124a82);border-color:#b9ddff}
-.die-btn:nth-child(6){background:linear-gradient(135deg,#E24B4A,#ffc0c0 45%,#7a1616);border-color:#ffc0c0}
-.die-btn:nth-child(7){background:linear-gradient(135deg,#777,#fff 45%,#333);border-color:#eee}
-.die-btn svg polygon,.die-btn svg rect,.die-btn svg circle{stroke:#fff!important;fill:rgba(255,255,255,.16)!important}.die-btn svg text{fill:#fff!important;text-shadow:0 1px 3px #000}
-@keyframes twinkle{0%,100%{opacity:.25;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.25) rotate(25deg)}}
-.dashboard-modal{background:#141414;border:1px solid #444;border-radius:16px;width:min(920px,96vw);max-height:90vh;overflow-y:auto;padding:1rem}
-.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.dash-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:12px}.dash-card h3{font-size:12px;color:#b8b4f8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}.dash-card input,.dash-card select{border:1px solid #333;border-radius:7px;padding:6px 8px;font-size:12px;background:#111;color:#eee}.dash-card button{padding:5px 10px;border-radius:7px;border:1px solid #444;background:#2a2a2a;color:#ccc;cursor:pointer;font-size:12px;margin:2px}.asset-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.asset-pill{border-color:#7F77DD!important;background:#1e1a3a!important;color:#b8b4f8!important}.scene-panel{position:absolute;right:12px;bottom:12px;max-width:260px;max-height:180px;background:#111;border:2px solid #7F77DD;border-radius:12px;padding:6px;z-index:20;box-shadow:0 0 24px #000;display:none}.scene-panel img{max-width:100%;max-height:150px;border-radius:8px;display:block}.scene-panel-title{font-size:10px;color:#b8b4f8;margin-bottom:4px;text-align:center}.scene-close{position:absolute;top:-8px;right:-8px;border:1px solid #444;background:#111;color:#aaa;border-radius:50%;width:22px;height:22px;cursor:pointer}.toast{position:fixed;top:55px;left:50%;transform:translateX(-50%);background:#111;border:1px solid #7F77DD;color:#b8b4f8;font-size:13px;font-weight:600;padding:8px 18px;border-radius:10px;z-index:998;pointer-events:none;box-shadow:0 0 18px #000}
-
 ::-webkit-scrollbar-track{background:#111}
-/* ── V3.1 FIXES: XP, METALLIC DICE, DASHBOARD, SCENE ── */
-.xp-bar-wrap{height:7px;background:#2a2a2a;border-radius:6px;overflow:hidden;margin-top:6px;border:1px solid #333}
-.xp-bar-fill{height:100%;background:linear-gradient(90deg,#EF9F27,#f5c87a,#7F77DD);box-shadow:0 0 10px #EF9F2777;transition:width .35s}
-.xp-card-line{display:flex;justify-content:space-between;font-size:10px;color:#EF9F27;margin-top:6px}
-.inventory-card{margin-top:7px;background:rgba(0,0,0,.18);border:1px solid #333;border-radius:7px;padding:5px}
-.inventory-card-title{font-size:9px;color:#777;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
-.die-btn{position:relative;overflow:hidden;border-width:2px;color:white;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 12px rgba(127,119,221,.18)}
-.die-btn:before{content:'✦';position:absolute;right:5px;top:2px;font-size:10px;color:#fff9;animation:twinkle 1.4s infinite}
-.die-btn:nth-child(1){background:linear-gradient(135deg,#7F77DD,#c7c2ff 45%,#413894);border-color:#c7c2ff}
-.die-btn:nth-child(2){background:linear-gradient(135deg,#1D9E75,#88ffd7 45%,#0b5c42);border-color:#88ffd7}
-.die-btn:nth-child(3){background:linear-gradient(135deg,#D4537E,#ffc2d7 45%,#74233f);border-color:#ffc2d7}
-.die-btn:nth-child(4){background:linear-gradient(135deg,#EF9F27,#ffe1a1 45%,#8a5209);border-color:#ffe1a1}
-.die-btn:nth-child(5){background:linear-gradient(135deg,#378ADD,#b9ddff 45%,#124a82);border-color:#b9ddff}
-.die-btn:nth-child(6){background:linear-gradient(135deg,#E24B4A,#ffc0c0 45%,#7a1616);border-color:#ffc0c0}
-.die-btn:nth-child(7){background:linear-gradient(135deg,#777,#fff 45%,#333);border-color:#eee}
-.die-btn svg polygon,.die-btn svg rect,.die-btn svg circle{stroke:#fff!important;fill:rgba(255,255,255,.16)!important}.die-btn svg text{fill:#fff!important;text-shadow:0 1px 3px #000}
-@keyframes twinkle{0%,100%{opacity:.25;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.25) rotate(25deg)}}
-.dashboard-modal{background:#141414;border:1px solid #444;border-radius:16px;width:min(920px,96vw);max-height:90vh;overflow-y:auto;padding:1rem}
-.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.dash-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:12px}.dash-card h3{font-size:12px;color:#b8b4f8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}.dash-card input,.dash-card select{border:1px solid #333;border-radius:7px;padding:6px 8px;font-size:12px;background:#111;color:#eee}.dash-card button{padding:5px 10px;border-radius:7px;border:1px solid #444;background:#2a2a2a;color:#ccc;cursor:pointer;font-size:12px;margin:2px}.asset-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.asset-pill{border-color:#7F77DD!important;background:#1e1a3a!important;color:#b8b4f8!important}.scene-panel{position:absolute;right:12px;bottom:12px;max-width:260px;max-height:180px;background:#111;border:2px solid #7F77DD;border-radius:12px;padding:6px;z-index:20;box-shadow:0 0 24px #000;display:none}.scene-panel img{max-width:100%;max-height:150px;border-radius:8px;display:block}.scene-panel-title{font-size:10px;color:#b8b4f8;margin-bottom:4px;text-align:center}.scene-close{position:absolute;top:-8px;right:-8px;border:1px solid #444;background:#111;color:#aaa;border-radius:50%;width:22px;height:22px;cursor:pointer}.toast{position:fixed;top:55px;left:50%;transform:translateX(-50%);background:#111;border:1px solid #7F77DD;color:#b8b4f8;font-size:13px;font-weight:600;padding:8px 18px;border-radius:10px;z-index:998;pointer-events:none;box-shadow:0 0 18px #000}
-
 ::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
 @media(max-width:600px){.sheet-grid-2,.sheet-grid-3{grid-template-columns:1fr}.stat-block{grid-template-columns:repeat(3,1fr)}.skill-list{grid-template-columns:1fr}}
 
 /* ── V3.2 POLISH: SHINY DICE, SNAP DASHBOARD, LEVEL UP, MUSIC SYNC ── */
 .die-btn{background-size:180% 180%!important;animation:metalShift 3.5s ease-in-out infinite;filter:drop-shadow(0 0 8px rgba(255,255,255,.18))}
-.die-btn:after{content:'✧ ✦ ✧';position:absolute;left:-20%;top:45%;width:140%;font-size:13px;letter-spacing:10px;color:#fff;opacity:.0;transform:rotate(-18deg);animation:glitterSweep 1.9s ease-in-out infinite;pointer-events:none}
+.die-btn:after{content:'✦ ✧ ✦';position:absolute;left:-20%;top:45%;width:140%;font-size:13px;letter-spacing:10px;color:#fff;opacity:.0;transform:rotate(-18deg);animation:glitterSweep 1.9s ease-in-out infinite;pointer-events:none}
 .die-btn:hover{transform:translateY(-1px) scale(1.04);box-shadow:0 0 18px rgba(255,255,255,.35), inset 0 0 18px rgba(255,255,255,.22)}
 @keyframes glitterSweep{0%{opacity:0;left:-35%}25%{opacity:.95}65%{opacity:.5}100%{opacity:0;left:55%}}
 @keyframes metalShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
@@ -340,7 +300,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 @keyframes firework{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(.25)}}
 .modal select.multi-select{min-height:90px}
 .autofill-note{font-size:10px;color:#777;margin-top:4px;line-height:1.35}
-
 
 /* ── V4 ADDITIONS ── */
 .reaction-bar{display:flex;gap:5px;flex-wrap:wrap}
@@ -390,7 +349,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
   </button>
 </nav>
 
-<!-- MAP -->
 <div id="map-panel" class="panel active">
   <div class="map-toolbar">
     <label class="upload-map-label" id="upload-map-btn">📁 Map<input type="file" id="map-upload" accept="image/*" style="display:none" onchange="uploadMap(event)"></label>
@@ -437,7 +395,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 </div>
 </div>
 
-<!-- PARTY -->
 <div id="party-panel" class="panel">
   <div class="party-wrap">
     <div class="party-tools">
@@ -455,16 +412,12 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
   </div>
 </div>
 
-<!-- DICE -->
 <div id="dice-panel" class="panel"><div class="dice-wrap" id="dice-wrap"></div></div>
 
-<!-- INITIATIVE -->
 <div id="init-panel" class="panel"><div class="init-wrap" id="init-wrap"></div></div>
 
-<!-- SPELLS -->
 <div id="spells-panel" class="panel"><div class="spells-wrap" id="spells-wrap"></div></div>
 
-<!-- NOTES -->
 <div id="notes-panel" class="panel">
   <div class="notes-wrap">
     <p class="section-title">DM Notes</p>
@@ -489,7 +442,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
   </div>
 </div>
 
-<!-- CHARACTER SHEET MODAL -->
 <div id="sheet-modal-bg" class="sheet-modal-bg" style="display:none">
   <div class="sheet-modal">
     <div class="sheet-header">
@@ -512,7 +464,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
   </div>
 </div>
 
-<!-- Edit Modal -->
 <div id="modal-bg" class="modal-bg" style="display:none" onclick="closeModalOnBg(event)">
   <div class="modal">
     <h2>Edit Character</h2>
@@ -602,7 +553,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
   </div>
 </div>
 
-<!-- Add Token Modal -->
 <div id="token-modal-bg" class="modal-bg" style="display:none">
   <div class="modal" style="max-width:360px">
     <h2>Add Token</h2>
@@ -624,9 +574,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
   </div>
 </div>
 
-
-
-<!-- DM Dashboard Modal -->
 <div id="dm-dashboard-bg" class="modal-bg" style="display:none" onclick="closeDMDashboardOnBg(event)">
   <div class="dashboard-modal">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
@@ -636,27 +583,43 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
     <div class="dashboard-grid">
       <div class="dash-card">
         <h3>XP Awards</h3>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-          <select id="dash-xp-target"><option value="all">All players</option></select>
-          <span id="dash-xp-hot-buttons"></span>
-          <input type="number" id="dash-xp-amount" placeholder="Custom XP" style="width:100px">
-          <button onclick="awardXPFromDashboard()">✨ Award</button>
-          <button onclick="clearXP()">Clear XP</button>
+        <div>
+          <label style="font-size:11px;color:#888;display:block;margin-bottom:3px">Target</label>
+          <select id="dash-xp-target"></select>
         </div>
+        <div style="margin:4px 0"><span id="dash-xp-hot-buttons"></span></div>
+        <div style="display:flex;gap:4px">
+          <input type="number" id="dash-xp-amount" placeholder="Custom XP" style="flex:1">
+          <button onclick="awardXPFromDashboard()" style="background:#7F77DD;color:#fff;border:none;border-radius:7px;padding:0 12px">✨ Award</button>
+        </div>
+        <button onclick="clearXP()" style="background:transparent;color:#888;border:1px solid #333;width:100%">Clear All XP</button>
       </div>
       <div class="dash-card">
         <h3>Give Item</h3>
         <div style="display:flex;flex-direction:column;gap:6px">
-          <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
-            <input type="text" id="dash-item-name" placeholder="Item name..." style="flex:1;min-width:120px">
+          <div>
+            <label style="font-size:11px;color:#888">Target Player</label>
             <select id="dash-item-target"></select>
           </div>
-          <input type="text" id="dash-item-desc" placeholder="Description (optional)..." style="width:100%;border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:12px;background:#111;color:#eee">
-          <div style="display:flex;gap:5px;align-items:center">
-            <input type="number" id="dash-item-maxuses" placeholder="Max uses (0=unlimited)" min="0" style="width:160px;border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:12px;background:#111;color:#eee">
-            <input type="number" id="dash-item-qty" placeholder="Qty" min="1" value="1" style="width:60px;border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:12px;background:#111;color:#eee">
-            <button onclick="giveDashboardItem()">📦 Give</button>
+          <div>
+            <label style="font-size:11px;color:#888">Item Name</label>
+            <input type="text" id="dash-item-name" placeholder="Item name...">
           </div>
+          <div>
+            <label style="font-size:11px;color:#888">Description (optional)</label>
+            <input type="text" id="dash-item-desc" placeholder="e.g. 1d6 piercing">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 60px;gap:6px">
+            <div>
+              <label style="font-size:11px;color:#888">Max Uses</label>
+              <input type="number" id="dash-item-maxuses" placeholder="0 = infinite" min="0">
+            </div>
+            <div>
+              <label style="font-size:11px;color:#888">Qty</label>
+              <input type="number" id="dash-item-qty" min="1" value="1">
+            </div>
+          </div>
+          <button onclick="giveDashboardItem()" style="background:#7F77DD;color:#fff;font-weight:600;width:100%;margin-top:4px">📦 Give Item</button>
         </div>
       </div>
       <div class="dash-card">
@@ -667,8 +630,8 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
       <div class="dash-card">
         <h3>NPC / Enemy Token Repository</h3>
         <input type="file" id="repo-token-file" accept="image/*" onchange="uploadRepoAsset(event,'tokens')">
-        <input type="text" id="repo-token-name" placeholder="Token name" style="width:110px">
-        <input type="number" id="repo-token-hp" placeholder="HP" style="width:70px">
+        <input type="text" id="repo-token-name" placeholder="Token name">
+        <input type="number" id="repo-token-hp" placeholder="HP">
         <div class="asset-list" id="repo-token-list"></div>
       </div>
       <div class="dash-card">
@@ -680,7 +643,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
       <div class="dash-card">
         <h3>Level Up</h3>
         <select id="dash-level-target"></select>
-        <button type="button" onclick="levelUpFromDashboard()">🎆 Level Up</button>
+        <button type="button" onclick="levelUpFromDashboard()" style="background:#EF9F27;color:#fff;border:none">🎆 Level Up</button>
         <p style="font-size:11px;color:#777;margin-top:6px">Raises the character level by 1, refreshes auto features, and plays celebration effects for everyone.</p>
       </div>
       <div class="dash-card">
@@ -705,7 +668,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 
 <div id="dm-bottom-dock"></div>
 
-<!-- PIN Overlay -->
 <div id="pin-overlay" style="display:none">
   <div class="pin-box">
     <div style="font-size:28px;margin-bottom:6px">🔐</div><h2 style="color:#fff;font-size:16px;margin-bottom:5px">DM Access</h2>
@@ -723,8 +685,11 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 </div>
 <div id="yt-container" style="position:fixed;bottom:-200px;left:-200px;width:1px;height:1px;overflow:hidden"><div id="yt-player"></div></div>
 
-
 <script>
+const PROF_BY_LEVEL = [2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6];
+const CLASS_SAVES = {
+  Artificer:['CON','INT'], Barbarian:['STR','CON'], Bard:['DEX','CHA'], Cleric:['WIS','CHA'], Druid:['INT','WIS'], Fighter:['STR','CON'], Monk:['STR','DEX'], Paladin:['WIS','CHA'], Ranger:['STR','DEX'], Rogue:['DEX','INT'], Sorcerer:['CON','CHA'], Warlock:['WIS','CHA'], Wizard:['INT','WIS'], 'Blood Hunter':['STR','INT']
+};
 
 // ══════════════════════════════════════════════════════════════════════
 // COMPLETE 5E SPECIES DATABASE (SRD + Common Sourcebooks)
@@ -785,13 +750,10 @@ const SUBRACES_DB = {
   'Githzerai':           {parent:'Githyanki',bonuses:{DEX:1,WIS:2,speed:30},   traits:['+1 DEX +2 WIS','Monastic Training: Mage Hand (invisible); Shield at 3rd; Detect Thoughts at 5th']},
 };
 
-// Keep SPECIES_BONUSES for backwards compatibility — built from RACES_DB + SUBRACES_DB
 const SPECIES_BONUSES = {};
 Object.entries(RACES_DB).forEach(([name,r])=>{SPECIES_BONUSES[name]={...r.bonuses};});
 Object.entries(SUBRACES_DB).forEach(([name,r])=>{SPECIES_BONUSES[name]={...r.bonuses};});
-// Legacy aliases
 const SPECIES_ALIASES={'Drow':'Dark Elf (Drow)','Dark Elf':'Dark Elf (Drow)','Half Elf':'Half-Elf','Half Orc':'Half-Orc'};
-
 
 const CLASS_OPTIONS = ['Artificer','Barbarian','Bard','Cleric','Druid','Fighter','Monk','Paladin','Ranger','Rogue','Sorcerer','Warlock','Wizard','Blood Hunter'];
 const SUBCLASS_OPTIONS = {
@@ -824,7 +786,6 @@ const SPECIES_AUTO_FEATURES={
   Human:['Versatile: Broad ability increases and adaptable background'], 'Variant Human':['Feat: Start with one feat and one skill proficiency'], Elf:['Darkvision: See in dim light','Fey Ancestry: Advantage against being charmed; magic cannot put you to sleep','Trance: Meditate instead of sleep'], 'High Elf':['Elf Weapon Training: Proficiency with classic elven weapons','Cantrip: Know one wizard cantrip'], 'Wood Elf':['Mask of the Wild: Hide when lightly obscured by natural phenomena','Fleet of Foot: Increased walking speed'], 'Dark Elf':['Superior Darkvision: Extended darkvision','Drow Magic: Gain drow spells as you level'], Dwarf:['Darkvision: See in dim light','Dwarven Resilience: Advantage against poison; resistance to poison damage'], 'Hill Dwarf':['Dwarven Toughness: Extra hit points'], 'Mountain Dwarf':['Dwarven Armor Training: Armor proficiency'], Halfling:['Lucky: Reroll natural 1s','Brave: Advantage against frightened'], 'Lightfoot Halfling':['Naturally Stealthy: Hide behind larger creatures'], 'Stout Halfling':['Stout Resilience: Advantage against poison'], 'Half-Elf':['Fey Ancestry: Advantage against charm; magic cannot put you to sleep','Skill Versatility: Gain two skill proficiencies'], 'Half-Orc':['Relentless Endurance: Drop to 1 HP instead of 0 once per long rest','Savage Attacks: Extra die on melee critical hits'], Dragonborn:['Draconic Ancestry: Breath weapon and damage resistance'], Gnome:['Gnome Cunning: Advantage on mental saves against magic'], Tiefling:['Darkvision: See in dim light','Hellish Resistance: Resistance to fire damage'], Aasimar:['Celestial Resistance: Resistance to necrotic and radiant damage','Healing Hands: Touch to heal'], Tabaxi:['Feline Agility: Burst of speed',"Cat\'s Claws: Climb speed and natural weapons"], Goliath:["Stone\'s Endurance: Reduce damage once per rest",'Powerful Build: Count as one size larger for carrying'], Orc:['Aggressive: Move toward enemies as bonus action','Powerful Build: Count as one size larger for carrying'], Firbolg:['Hidden Step: Brief invisibility','Firbolg Magic: Detect Magic and Disguise Self'], Githyanki:['Githyanki Psionics: Innate psionic magic']
 };
 
-// ── SKILLS ────────────────────────────────────────────────────────────
 const SKILLS = [
   {name:'Acrobatics',   ab:'DEX'},{name:'Animal Handling',ab:'WIS'},
   {name:'Arcana',       ab:'INT'},{name:'Athletics',      ab:'STR'},
@@ -837,9 +798,7 @@ const SKILLS = [
   {name:'Stealth',      ab:'DEX'},{name:'Survival',       ab:'WIS'},
 ];
 
-// ── FULL SPELL SLOT TABLE ─────────────────────────────────────────────
 const SPELL_SLOTS = {
-  // Index = character level 1-20
   full: [
     null,[2],[3],[4,2],[4,3],[4,3,2],[4,3,3],[4,3,3,1],[4,3,3,2],
     [4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2,1],[4,3,3,3,2,1],
@@ -851,7 +810,6 @@ const SPELL_SLOTS = {
     [4,3,3],[4,3,3],[4,3,3,1],[4,3,3,1],[4,3,3,2],[4,3,3,2],
     [4,3,3,3,1],[4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2],
   ],
-  // Pact: warlock gets N slots all of same level
   pact: [
     null,[1],[2],[2],[2],[2],[2],[2],[2],[2],[2],
     [2],[2],[2],[2],[2],[2],[2],[2],[2],[2],
@@ -936,7 +894,6 @@ function normalizeSpeciesName(name){
   return found||raw;
 }
 function speciesBonusFor(name){return SPECIES_BONUSES[normalizeSpeciesName(name)]||{};}
-// Combine race + subrace bonuses
 function speciesBonusForFull(race,subrace){
   const rb=RACES_DB[race]?.bonuses||{};
   const sb=subrace&&SUBRACES_DB[subrace]?.bonuses||{};
@@ -945,7 +902,6 @@ function speciesBonusForFull(race,subrace){
   out.speed=sb.speed||rb.speed||30;
   return out;
 }
-// Get the full display name combining race + subrace
 function getFullSpeciesName(p){
   const race=p.species||'Human';
   const sub=p.subspecies||'';
@@ -992,7 +948,6 @@ function getSpellSlots(p){
   const tbl=SPELL_SLOTS[ctype];
   if(!tbl)return null;
   if(ctype==='pact'){
-    // Warlock pact slots: determine level and count by character level
     const slotLvl=lvl<=4?1:lvl<=6?2:lvl<=8?3:lvl<=9?4:5;
     const count=lvl===1?1:lvl<=10?2:lvl<=16?3:4;
     const result=Array(9).fill(0);result[slotLvl-1]=count;
@@ -1221,8 +1176,7 @@ function renderSheetBody(){
 }
 
 function renderSheetCore(p){
-  const pb=profBonus(p);const lvl=getLevel(p);
-  const pct=p.hp/p.maxHp;
+  const pb=profBonus(p);
   const STATS=['STR','DEX','CON','INT','WIS','CHA'];
   const statBlocks=STATS.map(ab=>{
     const final=statFinal(p,ab);
@@ -1237,6 +1191,7 @@ function renderSheetCore(p){
   const cls=getClass(p);const ss=spellStat[cls];
   const spellDC=ss?8+pb+mod(statFinal(p,ss)):null;
   const spellAtk=ss?fmtBonus(pb+mod(statFinal(p,ss))):null;
+  const pct=p.hp/p.maxHp;
 
   return `
   <div class="sheet-grid-2" style="margin-bottom:12px">
@@ -1467,7 +1422,6 @@ function saveSheetNotes(){
   dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));
 }
 
-
 function populateBuildControls(){
   const clsSel=document.getElementById('modal-class-name');
   if(clsSel&&!clsSel.options.length)clsSel.innerHTML=CLASS_OPTIONS.map(c=>`<option value="${c}">${c}</option>`).join('');
@@ -1548,14 +1502,11 @@ function openModal(i){
   document.getElementById('modal-class').value=p.cls;
   parseClassStringToControls();
   const normSpecies=normalizeSpeciesName(p.species)||'Human';
-  // Set race dropdown
   const raceInDB=RACES_DB[normSpecies]?normSpecies:(Object.keys(RACES_DB).find(r=>normSpecies.startsWith(r))||'Human');
   document.getElementById('modal-species').value=raceInDB;
-  // Populate subraces for this race
   const rSubSel=document.getElementById('modal-subspecies');
   const rSubs=(RACES_DB[raceInDB]?.subraces)||[];
   if(rSubSel)rSubSel.innerHTML='<option value="">None / No subrace</option>'+rSubs.map(s=>`<option value="${s}">${s}</option>`).join('');
-  // Try to restore subrace
   const savedSub=p.subspecies||'';
   if(rSubSel)rSubSel.value=rSubs.includes(savedSub)?savedSub:'';
   document.getElementById('modal-background').value=p.background||'';
@@ -1654,15 +1605,10 @@ function populateCharacterSelect(){
 function selectCharacter(val){activeCharacter=val;if(currentPanel==='dice')renderDice();}
 function canAccessCharacter(i,requireEdit=false){
   const p=party[i];if(!p)return false;
-  // DM can always access everything
   if(isDM)return true;
-  // No PIN set — anyone can view and edit
   if(!p.charPin)return true;
-  // Player viewing their own character — always allowed
   if(String(activeCharacter)===String(i))return true;
-  // View-only (sheet): allow without PIN — players can see each other's sheets
   if(!requireEdit)return true;
-  // Editing someone else's PIN-protected character — require PIN
   const entered=prompt(`${p.name} is PIN protected. Enter their 4-digit PIN:`);
   if(entered===p.charPin)return true;
   alert('Incorrect character PIN.'); return false;
@@ -1708,13 +1654,10 @@ function spawnSparkles(partyIdx){
 }
 function playXPSound(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();[523,659,784,1047].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.setValueAtTime(f,ctx.currentTime+i*.12);g.gain.setValueAtTime(.15,ctx.currentTime+i*.12);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.12+.25);o.start(ctx.currentTime+i*.12);o.stop(ctx.currentTime+i*.12+.26);});}catch(e){}}
 function playFanfare(){
-  // Play first 10s of https://www.youtube.com/watch?v=rgUksX6eM0Y
   try{
-    const videoId='rgUksX6eM0Y';
-    const savedState={...musicState};
+    const videoId='rgUksX6eM0Y';const savedState={...musicState};
     if(ytApiReady&&ytPlayer&&ytPlayer.loadVideoById){
-      ytPlayer.loadVideoById({videoId,startSeconds:0});
-      ytPlayer.playVideo();
+      ytPlayer.loadVideoById({videoId,startSeconds:0});ytPlayer.playVideo();
       setTimeout(()=>{
         try{ytPlayer.stopVideo();}catch(e){}
         if(savedState.playing&&savedState.videoId&&savedState.videoId!==videoId){
@@ -1758,16 +1701,11 @@ function giveDashboardItem(){
 }
 function autoCalcCharacterValues(p){
   if(!p)return p;
-  const clsName=getClass(p)||'Fighter';
-  const lv=getLevel(p);
+  const clsName=getClass(p)||'Fighter';const lv=getLevel(p);
   const hitDie={Barbarian:12,Fighter:10,Paladin:10,Ranger:10,Monk:8,Bard:8,Cleric:8,Druid:8,Rogue:8,Warlock:8,Artificer:8,Wizard:6,Sorcerer:6}[clsName]||8;
-  const conMod=mod(statFinal(p,'CON'));
-  const newMax=Math.max(1,(hitDie+conMod)*lv);
-  const oldMax=p.maxHp||newMax;
-  p.maxHp=newMax;
-  p.hp=Math.min(newMax,(p.hp||oldMax)+(newMax-oldMax));
-  const armor=p.armor||'Unarmored';
-  const fDex=statFinal(p,'DEX');
+  const conMod=mod(statFinal(p,'CON'));const newMax=Math.max(1,(hitDie+conMod)*lv);const oldMax=p.maxHp||newMax;
+  p.maxHp=newMax;p.hp=Math.min(newMax,(p.hp||oldMax)+(newMax-oldMax));
+  const armor=p.armor||'Unarmored';const fDex=statFinal(p,'DEX');
   const baseAC={Unarmored:10,Leather:11,'Studded Leather':12,Hide:12,'Chain Shirt':13,'Scale Mail':14,Breastplate:14,'Half Plate':15,'Ring Mail':14,'Chain Mail':16,Splint:17,Plate:18,'Mage Armor (spell)':13}[armor]||10;
   const dexCap={Hide:2,'Chain Shirt':2,'Scale Mail':2,Breastplate:2,'Half Plate':2,'Ring Mail':0,'Chain Mail':0,Splint:0,Plate:0}[armor];
   const dexBonus=Math.min(mod(fDex),dexCap!==undefined?dexCap:99);
@@ -1793,18 +1731,10 @@ function closeModalOnBg(e){if(e.target===document.getElementById('modal-bg'))clo
 // ── DICE ─────────────────────────────────────────────────────────────
 function playDiceSound(){
   try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    const now=ctx.currentTime;
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();const now=ctx.currentTime;
     for(let i=0;i<8;i++){
-      const t=now+i*0.035;
-      const o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();
-      o.connect(f);f.connect(g);g.connect(ctx.destination);
-      o.type=i%2?'triangle':'square';
-      f.type='bandpass';f.frequency.setValueAtTime(700+Math.random()*1800,t);
-      o.frequency.setValueAtTime(120+Math.random()*260,t);
-      o.frequency.exponentialRampToValueAtTime(45+Math.random()*80,t+0.08);
-      g.gain.setValueAtTime(0.11,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.1);
-      o.start(t);o.stop(t+0.11);
+      const t=now+i*0.035;const o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();
+      o.connect(f);f.connect(g);g.connect(ctx.destination);o.type=i%2?'triangle':'square';f.type='bandpass';f.frequency.setValueAtTime(700+Math.random()*1800,t);o.frequency.setValueAtTime(120+Math.random()*260,t);o.frequency.exponentialRampToValueAtTime(45+Math.random()*80,t+0.08);g.gain.setValueAtTime(0.11,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.1);o.start(t);o.stop(t+0.11);
     }
   }catch(e){}
 }
@@ -1813,22 +1743,14 @@ function getCurrentRoller(){
   return isDM?'DM':'Spectator';
 }
 function rollDie(sides,count,rollMod,label){
-  count=count||1;rollMod=rollMod||0;
-  const rolls=Array.from({length:count},()=>Math.ceil(Math.random()*sides));
-  const total=rolls.reduce((a,b)=>a+b,0)+rollMod;
-  const nat=count===1?rolls[0]:null;
-  const who=getCurrentRoller();
-  rollLog.unshift({who,label,rolls,total,nat,mod:rollMod,ts:Date.now()});
-  if(rollLog.length>100)rollLog.pop();
+  count=count||1;rollMod=rollMod||0;const rolls=Array.from({length:count},()=>Math.ceil(Math.random()*sides));const total=rolls.reduce((a,b)=>a+b,0)+rollMod;const nat=count===1?rolls[0]:null;const who=getCurrentRoller();
+  rollLog.unshift({who,label,rolls,total,nat,mod:rollMod,ts:Date.now()});if(rollLog.length>100)rollLog.pop();
   dbSet('rollLog',rollLog);playDiceSound();renderDice();
   setTimeout(()=>{const rb=document.querySelector('.roll-big');if(rb){rb.classList.remove('popping');void rb.offsetWidth;rb.classList.add('popping');}},10);
 }
 function formatRollTime(ts){try{return new Date(ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
 function renderDice(){
-  const rollMod=parseInt(document.getElementById('roll-mod')?.value)||0;
-  const count=parseInt(document.getElementById('roll-count')?.value)||1;
-  const latest=rollLog[0];
-  const who=getCurrentRoller();
+  const rollMod=parseInt(document.getElementById('roll-mod')?.value)||0;const count=parseInt(document.getElementById('roll-count')?.value)||1;const latest=rollLog[0];const who=getCurrentRoller();
   document.getElementById('dice-wrap').innerHTML=`
     <div class="roll-controls">
       <span style="font-size:12px;color:#888">Rolling as: <b style="color:#b8b4f8">${who}</b></span>
@@ -1852,10 +1774,7 @@ function renderDice(){
     </div>`;
 }
 function rollFromBtn(sides){
-  const rollMod=parseInt(document.getElementById('roll-mod')?.value)||0;
-  const count=parseInt(document.getElementById('roll-count')?.value)||1;
-  const btns=document.querySelectorAll('.die-btn');
-  const idx=[4,6,8,10,12,20,100].indexOf(sides);
+  const rollMod=parseInt(document.getElementById('roll-mod')?.value)||0;const count=parseInt(document.getElementById('roll-count')?.value)||1;const btns=document.querySelectorAll('.die-btn');const idx=[4,6,8,10,12,20,100].indexOf(sides);
   if(btns[idx]){btns[idx].classList.add('rolling');setTimeout(()=>btns[idx].classList.remove('rolling'),500);}
   rollDie(sides,count,rollMod,count+'d'+sides);
 }
@@ -1866,44 +1785,29 @@ function buildDiceReport(){
   return lines.join('\n');
 }
 function appendDiceReportToNotes(){
-  const log=document.getElementById('dm-session-log')||document.querySelectorAll('.dm-notes')[1];
-  if(!log)return alert('Session log not found.');
+  const log=document.getElementById('dm-session-log')||document.querySelectorAll('.dm-notes')[1];if(!log)return alert('Session log not found.');
   log.value=(log.value?log.value+'\n\n':'')+buildDiceReport();
 }
 function clearDiceHistory(){
-  if(!isDM)return;
-  if(!confirm('Clear dice history?'))return;
-  rollLog=[];dbSet('rollLog',rollLog);renderDice();
-  showToast('🎲 Dice history cleared.');
+  if(!isDM)return;if(!confirm('Clear dice history?'))return;
+  rollLog=[];dbSet('rollLog',rollLog);renderDice();showToast('🎲 Dice history cleared.');
 }
 function newSession(){
-  if(!isDM)return;
-  if(!confirm('Start a new session? This clears dice history and resets initiative.'))return;
-  rollLog=[];initiative=[];currentTurn=0;round=1;
-  dbSet('rollLog',rollLog);pushInit();
-  renderDice();if(currentPanel==='init')renderInit();
-  showToast('🌅 New session started. Dice history and initiative cleared.');
+  if(!isDM)return;if(!confirm('Start a new session? This clears dice history and resets initiative.'))return;
+  rollLog=[];initiative=[];currentTurn=0;round=1;dbSet('rollLog',rollLog);pushInit();renderDice();if(currentPanel==='init')renderInit();showToast('🌅 New session started. Dice history and initiative cleared.');
 }
 function endSessionDiceReport(){
-  if(!isDM)return;
-  appendDiceReportToNotes();
-  rollLog=[];initiative=[];currentTurn=0;round=1;
-  dbSet('rollLog',rollLog);pushInit();
-  renderDice();if(currentPanel==='init')renderInit();
-  showToast('🌙 Session ended. Dice report added and history cleared.');
+  if(!isDM)return;appendDiceReportToNotes();
+  rollLog=[];initiative=[];currentTurn=0;round=1;dbSet('rollLog',rollLog);pushInit();renderDice();if(currentPanel==='init')renderInit();showToast('🌙 Session ended. Dice report added and history cleared.');
 }
-
 
 function playInitiativeMusic(){
   try{
-    const videoId='OMJLxfCWVb8'; // FF7 Battle Theme
-    const savedState={...musicState};
+    const videoId='OMJLxfCWVb8';const savedState={...musicState};
     if(ytApiReady&&ytPlayer&&ytPlayer.loadVideoById){
-      ytPlayer.loadVideoById({videoId,startSeconds:0});
-      ytPlayer.playVideo();
+      ytPlayer.loadVideoById({videoId,startSeconds:0});ytPlayer.playVideo();
       setTimeout(()=>{
         try{ytPlayer.stopVideo();}catch(e){}
-        // Resume previous music if DM had something playing
         if(savedState.playing&&savedState.videoId&&savedState.videoId!==videoId){
           setTimeout(()=>localLoadMusic(savedState.videoId,savedState.label||'Custom',true),600);
         }
@@ -1913,29 +1817,22 @@ function playInitiativeMusic(){
 }
 function playBattleStartSound(){
   try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    const now=ctx.currentTime;
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();const now=ctx.currentTime;
     [110,82,146,196].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sawtooth';o.frequency.setValueAtTime(f,now+i*.16);g.gain.setValueAtTime(.18,now+i*.16);g.gain.exponentialRampToValueAtTime(.001,now+i*.16+.28);o.start(now+i*.16);o.stop(now+i*.16+.3);});
   }catch(e){}
 }
 function playLevelUpSound(){
   try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    const now=ctx.currentTime;
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();const now=ctx.currentTime;
     [392,523,659,784,1047,1319].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.setValueAtTime(f,now+i*.09);g.gain.setValueAtTime(.16,now+i*.09);g.gain.exponentialRampToValueAtTime(.001,now+i*.09+.35);o.start(now+i*.09);o.stop(now+i*.09+.36);});
   }catch(e){}
 }
 function showLevelUpCelebration(name,level){
   const burst=document.createElement('div');burst.className='levelup-burst';
   const text=document.createElement('div');text.className='levelup-text';text.innerHTML=`🎆 LEVEL UP! 🎆<br><span style="font-size:20px">${name} is now Level ${level}</span>`;
-  document.body.appendChild(burst);document.body.appendChild(text);
-  const colors=['#EF9F27','#7F77DD','#1D9E75','#D4537E','#fff','#7ab8f5'];
+  document.body.appendChild(burst);document.body.appendChild(text);const colors=['#EF9F27','#7F77DD','#1D9E75','#D4537E','#fff','#7ab8f5'];
   for(let i=0;i<80;i++){
-    const dot=document.createElement('div');dot.className='firework';
-    dot.style.left=(15+Math.random()*70)+'vw';dot.style.top=(18+Math.random()*55)+'vh';
-    dot.style.background=colors[Math.floor(Math.random()*colors.length)];
-    dot.style.setProperty('--x',(Math.random()*240-120)+'px');dot.style.setProperty('--y',(Math.random()*240-120)+'px');
-    dot.style.animationDelay=(Math.random()*.55)+'s';burst.appendChild(dot);
+    const dot=document.createElement('div');dot.className='firework';dot.style.left=(15+Math.random()*70)+'vw';dot.style.top=(18+Math.random()*55)+'vh';dot.style.background=colors[Math.floor(Math.random()*colors.length)];dot.style.setProperty('--x',(Math.random()*240-120)+'px');dot.style.setProperty('--y',(Math.random()*240-120)+'px');dot.style.animationDelay=(Math.random()*.55)+'s';burst.appendChild(dot);
   }
   playLevelUpSound();setTimeout(()=>{burst.remove();text.remove();},3100);
 }
@@ -1954,8 +1851,7 @@ function ensureInitList(){
 }
 function sortedInitList(){return [...initiative].sort((a,b)=>(b.init-a.init)||((b.dex||10)-(a.dex||10)));}
 function renderInit(){
-  ensureInitList();
-  const sorted=sortedInitList();
+  ensureInitList();const sorted=sortedInitList();
   document.getElementById('init-wrap').innerHTML=`
     <div style="background:#111;border:1px solid #333;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#888;line-height:1.6"><span style="color:#b8b4f8;font-weight:600">How initiative works:</span> Players roll only when they press the button. The DM can roll everyone below. Ties are broken by higher DEX.</div>
     <div class="init-controls">
@@ -1995,36 +1891,23 @@ function rollMyInit(){
 function rollAllInit(evt){
   if(evt&&evt.preventDefault)evt.preventDefault();
   if(!isDM){showToast('Only the DM can roll initiative for everyone.','#E24B4A','#f09595');return;}
-  // Play first 10s of FF7 battle theme on initiative roll
-  playInitiativeMusic();
-  showToast('⚔️ Rolling initiative for everyone!','#E24B4A','#f09595');
-
+  playInitiativeMusic();showToast('⚔️ Rolling initiative for everyone!','#E24B4A','#f09595');
   const previousEnemies=initiative.filter(c=>c.type==='enemy');
   const playerEntries=party.map(p=>{
-    const dex=statFinal(p,'DEX');
-    const raw=Math.ceil(Math.random()*20);
-    return {
-      id:p.id,name:p.name,type:'player',roll:raw,init:raw+mod(dex),
-      hp:p.hp,maxHp:p.maxHp,color:p.color,cardColor:p.cardColor,pfp:p.pfp,dex
-    };
+    const dex=statFinal(p,'DEX');const raw=Math.ceil(Math.random()*20);
+    return {id:p.id,name:p.name,type:'player',roll:raw,init:raw+mod(dex),hp:p.hp,maxHp:p.maxHp,color:p.color,cardColor:p.cardColor,pfp:p.pfp,dex};
   });
   const enemyEntries=previousEnemies.map(c=>{
-    const raw=Math.ceil(Math.random()*20);
-    const dexMod=c.dexMod||mod(c.dex||10);
+    const raw=Math.ceil(Math.random()*20);const dexMod=c.dexMod||mod(c.dex||10);
     return {...c,roll:raw,init:raw+dexMod};
   });
-  initiative=[...playerEntries,...enemyEntries];
-  currentTurn=0;round=1;
-  pushInit();
-  renderInit();
+  initiative=[...playerEntries,...enemyEntries];currentTurn=0;round=1;pushInit();renderInit();
   if(currentPanel!=='init')switchTab('init');
 }
 function nextTurn(){const s=sortedInitList();if(!s.length)return;currentTurn=(currentTurn+1)%s.length;if(!currentTurn)round++;pushInit();renderInit();}
 function resetInit(){initiative=[];currentTurn=0;round=1;pushInit();renderInit();}
 function addEnemy(){
-  const name=document.getElementById('enemy-name').value||'Enemy';
-  const init=parseInt(document.getElementById('enemy-init').value)||0;
-  const hp=parseInt(document.getElementById('enemy-hp').value)||10;
+  const name=document.getElementById('enemy-name').value||'Enemy';const init=parseInt(document.getElementById('enemy-init').value)||0;const hp=parseInt(document.getElementById('enemy-hp').value)||10;
   initiative.push({id:'enemy_'+Date.now(),name,type:'enemy',init,hp,maxHp:hp,color:6,dex:10});pushInit();renderInit();
 }
 function removeEnemy(name){initiative=initiative.filter(c=>!(c.type==='enemy'&&c.name===name));pushInit();renderInit();}
@@ -2036,10 +1919,7 @@ function renderSpellsTab(){
   const casters=party.filter(p=>p.caster&&p.caster!=='none');
   document.getElementById('spells-wrap').innerHTML=casters.length
     ?casters.map((p,i)=>{
-      const idx=party.indexOf(p);const pid=p.id||('p'+idx);
-      const slots=getSpellSlots(p);
-      const used=spellSlotsUsed[pid]||{};
-      if(!slots)return '';
+      const idx=party.indexOf(p);const pid=p.id||('p'+idx);const slots=getSpellSlots(p);const used=spellSlotsUsed[pid]||{};if(!slots)return '';
       return `<p class="section-title">${p.name}</p>
       <div class="spell-slots">
         ${slots.map((total,si)=>{if(!total)return '';
@@ -2053,42 +1933,32 @@ function renderSpellsTab(){
     :'<p style="color:#555;font-size:14px">No casters. Edit a character and set spell slots.</p>';
 }
 function toggleTabSlot(pid,si,j){
-  if(!spellSlotsUsed[pid])spellSlotsUsed[pid]={};
-  const cur=spellSlotsUsed[pid][si]||0;
-  spellSlotsUsed[pid][si]=j<cur?j:Math.min(j+1,99);
-  dbSet('spellSlotsUsed',spellSlotsUsed);renderSpellsTab();
+  if(!spellSlotsUsed[pid])spellSlotsUsed[pid]={};const cur=spellSlotsUsed[pid][si]||0;
+  spellSlotsUsed[pid][si]=j<cur?j:Math.min(j+1,99);dbSet('spellSlotsUsed',spellSlotsUsed);renderSpellsTab();
 }
 function resetTabSlots(pid){spellSlotsUsed[pid]={};dbSet('spellSlotsUsed',spellSlotsUsed);renderSpellsTab();}
 
 // ── MAP ───────────────────────────────────────────────────────────────
 function uploadMap(e){
-  const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
+  const file=e.target.files[0];if(!file)return;const reader=new FileReader();
   reader.onload=ev=>{
-    mapImageData=ev.target.result;applyMapImage(mapImageData);
-    document.getElementById('map-placeholder').style.display='none';
+    mapImageData=ev.target.result;applyMapImage(mapImageData);document.getElementById('map-placeholder').style.display='none';
     if(isDM)document.getElementById('clear-map-btn').style.display='inline-block';
     dbUpdate('map',{img:mapImageData});
   };
-  reader.onerror=()=>alert('Error reading file.');
-  reader.readAsDataURL(file);e.target.value='';
+  reader.onerror=()=>alert('Error reading file.');reader.readAsDataURL(file);e.target.value='';
 }
 function applyMapImage(src){
   const img=document.getElementById('map-img');img.style.display='block';img.src=src;
   img.onload=()=>{
-    const canvas=document.getElementById('map-canvas');
-    canvas.style.width=img.naturalWidth+'px';canvas.style.height=img.naturalHeight+'px';
-    document.getElementById('map-placeholder').style.display='none';
-    drawGrid();renderTokens();
+    const canvas=document.getElementById('map-canvas');canvas.style.width=img.naturalWidth+'px';canvas.style.height=img.naturalHeight+'px';
+    document.getElementById('map-placeholder').style.display='none';drawGrid();renderTokens();
   };
 }
 function clearMap(){
-  if(!isDM)return;mapImageData=null;
-  const img=document.getElementById('map-img');img.src='';img.style.display='none';
-  document.getElementById('map-placeholder').style.display='flex';
-  document.getElementById('clear-map-btn').style.display='none';
-  const gc=document.getElementById('grid-overlay');gc.getContext('2d').clearRect(0,0,gc.width,gc.height);
-  dbRemove('map');
+  if(!isDM)return;mapImageData=null;const img=document.getElementById('map-img');img.src='';img.style.display='none';
+  document.getElementById('map-placeholder').style.display='flex';document.getElementById('clear-map-btn').style.display='none';
+  const gc=document.getElementById('grid-overlay');gc.getContext('2d').clearRect(0,0,gc.width,gc.height);dbRemove('map');
 }
 function toggleGrid(){
   showGrid=!showGrid;document.getElementById('grid-btn').textContent='⊞ Grid: '+(showGrid?'ON':'OFF');
@@ -2097,10 +1967,8 @@ function toggleGrid(){
 function drawGrid(){
   const img=document.getElementById('map-img'),gc=document.getElementById('grid-overlay');
   if(!showGrid||!img.naturalWidth){gc.getContext('2d').clearRect(0,0,gc.width,gc.height);return;}
-  gc.width=img.naturalWidth;gc.height=img.naturalHeight;
-  gc.style.width=img.naturalWidth+'px';gc.style.height=img.naturalHeight+'px';
-  const ctx=gc.getContext('2d');ctx.clearRect(0,0,gc.width,gc.height);
-  ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=1;
+  gc.width=img.naturalWidth;gc.height=img.naturalHeight;gc.style.width=img.naturalWidth+'px';gc.style.height=img.naturalHeight+'px';
+  const ctx=gc.getContext('2d');ctx.clearRect(0,0,gc.width,gc.height);ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=1;
   for(let x=0;x<=gc.width;x+=GRID_SIZE){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,gc.height);ctx.stroke();}
   for(let y=0;y<=gc.height;y+=GRID_SIZE){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(gc.width,y);ctx.stroke();}
 }
@@ -2124,8 +1992,7 @@ function placeToken(){
     const idx=parseInt(document.getElementById('token-player-sel').value),p=party[idx];
     token={id:'tok_'+Date.now(),name:p.name,type:'player',pfp:p.pfp||null,color:p.color,cardColor:p.cardColor,hp:p.hp,maxHp:p.maxHp,x:60,y:60};
   } else {
-    const name=document.getElementById('token-name').value||'Enemy';
-    const hp=parseInt(document.getElementById('token-hp-val').value)||10;
+    const name=document.getElementById('token-name').value||'Enemy';const hp=parseInt(document.getElementById('token-hp-val').value)||10;
     token={id:'tok_'+Date.now(),name,type:'enemy',pfp:null,color:6,hp,maxHp:hp,x:60,y:60};
   }
   dbUpdate('tokens/'+token.id,token);closeTokenModal();
@@ -2136,16 +2003,13 @@ function renderTokens(){
 }
 function createTokenEl(tok){
   const col=tok.cardColor||COLORS[tok.color||0],div=document.createElement('div');
-  div.className='token'+(tok.type==='enemy'?' enemy-token':'');div.id='token-'+tok.id;
-  div.style.cssText=`left:${tok.x}px;top:${tok.y}px;background:${col.bg};border-color:${tok.type==='enemy'?'#E24B4A':col.border};color:${col.color}`;
+  div.className='token'+(tok.type==='enemy'?' enemy-token':'');div.id='token-'+tok.id;div.style.cssText=`left:${tok.x}px;top:${tok.y}px;background:${col.bg};border-color:${tok.type==='enemy'?'#E24B4A':col.border};color:${col.color}`;
   if(tok.pfp){const img=document.createElement('img');img.src=tok.pfp;img.alt=tok.name;div.appendChild(img);}
   else div.textContent=(tok.name||'?').slice(0,2).toUpperCase();
-  const bar=document.createElement('div');bar.className='token-hp-bar';
-  const fill=document.createElement('div');fill.className='token-hp-fill';
+  const bar=document.createElement('div');bar.className='token-hp-bar';const fill=document.createElement('div');fill.className='token-hp-fill';
   const pct=tok.maxHp?tok.hp/tok.maxHp:1;fill.style.cssText=`width:${Math.max(0,pct*100)}%;background:${hpColor(pct)}`;
   bar.appendChild(fill);div.appendChild(bar);
-  const lbl=document.createElement('div');lbl.className='token-label';lbl.textContent=tok.name;div.appendChild(lbl);
-  makeDraggable(div,tok.id);
+  const lbl=document.createElement('div');lbl.className='token-label';lbl.textContent=tok.name;div.appendChild(lbl);makeDraggable(div,tok.id);
   div.addEventListener('contextmenu',e=>{e.preventDefault();if(isDM&&confirm('Remove '+tok.name+'?'))dbRemove('tokens/'+tok.id);});
   return div;
 }
@@ -2158,8 +2022,6 @@ function makeDraggable(el,tokId){
   el.addEventListener('touchmove',e=>{if(!dragging)return;e.preventDefault();const t=e.touches[0],r=document.getElementById('map-canvas').getBoundingClientRect();let nx=t.clientX-r.left-ox,ny=t.clientY-r.top-oy;if(showGrid){nx=Math.round(nx/GRID_SIZE)*GRID_SIZE;ny=Math.round(ny/GRID_SIZE)*GRID_SIZE;}el.style.left=Math.max(0,nx)+'px';el.style.top=Math.max(0,ny)+'px';},{passive:false});
   el.addEventListener('touchend',()=>{dragging=false;dbUpdate('tokens/'+tokId,{x:parseInt(el.style.left),y:parseInt(el.style.top)});});
 }
-
-
 
 // ── DM DASHBOARD, ASSET REPOSITORY, SCENE IMAGE ───────────────────────
 function openDMDashboard(){if(!isDM)return;populateDMControls();renderAssetRepo();renderArchiveList();document.getElementById('dm-dashboard-bg').style.display='flex';}
@@ -2178,13 +2040,10 @@ function uploadSceneImage(e){const file=e.target.files[0];if(!file||!isDM)return
 function applySceneImage(data){const panel=document.getElementById('scene-panel'),img=document.getElementById('scene-img');if(!panel||!img)return;if(data){img.src=data;panel.style.display='block';}else{img.src='';panel.style.display='none';}}
 function clearSceneImage(){if(!isDM)return;sceneImageData=null;dbRemove('sceneImage');applySceneImage(null);}
 
-
 function renderDockedDashboard(){
-  const dock=document.getElementById('dm-bottom-dock');const map=document.getElementById('map-panel');
-  if(!dock||!map)return;
+  const dock=document.getElementById('dm-bottom-dock');const map=document.getElementById('map-panel');if(!dock||!map)return;
   if(isDM&&currentPanel==='map'){
-    populateDMControls();renderAssetRepo();
-    dock.style.display='block';map.classList.add('dm-docked');
+    populateDMControls();renderAssetRepo();dock.style.display='block';map.classList.add('dm-docked');
     const grid=document.querySelector('#dm-dashboard-bg .dashboard-grid');
     dock.innerHTML=grid?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
     <b style="color:#b8b4f8;font-size:12px">👑 DM Quick Dashboard</b>
@@ -2195,63 +2054,33 @@ function renderDockedDashboard(){
   } else {dock.style.display='none';dock.innerHTML='';map.classList.remove('dm-docked');}
 }
 function levelUpFromDashboard(){
-  if(!isDM)return;
-  const idx=parseInt(dashEl('dash-level-target')?.value);
+  if(!isDM)return;const idx=parseInt(dashEl('dash-level-target')?.value);
   if(isNaN(idx)||!party[idx]){showToast('Choose a character to level up.','#E24B4A','#f09595');return;}
   levelUpCharacter(idx);
 }
 function levelUpCharacter(idx){
-  if(!isDM||!party[idx])return;
-  const p=party[idx];
-  const cls=getClass(p)||'Fighter';
-  const sub=getSubclass(p)||'';
-  const oldLvl=getLevel(p);
-  const lvl=Math.min(20,oldLvl+1);
+  if(!isDM||!party[idx])return;const p=party[idx];const cls=getClass(p)||'Fighter';const sub=getSubclass(p)||'';const oldLvl=getLevel(p);const lvl=Math.min(20,oldLvl+1);
   if(lvl===oldLvl){showToast(`${p.name} is already level 20.`,'#EF9F27','#f5c87a');return;}
-  p.cls=makeClassString(cls,sub,lvl);
-  const auto=featureLinesFor(p);
-  if(auto&&auto.length)p.features=auto.join('\n');
-  autoCalcCharacterValues(p);
-  dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
-  dbSet('levelEvents/latest',{name:p.name,level:lvl,ts:Date.now(),id:'lvl_'+Date.now()});
-  showLevelUpCelebration(p.name,lvl);
-  showToast(`🎆 ${p.name} is now level ${lvl}!`,'#EF9F27','#f5c87a');
-  renderParty();populateDMControls();renderDockedDashboard();if(viewingCharIdx===idx)renderSheetBody();
+  p.cls=makeClassString(cls,sub,lvl);const auto=featureLinesFor(p);if(auto&&auto.length)p.features=auto.join('\n');
+  autoCalcCharacterValues(p);dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));dbSet('levelEvents/latest',{name:p.name,level:lvl,ts:Date.now(),id:'lvl_'+Date.now()});
+  showLevelUpCelebration(p.name,lvl);showToast(`🎆 ${p.name} is now level ${lvl}!`,'#EF9F27','#f5c87a');renderParty();populateDMControls();renderDockedDashboard();if(viewingCharIdx===idx)renderSheetBody();
 }
 function deleteCharacterFromDashboard(){
-  if(!isDM)return;
-  const idx=parseInt(dashEl('dash-delete-target')?.value);
+  if(!isDM)return;const idx=parseInt(dashEl('dash-delete-target')?.value);
   if(isNaN(idx)||!party[idx]){showToast('Choose a character to delete.','#E24B4A','#f09595');return;}
   deleteCharacterAt(idx);
 }
 function deleteCharacterAt(idx){
-  if(!isDM||!party[idx])return;
-  const p=party[idx];
-  if(!confirm(`Remove ${p.name} from the party?\n\nClick OK to choose archive or permanent delete.`))return;
+  if(!isDM||!party[idx])return;const p=party[idx];if(!confirm(`Remove ${p.name} from the party?\n\nClick OK to choose archive or permanent delete.`))return;
   const archive=confirm(`Click OK to ARCHIVE ${p.name} (restorable later)\nClick Cancel to PERMANENTLY DELETE (cannot be undone)`);
   if(archive){
-    const archived={...p,archivedAt:Date.now()};
-    dbUpdate('archive/'+p.id,archived);
-    party.splice(idx,1);
-    initiative=initiative.filter(c=>!(c.id===p.id||c.name===p.name));
-    dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
-    pushInit();
-    if(editingIdx===idx)closeModal();
-    if(viewingCharIdx===idx)closeSheet();
-    viewingCharIdx=null;editingIdx=null;activeCharacter='spectator';
-    renderParty();renderCurrentPanel();populateDMControls();renderDockedDashboard();
-    showToast(`📦 ${p.name} archived. Restore from DM Dashboard.`,'#EF9F27','#f5c87a');
+    const archived={...p,archivedAt:Date.now()};dbUpdate('archive/'+p.id,archived);party.splice(idx,1);initiative=initiative.filter(c=>!(c.id===p.id||c.name===p.name));
+    dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));pushInit();if(editingIdx===idx)closeModal();if(viewingCharIdx===idx)closeSheet();
+    viewingCharIdx=null;editingIdx=null;activeCharacter='spectator';renderParty();renderCurrentPanel();populateDMControls();renderDockedDashboard();showToast(`📦 ${p.name} archived. Restore from DM Dashboard.`,'#EF9F27','#f5c87a');
   } else {
     if(!confirm(`FINAL WARNING: Permanently delete ${p.name}? This truly cannot be undone.`))return;
-    party.splice(idx,1);
-    initiative=initiative.filter(c=>!(c.id===p.id||c.name===p.name));
-    dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
-    pushInit();
-    if(editingIdx===idx)closeModal();
-    if(viewingCharIdx===idx)closeSheet();
-    viewingCharIdx=null;editingIdx=null;activeCharacter='spectator';
-    renderParty();renderCurrentPanel();populateDMControls();renderDockedDashboard();
-    showToast(`🗑 ${p.name} permanently deleted.`,'#E24B4A','#f09595');
+    party.splice(idx,1);initiative=initiative.filter(c=>!(c.id===p.id||c.name===p.name));dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));pushInit();if(editingIdx===idx)closeModal();if(viewingCharIdx===idx)closeSheet();
+    viewingCharIdx=null;editingIdx=null;activeCharacter='spectator';renderParty();renderCurrentPanel();populateDMControls();renderDockedDashboard();showToast(`🗑 ${p.name} permanently deleted.`,`#E24B4A`,`#f09595`);
   }
 }
 function renderArchiveList(){
@@ -2268,20 +2097,10 @@ function renderArchiveList(){
 }
 function restoreCharacter(id){
   dbListen('archive/'+id,data=>{
-    if(!data)return;
-    const p=normalizeCharacter({...data});delete p.archivedAt;
-    party.push(p);
-    dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
-    dbRemove('archive/'+id);
-    renderParty();populateDMControls();
-    showToast(`✅ ${p.name} restored to party!`,'#1D9E75','#5dcaa5');
+    if(!data)return;const p=normalizeCharacter({...data});delete p.archivedAt;party.push(p);dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));dbRemove('archive/'+id);renderParty();populateDMControls();showToast(`✅ ${p.name} restored to party!`,'#1D9E75','#5dcaa5');
   });
 }
-function permanentDeleteArchived(id){
-  if(!confirm('Permanently delete this archived character?'))return;
-  dbRemove('archive/'+id);
-  showToast('🗑 Archived character deleted.','#E24B4A','#f09595');
-}
+function permanentDeleteArchived(id){if(!confirm('Permanently delete this archived character?'))return;dbRemove('archive/'+id);showToast('🗑 Archived character deleted.','#E24B4A','#f09595');}
 
 // ── MUSIC ─────────────────────────────────────────────────────────────
 const PRESETS={tavern:'nTjVHCBqFxE',dungeon:'HbNEFgOjQHM',combat:'2SPiqKPR_J4',forest:'Y4UMNqMaVbk'};
@@ -2295,8 +2114,7 @@ function updateMusicPermissions(){
 }
 function updateMusicUI(){const btn=document.getElementById('music-play-btn'),lab=document.getElementById('music-label');if(btn)btn.textContent=musicPlaying?'⏸':'▶';if(lab)lab.textContent=musicState?.playing?`🎵 ${musicState.label||'Custom'} playing`:'🎵 Music stopped';updateMusicPermissions();}
 function localLoadMusic(videoId,label,shouldPlay=true){
-  lastMusicVideoId=videoId;currentPreset=label;
-  ['tavern','dungeon','combat','forest'].forEach(n=>{const b=document.getElementById('btn-'+n);if(b)b.style.borderColor=n===label?'#7F77DD':'#333';});
+  lastMusicVideoId=videoId;currentPreset=label;['tavern','dungeon','combat','forest'].forEach(n=>{const b=document.getElementById('btn-'+n);if(b)b.style.borderColor=n===label?'#7F77DD':'#333';});
   if(ytApiReady&&ytPlayer&&ytPlayer.loadVideoById){try{ytPlayer.loadVideoById({videoId}); if(shouldPlay)ytPlayer.playVideo(); musicPlaying=!!shouldPlay; updateMusicUI(); return;}catch(e){}}
   const frame=document.getElementById('yt-player');if(frame){frame.innerHTML=`<iframe width="1" height="1" src="https://www.youtube.com/embed/${videoId}?autoplay=${shouldPlay?1:0}&loop=1&playlist=${videoId}" allow="autoplay; encrypted-media"></iframe>`;musicPlaying=!!shouldPlay;updateMusicUI();}
 }
@@ -2314,68 +2132,44 @@ function enablePlayerAudio(){if(musicState?.videoId)localLoadMusic(musicState.vi
 function setVol(v){if(ytPlayer&&ytPlayer.setVolume)ytPlayer.setVolume(parseInt(v));}
 function wireAutoCalc(){['modal-class','modal-species','modal-dex','modal-con','modal-wis','modal-armor','modal-class-name','modal-subclass-name','modal-level'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',autoCalcStats);});}
 
-
 // ── 5E DATABASE API ───────────────────────────────────────────────────
-const DND_API='https://www.dnd5eapi.co/api';
-const _apiCache={};
+const DND_API='https://www.dnd5eapi.co/api';const _apiCache={};
 async function apiGet(path){
   if(_apiCache[path])return _apiCache[path];
-  try{const r=await fetch(DND_API+path);if(!r.ok)return null;const d=await r.json();_apiCache[path]=d;return d;}
-  catch(e){return null;}
+  try{const r=await fetch(DND_API+path);if(!r.ok)return null;const d=await r.json();_apiCache[path]=d;return d;}catch(e){return null;}
 }
 async function lookupSpell(name){
-  const slug=name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
-  const data=await apiGet('/spells/'+slug);
-  if(!data||data.error)return null;
-  return {name:data.name,level:data.level,school:data.school?.name||''};
+  const slug=name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');const data=await apiGet('/spells/'+slug);
+  if(!data||data.error)return null;return {name:data.name,level:data.level,school:data.school?.name||''};
 }
 async function autoFillSpellsFromAPI(){
-  const box=document.getElementById('modal-spells');if(!box)return;
-  const lines=box.value.split('\n').map(l=>l.trim()).filter(Boolean);
-  if(!lines.length)return;
+  const box=document.getElementById('modal-spells');if(!box)return;const lines=box.value.split('\n').map(l=>l.trim()).filter(Boolean);if(!lines.length)return;
   showToast('🔍 Looking up spells from D&D API...','#7F77DD','#b8b4f8');
   const filled=await Promise.all(lines.map(async line=>{
-    const parts=line.split('|').map(x=>x.trim());
-    if(parts.length>=3&&parts[1])return line; // already formatted with school
-    const name=parts.length>=2?parts[1]:parts[0];
-    const spell=await lookupSpell(name||line);
-    if(!spell)return line;
+    const parts=line.split('|').map(x=>x.trim());if(parts.length>=3&&parts[1])return line;
+    const name=parts.length>=2?parts[1]:parts[0];const spell=await lookupSpell(name||line);if(!spell)return line;
     return `${spell.level}|${spell.name}|${spell.school}`;
   }));
-  box.value=filled.join('\n');
-  showToast('✅ Spells filled! Check and adjust as needed.','#1D9E75','#5dcaa5');
+  box.value=filled.join('\n');showToast('✅ Spells filled! Check and adjust as needed.','#1D9E75','#5dcaa5');
 }
-async function lookupMonster(name){
-  const slug=name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
-  return await apiGet('/monsters/'+slug);
-}
+async function lookupMonster(name){const slug=name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');return await apiGet('/monsters/'+slug);}
 async function addMonsterFromAPI(){
-  const nameEl=document.getElementById('enemy-name');const name=nameEl?.value||'';
-  if(!name){showToast('Enter a monster name first','#E24B4A','#f09595');return;}
-  showToast('🔍 Looking up '+name+'...','#7F77DD','#b8b4f8');
-  const m=await lookupMonster(name);
+  const nameEl=document.getElementById('enemy-name');const name=nameEl?.value||'';if(!name){showToast('Enter a monster name first','#E24B4A','#f09595');return;}
+  showToast('🔍 Looking up '+name+'...','#7F77DD','#b8b4f8');const m=await lookupMonster(name);
   if(!m||m.error){showToast('Not found in API — adding manually.','#EF9F27','#f5c87a');addEnemy();return;}
   const hp=m.hit_points||10;const ac=(m.armor_class?.[0]?.value)||10;const dex=m.dexterity||10;
   const initVal=parseInt(document.getElementById('enemy-init')?.value)||Math.ceil(Math.random()*20)+Math.floor((dex-10)/2);
-  initiative.push({id:'enemy_'+Date.now(),name:m.name,type:'enemy',init:initVal,hp,maxHp:hp,ac,dex,color:6});
-  pushInit();renderInit();
-  showToast(`💀 ${m.name} added! HP:${hp} AC:${ac}`,'#E24B4A','#f09595');
+  initiative.push({id:'enemy_'+Date.now(),name:m.name,type:'enemy',init:initVal,hp,maxHp:hp,ac,dex,color:6});pushInit();renderInit();showToast(`💀 ${m.name} added! HP:${hp} AC:${ac}`,'#E24B4A','#f09595');
 }
 
 // ── REACTIONS ─────────────────────────────────────────────────────────
 const REACTIONS=[
-  {emoji:'👍',label:'Nice!'},{emoji:'❤️',label:'Love it'},{emoji:'😂',label:'LOL'},
-  {emoji:'😮',label:'Wow!'},{emoji:'😱',label:'OMG!'},{emoji:'🎉',label:'Hype!'},
-  {emoji:'💀',label:'RIP'},{emoji:'⚔️',label:'Attack!'},{emoji:'🎲',label:'Roll!'},
-  {emoji:'🔥',label:'Fire!'},{emoji:'❄️',label:'Ice!'},{emoji:'🛡️',label:'Block!'},
-  {emoji:'🧙',label:'Magic!'},{emoji:'🏃',label:'Run!'},{emoji:'🤣',label:'Haha!'},
+  {emoji:'👍',label:'Nice!'},{emoji:'❤️',label:'Love it'},{emoji:'😂',label:'LOL'},{emoji:'😮',label:'Wow!'},{emoji:'😱',label:'OMG!'},{emoji:'🎉',label:'Hype!'},{emoji:'💀',label:'RIP'},{emoji:'⚔️',label:'Attack!'},{emoji:'🎲',label:'Roll!'},{emoji:'🔥',label:'Fire!'},{emoji:'❄️',label:'Ice!'},{emoji:'🛡️',label:'Block!'},{emoji:'🧙',label:'Magic!'},{emoji:'🏃',label:'Run!'},{emoji:'🤣',label:'Haha!'},
 ];
 let reactionLog=[];
 function renderReactionBar(){
   const btns=document.getElementById('reaction-btns');if(!btns)return;
-  // Show first 8 in the bar
   btns.innerHTML=REACTIONS.slice(0,8).map(r=>`<button class="reaction-btn" onclick="sendReaction('${r.emoji}','${r.label}')" title="${r.label}">${r.emoji}</button>`).join('');
-  // Populate the full menu
   const menu=document.getElementById('reaction-menu');if(!menu)return;
   menu.innerHTML=`
     <div style="font-size:10px;color:#666;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em">All reactions</div>
@@ -2389,61 +2183,38 @@ function renderReactionBar(){
     </div>`;
 }
 function toggleReactionMenu(){
-  const menu=document.getElementById('reaction-menu');if(!menu)return;
-  const open=menu.style.display==='none'||!menu.style.display;
-  menu.style.display=open?'flex':'none';
-  if(open)setTimeout(()=>document.getElementById('custom-emoji-input')?.focus(),50);
+  const menu=document.getElementById('reaction-menu');if(!menu)return;const open=menu.style.display=='none'||!menu.style.display;
+  menu.style.display=open?'flex':'none';if(open)setTimeout(()=>document.getElementById('custom-emoji-input')?.focus(),50);
 }
-// Close menu when clicking outside
 document.addEventListener('click',e=>{
-  const menu=document.getElementById('reaction-menu');
-  const dock=document.getElementById('reaction-dock');
-  if(menu&&menu.style.display==='flex'&&dock&&!dock.contains(e.target)&&!menu.contains(e.target)){
-    menu.style.display='none';
-  }
+  const menu=document.getElementById('reaction-menu');const dock=document.getElementById('reaction-dock');
+  if(menu&&menu.style.display==='flex'&&dock&&!dock.contains(e.target)&&!menu.contains(e.target))menu.style.display='none';
 });
 function sendReaction(emoji,label){
   const who=activeCharacter!=='spectator'&&party[parseInt(activeCharacter)]?party[parseInt(activeCharacter)].name:isDM?'DM':'Spectator';
-  const reaction={emoji,label,who,ts:Date.now()};
-  dbSet('reactions/latest',reaction);
-  showReactionLocally(reaction);
+  const reaction={emoji,label,who,ts:Date.now()};dbSet('reactions/latest',reaction);showReactionLocally(reaction);
 }
 function showReactionLocally(reaction){
-  const bubble=document.createElement('div');bubble.className='reaction-bubble';
-  bubble.textContent=reaction.emoji;bubble.style.left=(15+Math.random()*65)+'vw';bubble.style.bottom='55px';
+  const bubble=document.createElement('div');bubble.className='reaction-bubble';bubble.textContent=reaction.emoji;bubble.style.left=(15+Math.random()*65)+'vw';bubble.style.bottom='55px';
   document.body.appendChild(bubble);setTimeout(()=>bubble.remove(),2400);
-  const toast=document.createElement('div');toast.className='reaction-toast';
-  toast.textContent=`${reaction.emoji}  ${reaction.who}: ${reaction.label}`;
+  const toast=document.createElement('div');toast.className='reaction-toast';toast.textContent=`${reaction.emoji}  ${reaction.who}: ${reaction.label}`;
   document.body.appendChild(toast);setTimeout(()=>toast.remove(),2100);
   reactionLog.unshift(reaction);if(reactionLog.length>6)reactionLog.pop();
-  const recent=document.getElementById('recent-reactions');
-  if(recent)recent.innerHTML=reactionLog.map(r=>`<span title="${r.who}: ${r.label}" style="cursor:default;font-size:16px">${r.emoji}</span>`).join('');
+  const recent=document.getElementById('recent-reactions');if(recent)recent.innerHTML=reactionLog.map(r=>`<span title="${r.who}: ${r.label}" style="cursor:default;font-size:16px">${r.emoji}</span>`).join('');
 }
-function initReactionListener(){
-  dbListen('reactions/latest',data=>{if(data&&Date.now()-(data.ts||0)<8000)showReactionLocally(data);});
-}
+function initReactionListener(){dbListen('reactions/latest',data=>{if(data&&Date.now()-(data.ts||0)<8000)showReactionLocally(data);});}
 
 // ── COLLAPSIBLE DOCK ──────────────────────────────────────────────────
 let dockCollapsed=false;
 function toggleDockCollapse(){
-  dockCollapsed=!dockCollapsed;
-  const content=document.getElementById('dock-content');
-  const btn=document.getElementById('dock-collapse-btn');
-  if(content)content.style.display=dockCollapsed?'none':'';
-  if(btn)btn.textContent=dockCollapsed?'▶ Expand':'▼ Collapse';
+  dockCollapsed=!dockCollapsed;const content=document.getElementById('dock-content');const btn=document.getElementById('dock-collapse-btn');
+  if(content)content.style.display=dockCollapsed?'none':'';if(btn)btn.textContent=dockCollapsed?'▶ Expand':'▼ Collapse';
 }
 
 // ── BOOT ─────────────────────────────────────────────────────────────
-document.getElementById('upload-map-btn').style.display='none';
-document.getElementById('add-token-btn').style.display='none';
-document.getElementById('clear-map-btn').style.display='none';
+document.getElementById('upload-map-btn').style.display='none';document.getElementById('add-token-btn').style.display='none';document.getElementById('clear-map-btn').style.display='none';
 party=party.map(normalizeCharacter);renderParty();renderDice();wireAutoCalc();renderXPHotButtons();applyRole();applySceneImage(sceneImageData);updateMusicPermissions();renderDockedDashboard();renderReactionBar();
-
-if(window._dbReady){dbReady=true;initDb();}
-else window.addEventListener('db-ready',()=>{dbReady=true;initDb();});
+if(window._dbReady){dbReady=true;initDb();} else window.addEventListener('db-ready',()=>{dbReady=true;initDb();});
 </script>
-
-
-
 </body>
 </html>
