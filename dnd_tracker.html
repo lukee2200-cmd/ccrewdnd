@@ -241,6 +241,20 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .btn-ghost{background:transparent;color:#888}
 .sync-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;background:#666}
 .sync-dot.live{background:#1D9E75}
+
+/* ── ADDED: PARTY TOOLS, PIN, XP, INVENTORY, MUSIC ── */
+.party-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
+.add-char-btn{padding:6px 12px;border-radius:8px;border:1px solid #7F77DD;font-size:12px;cursor:pointer;background:#1e1a3a;color:#b8b4f8}
+.item-banner{position:fixed;top:60px;left:50%;transform:translateX(-50%) scale(.7);background:linear-gradient(135deg,#2a1e0a,#3a2a10);border:2px solid #EF9F27;border-radius:12px;padding:10px 22px;z-index:999;pointer-events:none;opacity:0;animation:bannerPop 3.5s ease-out forwards;text-align:center;box-shadow:0 0 30px #EF9F2744}
+.item-banner-name{font-size:11px;color:#f5c87a88;margin-bottom:2px}.item-banner-item{font-size:16px;font-weight:700;color:#f5c87a}
+@keyframes bannerPop{0%{opacity:0;transform:translateX(-50%) scale(.7)}15%{opacity:1;transform:translateX(-50%) scale(1.05)}25%{transform:translateX(-50%) scale(1)}75%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:0;transform:translateX(-50%) scale(.9)}}
+@keyframes sparkleUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(.4)}}
+#pin-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;display:flex;align-items:center;justify-content:center}
+.pin-box{background:#1e1e1e;border:1px solid #444;border-radius:16px;padding:2rem;width:min(300px,90vw);text-align:center}
+.pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid #555;display:inline-block;margin:0 6px}.pin-dot.filled{background:#7F77DD;border-color:#7F77DD}
+.pin-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-width:200px;margin:12px auto}.pin-key{padding:12px;border-radius:9px;border:1px solid #333;font-size:17px;font-weight:600;cursor:pointer;background:#2a2a2a;color:#fff}.pin-key:active{background:#7F77DD}
+.music-bar{background:#0d0d0d;border-top:1px solid #222;padding:7px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0}.music-bar button{padding:3px 9px;border-radius:6px;border:1px solid #333;font-size:11px;cursor:pointer;background:#1e1e1e;color:#ccc}.music-bar input[type=text]{flex:1;min-width:140px;border:1px solid #333;border-radius:6px;padding:3px 7px;font-size:11px;background:#111;color:#eee}
+
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:#111}::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
 @media(max-width:600px){.sheet-grid-2,.sheet-grid-3{grid-template-columns:1fr}.stat-block{grid-template-columns:repeat(3,1fr)}.skill-list{grid-template-columns:1fr}}
 </style>
@@ -255,7 +269,10 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
   <button class="tab" onclick="switchTab('init')">⚔️ Init</button>
   <button class="tab" onclick="switchTab('spells')">✨ Spells</button>
   <button class="tab" onclick="switchTab('notes')">📝 Notes</button>
-  <button class="role-badge" id="role-btn" onclick="toggleRole()">
+  <select id="active-character" onchange="selectCharacter(this.value)" style="margin-left:auto;font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid #444;color:#aaa;background:#111;cursor:pointer">
+    <option value="spectator">👁 Spectator</option>
+  </select>
+  <button class="role-badge" id="role-btn" onclick="handleRoleClick()" style="margin-left:6px">
     <span class="sync-dot" id="sync-dot"></span>
     <span id="role-label">Player</span>
   </button>
@@ -289,7 +306,18 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 
 <!-- PARTY -->
 <div id="party-panel" class="panel">
-  <div class="party-wrap"><div class="player-grid" id="player-grid"></div></div>
+  <div class="party-wrap">
+    <div class="party-tools">
+      <button class="add-char-btn" id="add-char-btn" onclick="openAddChar()" style="display:none">＋ Add Character</button>
+      <div id="xp-section" style="display:none;background:#1e1e1e;border:1px solid #333;border-radius:10px;padding:8px 10px">
+        <span style="font-size:11px;color:#666;font-weight:600;text-transform:uppercase;margin-right:6px">Award XP</span>
+        <input type="number" id="xp-amount" placeholder="XP" style="width:80px;border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:12px;background:#111;color:#eee">
+        <select id="xp-target" style="border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:12px;background:#1e1e1e;color:#eee"><option value="all">All players</option></select>
+        <button onclick="awardXP()" style="padding:5px 14px;border-radius:7px;border:1px solid #EF9F27;font-size:12px;cursor:pointer;background:#2a1e0a;color:#f5c87a">✨ Award XP</button>
+      </div>
+    </div>
+    <div class="player-grid" id="player-grid"></div>
+  </div>
 </div>
 
 <!-- DICE -->
@@ -308,6 +336,14 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
     <textarea class="dm-notes" placeholder="Plot hooks, secrets, NPC names, loot..."></textarea>
     <p class="section-title" style="margin-top:1rem">Session Log</p>
     <textarea class="dm-notes" placeholder="What happened this session..."></textarea>
+    <div id="dm-item-section" style="display:none;margin-top:10px;border-top:1px solid #333;padding-top:10px">
+      <p style="font-size:10px;color:#666;font-weight:600;text-transform:uppercase;margin-bottom:7px">Give Item</p>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+        <input type="text" id="item-name" placeholder="Item name..." style="flex:1;min-width:130px;border:1px solid #333;border-radius:7px;padding:4px 8px;font-size:11px;background:#111;color:#eee">
+        <select id="item-target" style="border:1px solid #333;border-radius:7px;padding:4px 8px;font-size:11px;background:#1e1e1e;color:#eee"></select>
+        <button onclick="giveDMItem()" style="padding:4px 12px;border-radius:7px;border:1px solid #7F77DD;font-size:11px;cursor:pointer;background:#1e1a3a;color:#b8b4f8">📦 Give</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -350,7 +386,14 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
     <div><label>Class, Subclass &amp; Level (e.g. Fighter · Champion · 5)</label><input type="text" id="modal-class"></div>
     <div><label>Species</label><input type="text" id="modal-species"></div>
     <div><label>Background</label><input type="text" id="modal-background"></div>
-    <div><label>Card color</label><div class="color-row" id="modal-colors"></div></div>
+    <div><label>Card color</label><div class="color-row" id="modal-colors"></div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:7px">
+        <input type="color" id="custom-bg-color" value="#1a2a3a" style="width:32px;height:32px;border-radius:50%;border:2px solid #555;cursor:pointer;padding:0">
+        <input type="color" id="custom-text-color" value="#7ab8f5" style="width:32px;height:32px;border-radius:50%;border:2px solid #555;cursor:pointer;padding:0">
+        <input type="color" id="custom-border-color" value="#378ADD" style="width:32px;height:32px;border-radius:50%;border:2px solid #555;cursor:pointer;padding:0">
+        <span style="font-size:10px;color:#666">BG · Text · Border</span>
+      </div>
+    </div>
     <div class="stat-grid-edit">
       <div><label>STR (rolled)</label><input type="number" id="modal-str" min="1" max="20"></div>
       <div><label>DEX (rolled)</label><input type="number" id="modal-dex" min="1" max="20"></div>
@@ -377,6 +420,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
     <div><label>Expert skills (comma separated)</label><input type="text" id="modal-expertskills" placeholder="Stealth, Perception"></div>
     <div><label>Features &amp; traits (one per line)</label><textarea id="modal-features" style="width:100%;height:80px;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:12px;background:#111;color:#eee;resize:vertical" placeholder="Sneak Attack: 3d6 extra damage&#10;Cunning Action: Dash/Disengage/Hide as bonus action"></textarea></div>
     <div><label>Equipment (one per line, format: Name | detail)</label><textarea id="modal-equipment" style="width:100%;height:70px;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:12px;background:#111;color:#eee;resize:vertical" placeholder="Shortsword | 1d6 piercing, finesse&#10;Studded Leather | AC 12+DEX"></textarea></div>
+    <div><label>Inventory items (one per line)</label><textarea id="modal-inventory" style="width:100%;height:65px;border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:11px;background:#111;color:#eee;resize:vertical" placeholder="Healing Potion&#10;Rope (50ft)&#10;Torch x5"></textarea></div>
     <div><label>Known spells (one per line, format: Level | Name | School)</label><textarea id="modal-spells" style="width:100%;height:70px;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:12px;background:#111;color:#eee;resize:vertical" placeholder="0 | Fire Bolt | Evocation&#10;1 | Mage Armor | Abjuration&#10;2 | Misty Step | Conjuration"></textarea></div>
     <div class="modal-actions">
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
@@ -405,6 +449,37 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
       <button class="btn-primary" onclick="placeToken()">Place</button>
     </div>
   </div>
+</div>
+
+
+<!-- PIN Overlay -->
+<div id="pin-overlay" style="display:none">
+  <div class="pin-box">
+    <div style="font-size:28px;margin-bottom:6px">🔐</div><h2 style="color:#fff;font-size:16px;margin-bottom:5px">DM Access</h2>
+    <p style="font-size:12px;color:#888;margin-bottom:16px">Enter your 4-digit PIN</p>
+    <div style="display:flex;justify-content:center;gap:10px;margin-bottom:16px"><div class="pin-dot" id="pd0"></div><div class="pin-dot" id="pd1"></div><div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div></div>
+    <div class="pin-keypad">
+      <button class="pin-key" onclick="pinPress('1')">1</button><button class="pin-key" onclick="pinPress('2')">2</button><button class="pin-key" onclick="pinPress('3')">3</button>
+      <button class="pin-key" onclick="pinPress('4')">4</button><button class="pin-key" onclick="pinPress('5')">5</button><button class="pin-key" onclick="pinPress('6')">6</button>
+      <button class="pin-key" onclick="pinPress('7')">7</button><button class="pin-key" onclick="pinPress('8')">8</button><button class="pin-key" onclick="pinPress('9')">9</button>
+      <button class="pin-key" onclick="pinPress('')"></button><button class="pin-key" onclick="pinPress('0')">0</button><button class="pin-key" onclick="pinPress('⌫')">⌫</button>
+    </div>
+    <div id="pin-error" style="color:#E24B4A;font-size:11px;margin-top:6px;height:14px"></div>
+    <button onclick="closePinOverlay()" style="margin-top:10px;padding:4px 12px;border-radius:7px;border:1px solid #444;background:transparent;color:#888;cursor:pointer;font-size:11px">Cancel</button>
+  </div>
+</div>
+<div id="yt-container" style="position:fixed;bottom:-200px;left:-200px;width:1px;height:1px;overflow:hidden"><div id="yt-player"></div></div>
+<div class="music-bar">
+  <span id="music-label" style="font-size:11px;color:#666">🎵</span>
+  <button id="music-play-btn" onclick="toggleMusic()">▶</button>
+  <button onclick="playPreset('tavern')" id="btn-tavern">🍺 Tavern</button>
+  <button onclick="playPreset('dungeon')" id="btn-dungeon">🕯 Dungeon</button>
+  <button onclick="playPreset('combat')" id="btn-combat">⚔️ Combat</button>
+  <button onclick="playPreset('forest')" id="btn-forest">🌲 Forest</button>
+  <input id="music-url" placeholder="YouTube URL..." onkeydown="if(event.key==='Enter')playURL()">
+  <button onclick="playURL()">Load</button>
+  <input type="range" id="music-vol" min="0" max="100" value="40" oninput="setVol(this.value)" style="width:65px;accent-color:#7F77DD">
+  <button onclick="stopMusic()" style="color:#888">■</button>
 </div>
 
 <script>
@@ -484,10 +559,14 @@ const COLORS=[
   {bg:'#0d2a0d',color:'#97c459',border:'#639922'},
   {bg:'#2a2a2a',color:'#aaa',border:'#555'},
 ];
+function getCardColors(p){return p.cardColor||COLORS[p.color||0]||COLORS[0];}
 const CONDITIONS=['Poisoned','Stunned','Blinded','Prone','Invisible','Frightened','Restrained','Charmed'];
 const GRID_SIZE=50;
 
 // ── STATE ─────────────────────────────────────────────────────────────
+const DM_PIN = '1234';
+let pinBuffer = '';
+let activeCharacter = 'spectator';
 let isDM=false, currentPanel='map', currentSheetTab='core', viewingCharIdx=null;
 let party=[
   {id:'p0',name:'Aria',  cls:'Rogue · Thief · 5',       species:'Wood Elf',background:'Criminal',hp:38,maxHp:38,tempHp:0,ac:15,pp:14,speed:35,conds:[],color:0,pfp:null,caster:'none',
@@ -567,6 +646,7 @@ function getClass(p){return p.cls.split('·')[0].trim();}
 function getSubclass(p){const parts=p.cls.split('·');return parts.length>1?parts[1].trim():'';}
 function hpColor(pct){return pct>.5?'#1D9E75':pct>.25?'#EF9F27':'#E24B4A';}
 function fmtBonus(n){return (n>=0?'+':'')+n;}
+function normalizeCharacter(p){p.xp=p.xp||0;p.inventory=p.inventory||[];if(!p.id)p.id='p_'+Date.now()+'_'+Math.floor(Math.random()*9999);return p;}
 
 // ── DB ────────────────────────────────────────────────────────────────
 function dbSet(path,val){if(!dbReady)return;window._set(window._ref(window._db,path),val);}
@@ -575,7 +655,7 @@ function dbRemove(path){if(!dbReady)return;window._remove(window._ref(window._db
 function dbListen(path,cb){if(!dbReady)return;window._onValue(window._ref(window._db,path),s=>cb(s.val()));}
 
 function initDb(){
-  dbListen('party',data=>{if(data){party=Object.values(data);renderCurrentPanel();if(viewingCharIdx!==null)renderSheetBody();}});
+  dbListen('party',data=>{if(data){party=Object.values(data).map(normalizeCharacter);populateCharacterSelect();renderCurrentPanel();if(viewingCharIdx!==null)renderSheetBody();}});
   dbListen('tokens',data=>{tokens=data||{};renderTokens();});
   dbListen('initiative',data=>{if(data){initiative=data.list||[];currentTurn=data.currentTurn||0;round=data.round||1;if(currentPanel==='init')renderInit();}});
   dbListen('rollLog',data=>{if(data){rollLog=Array.isArray(data)?data:Object.values(data);if(currentPanel==='dice')renderDice();}});
@@ -588,16 +668,35 @@ function initDb(){
 }
 
 // ── ROLE & TABS ───────────────────────────────────────────────────────
-function toggleRole(){
-  isDM=!isDM;
+function applyRole(){
   document.getElementById('role-label').textContent=isDM?'DM 👑':'Player';
   document.getElementById('role-btn').className='role-badge'+(isDM?' dm':'');
   document.getElementById('upload-map-btn').style.display=isDM?'inline-block':'none';
   document.getElementById('add-token-btn').style.display=isDM?'inline-block':'none';
   document.getElementById('clear-map-btn').style.display=(isDM&&mapImageData)?'inline-block':'none';
+  document.getElementById('add-char-btn').style.display=isDM?'inline-block':'none';
+  document.getElementById('xp-section').style.display=isDM?'block':'none';
+  const itemSec=document.getElementById('dm-item-section'); if(itemSec)itemSec.style.display=isDM?'block':'none';
   document.getElementById('placeholder-text').textContent=isDM?'Upload a map using the toolbar above':'Waiting for DM to upload a map';
-  renderCurrentPanel();
+  populateCharacterSelect();populateDMControls();renderCurrentPanel();
 }
+function handleRoleClick(){
+  if(isDM){isDM=false;applyRole();return;}
+  pinBuffer='';document.getElementById('pin-error').textContent='';updatePinDots();
+  document.getElementById('pin-overlay').style.display='flex';
+}
+function closePinOverlay(){document.getElementById('pin-overlay').style.display='none';pinBuffer='';}
+function pinPress(k){
+  if(k==='')return;
+  if(k==='⌫'){pinBuffer=pinBuffer.slice(0,-1);updatePinDots();return;}
+  if(pinBuffer.length>=4)return;
+  pinBuffer+=k;updatePinDots();
+  if(pinBuffer.length===4){setTimeout(()=>{
+    if(pinBuffer===DM_PIN){document.getElementById('pin-overlay').style.display='none';isDM=true;applyRole();pinBuffer='';}
+    else{document.getElementById('pin-error').textContent='Incorrect PIN.';pinBuffer='';updatePinDots();}
+  },200);}
+}
+function updatePinDots(){for(let i=0;i<4;i++){const d=document.getElementById('pd'+i);if(d)d.classList.toggle('filled',i<pinBuffer.length);}}
 function setSyncStatus(s){document.getElementById('sync-dot').className='sync-dot'+(s==='live'?' live':'');}
 const TAB_IDS=['map','party','dice','init','spells','notes'];
 function switchTab(t){
@@ -615,10 +714,12 @@ function renderCurrentPanel(){
 
 // ── PARTY CARDS ───────────────────────────────────────────────────────
 function renderParty(){
+  party=party.map(normalizeCharacter);
+  populateCharacterSelect();populateDMControls();
   document.getElementById('player-grid').innerHTML=party.map((p,i)=>playerCard(p,i)).join('');
 }
 function playerCard(p,i){
-  const pct=p.hp/p.maxHp,c=COLORS[p.color||0];
+  const pct=p.hp/p.maxHp,c=getCardColors(p);
   const av=p.pfp?`<img src="${p.pfp}" alt="${p.name}">`:`${p.name.slice(0,2).toUpperCase()}`;
   const conds=CONDITIONS.map(cd=>`<span class="cond-tag${(p.conds||[]).includes(cd)?' on':''}" onclick="event.stopPropagation();toggleCond(${i},'${cd}')">${cd}</span>`).join('');
   const lvl=getLevel(p);const cls=getClass(p);
@@ -647,8 +748,16 @@ function playerCard(p,i){
       <div class="mini-stat"><div class="mini-stat-val">${fmtBonus(mod(statFinal(p,'DEX')))}</div><div class="mini-stat-lbl">Init</div></div>
       <div class="mini-stat"><div class="mini-stat-val">${p.speed}ft</div><div class="mini-stat-lbl">Speed</div></div>
     </div>
+    <div style="font-size:10px;color:#EF9F27;margin-top:6px">✨ XP: ${p.xp||0}</div>
+    ${renderInventoryPreview(p,c)}
     <div class="cond-row">${conds}</div>
   </div>`;
+}
+function renderInventoryPreview(p,c){
+  const inv=p.inventory||[];
+  const items=inv.slice(0,3).map(it=>`<div style="font-size:9px;color:${c.color};padding:1px 5px;background:rgba(0,0,0,.2);border-radius:4px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">📦 ${it}</div>`).join('');
+  const more=inv.length>3?`<div style="font-size:9px;color:${c.color}">+${inv.length-3} more...</div>`:'';
+  return items+more;
 }
 function changeHp(i,type){
   const inp=document.getElementById('hpval-'+i);
@@ -666,7 +775,7 @@ function toggleCond(i,c){
 // ── CHARACTER SHEET ───────────────────────────────────────────────────
 function openSheet(i){
   viewingCharIdx=i;currentSheetTab='core';
-  const p=party[i];const c=COLORS[p.color||0];
+  const p=party[i];const c=getCardColors(p);
   const av=document.getElementById('sheet-avatar');
   av.style.cssText=`background:${c.bg};color:${c.color};border-color:${c.border}`;
   av.innerHTML=p.pfp?`<img src="${p.pfp}" alt="${p.name}">`:`${p.name.slice(0,2).toUpperCase()}`;
@@ -936,13 +1045,18 @@ function openModal(i){
   document.getElementById('modal-expertskills').value=p.expertSkills||'';
   document.getElementById('modal-features').value=p.features||'';
   document.getElementById('modal-equipment').value=p.equipment||'';
+  document.getElementById('modal-inventory').value=(p.inventory||[]).join('\n');
   document.getElementById('modal-spells').value=p.spells||'';
+  const card=getCardColors(p);
+  document.getElementById('custom-bg-color').value=card.bg;
+  document.getElementById('custom-text-color').value=card.color;
+  document.getElementById('custom-border-color').value=card.border;
   document.getElementById('modal-pfp-preview').innerHTML=p.pfp?`<img src="${p.pfp}">`:'🧙';
   document.getElementById('modal-colors').innerHTML=COLORS.map((c,ci)=>
     `<div class="color-swatch${ci===p.color?' selected':''}" style="background:${c.border}" onclick="selectColor(${ci})"></div>`).join('');
   document.getElementById('modal-bg').style.display='flex';
 }
-function selectColor(ci){if(editingIdx===null)return;party[editingIdx].color=ci;document.querySelectorAll('.color-swatch').forEach((s,i)=>s.classList.toggle('selected',i===ci));}
+function selectColor(ci){if(editingIdx===null)return;party[editingIdx].color=ci;party[editingIdx].cardColor=null;const c=COLORS[ci];document.getElementById('custom-bg-color').value=c.bg;document.getElementById('custom-text-color').value=c.color;document.getElementById('custom-border-color').value=c.border;document.querySelectorAll('.color-swatch').forEach((s,i)=>s.classList.toggle('selected',i===ci));}
 function handlePfpUpload(e){
   const file=e.target.files[0];if(!file)return;
   const r=new FileReader();r.onload=ev=>{pendingPfp=ev.target.result;document.getElementById('modal-pfp-preview').innerHTML=`<img src="${pendingPfp}">`;};r.readAsDataURL(file);
@@ -972,11 +1086,57 @@ function saveModal(){
   p.expertSkills=document.getElementById('modal-expertskills').value;
   p.features=document.getElementById('modal-features').value;
   p.equipment=document.getElementById('modal-equipment').value;
+  p.inventory=document.getElementById('modal-inventory').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  p.cardColor={bg:document.getElementById('custom-bg-color').value,color:document.getElementById('custom-text-color').value,border:document.getElementById('custom-border-color').value};
   p.spells=document.getElementById('modal-spells').value;
   if(pendingPfp)p.pfp=pendingPfp;
   dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
   closeModal();renderParty();if(viewingCharIdx===editingIdx)renderSheetBody();
 }
+
+function openAddChar(){
+  if(!isDM)return;
+  const n=party.length+1;
+  const p=normalizeCharacter({id:'p'+Date.now(),name:'New Hero '+n,cls:'Fighter · Champion · 1',species:'Human',background:'Adventurer',hp:10,maxHp:10,tempHp:0,ac:10,pp:10,speed:30,conds:[],color:n%COLORS.length,pfp:null,caster:'none',str:10,dex:10,con:10,int:10,wis:10,cha:10,profSkills:'',expertSkills:'',features:'',equipment:'',inventory:[],spells:'',armor:'Unarmored',deathSaves:{s:[false,false,false],f:[false,false,false]},notes:'',xp:0});
+  party.push(p);dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));renderParty();openModal(party.length-1);
+}
+function populateCharacterSelect(){
+  const sel=document.getElementById('active-character');if(!sel)return;
+  const old=activeCharacter;
+  sel.innerHTML='<option value="spectator">👁 Spectator</option>'+party.map((p,i)=>`<option value="${i}">🧙 ${p.name}</option>`).join('');
+  activeCharacter=(old!=='spectator'&&party[parseInt(old)])?old:'spectator';sel.value=activeCharacter;
+}
+function selectCharacter(val){activeCharacter=val;const sel=document.getElementById('roller-sel');if(sel&&val!=='spectator')sel.value=party[parseInt(val)]?.name||'DM';}
+function populateDMControls(){
+  const xp=document.getElementById('xp-target');if(xp)xp.innerHTML='<option value="all">All players</option>'+party.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('');
+  const itemSel=document.getElementById('item-target');if(itemSel)itemSel.innerHTML=party.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('');
+}
+function awardXP(){
+  const amt=parseInt(document.getElementById('xp-amount').value)||0;if(!amt||!isDM)return;
+  const target=document.getElementById('xp-target').value;const indices=target==='all'?party.map((_,i)=>i):[parseInt(target)];
+  indices.forEach(i=>{party[i].xp=(party[i].xp||0)+amt;spawnSparkles(i);});
+  playXPSound();dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();document.getElementById('xp-amount').value='';
+}
+function spawnSparkles(partyIdx){
+  const cards=document.querySelectorAll('.player-card');if(!cards[partyIdx])return;const rect=cards[partyIdx].getBoundingClientRect();const emojis=['✨','⭐','🌟','💫','🎉','⚡'];const container=document.createElement('div');
+  container.style.cssText=`position:fixed;left:${rect.left}px;top:${rect.top}px;pointer-events:none;z-index:999`;document.body.appendChild(container);
+  for(let i=0;i<12;i++){const sp=document.createElement('div');sp.textContent=emojis[Math.floor(Math.random()*emojis.length)];sp.style.cssText=`position:absolute;font-size:18px;left:${Math.random()*rect.width}px;top:${Math.random()*rect.height}px;animation:sparkleUp ${.9+Math.random()*.6}s ease-out ${Math.random()*.4}s forwards`;container.appendChild(sp);}
+  setTimeout(()=>container.remove(),2000);
+}
+function playXPSound(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();[523,659,784,1047].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.setValueAtTime(f,ctx.currentTime+i*.12);g.gain.setValueAtTime(.15,ctx.currentTime+i*.12);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.12+.25);o.start(ctx.currentTime+i*.12);o.stop(ctx.currentTime+i*.12+.26);});}catch(e){}}
+function playFanfare(){try{const audio=new Audio('./Final_Fantasy_VII_Victory_Fanfare.mp3');audio.volume=.7;audio.play();}catch(e){}}
+function giveItem(partyIdx,itemName){if(!isDM)return;if(!party[partyIdx].inventory)party[partyIdx].inventory=[];party[partyIdx].inventory.push(itemName);dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();const banner=document.createElement('div');banner.className='item-banner';banner.innerHTML=`<div class="item-banner-name">🎁 ${party[partyIdx].name} received</div><div class="item-banner-item">⚔️ ${itemName}</div>`;document.body.appendChild(banner);setTimeout(()=>banner.remove(),3600);playFanfare();}
+function giveDMItem(){const name=document.getElementById('item-name').value.trim();const idx=parseInt(document.getElementById('item-target').value);if(!name||isNaN(idx))return;giveItem(idx,name);document.getElementById('item-name').value='';}
+function autoCalcStats(){
+  const cls=document.getElementById('modal-class').value;const species=document.getElementById('modal-species').value;const dex=parseInt(document.getElementById('modal-dex').value)||10;const con=parseInt(document.getElementById('modal-con').value)||10;const wis=parseInt(document.getElementById('modal-wis').value)||10;const armor=document.getElementById('modal-armor').value;const sp=SPECIES_BONUSES[species]||{};
+  const fDex=dex+(sp.DEX||0),fCon=con+(sp.CON||0),fWis=wis+(sp.WIS||0);const lv=parseInt((cls||'').match(/\d+/)?.[0])||1;const clsName=(cls||'').split('·')[0].trim();
+  const hitDie={Barbarian:12,Fighter:10,Paladin:10,Ranger:10,Monk:8,Bard:8,Cleric:8,Druid:8,Rogue:8,Warlock:8,Artificer:8,Wizard:6,Sorcerer:6}[clsName]||8;const pb=PROF_BY_LEVEL[Math.min(lv,20)-1]||2;
+  document.getElementById('modal-maxhp').value=Math.max(1,(hitDie+Math.floor((fCon-10)/2))*lv);
+  const baseAC={Unarmored:10,Leather:11,'Studded Leather':12,Hide:12,'Chain Shirt':13,'Scale Mail':14,Breastplate:14,'Half Plate':15,'Ring Mail':14,'Chain Mail':16,Splint:17,Plate:18,'Mage Armor (spell)':13}[armor]||10;
+  const dexCap={Hide:2,'Chain Shirt':2,'Scale Mail':2,Breastplate:2,'Half Plate':2,'Ring Mail':0,'Chain Mail':0,Splint:0,Plate:0}[armor];const dexBonus=Math.min(Math.floor((fDex-10)/2),dexCap!==undefined?dexCap:99);
+  document.getElementById('modal-ac').value=armor==='Mage Armor (spell)'?13+Math.floor((fDex-10)/2):baseAC+dexBonus;document.getElementById('modal-speed').value=sp.speed||30;document.getElementById('modal-pp').value=10+Math.floor((fWis-10)/2)+pb;
+}
+
 function closeModal(){document.getElementById('modal-bg').style.display='none';document.getElementById('pfp-file').value='';editingIdx=null;pendingPfp=null;}
 function closeModalOnBg(e){if(e.target===document.getElementById('modal-bg'))closeModal();}
 
@@ -1041,8 +1201,9 @@ function renderInit(){
   if(!initiative.length)initiative=party.map(p=>({name:p.name,type:'player',init:0,hp:p.hp,maxHp:p.maxHp,color:p.color,pfp:p.pfp}));
   const sorted=[...initiative].sort((a,b)=>b.init-a.init);
   document.getElementById('init-wrap').innerHTML=`
+    <div style="background:#111;border:1px solid #333;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#888;line-height:1.6"><span style="color:#b8b4f8;font-weight:600">How initiative works:</span> Each creature rolls a d20 and adds their DEX modifier. Highest goes first. Ties broken by higher DEX.</div>
     <div class="init-controls">
-      ${isDM?`<button onclick="rollAllInit()">🎲 Roll all</button><button onclick="nextTurn()">Next →</button><button onclick="resetInit()">Reset</button>`:''}
+      ${isDM?`<button onclick="rollAllInit()" style="background:#1e1a3a;border-color:#7F77DD;color:#b8b4f8;font-weight:600">🎲 Roll Initiative for All</button><button onclick="nextTurn()">Next Turn →</button><button onclick="resetInit()">Reset</button>`:`<button onclick="rollMyInit()" style="background:#0a2a1a;border-color:#1D9E75;color:#5dcaa5;font-weight:600">🎲 Roll My Initiative</button>`}
       <span class="round-badge">Round ${round}</span>
     </div>
     <div class="init-list">${sorted.map((c,i)=>initRow(c,i,sorted)).join('')}</div>
@@ -1055,7 +1216,7 @@ function renderInit(){
     </div>`:''}`;
 }
 function initRow(c,i,sorted){
-  const isActive=i===currentTurn%sorted.length,col=COLORS[c.color||0];
+  const isActive=i===currentTurn%sorted.length,col=getCardColors(c);
   const av=c.pfp?`<img src="${c.pfp}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`${(c.name||'?').slice(0,2).toUpperCase()}`;
   return `<div class="init-row${isActive?' active-turn':''}${c.type==='enemy'?' enemy-row':''}">
     <span class="init-badge">${c.init}</span>
@@ -1066,7 +1227,13 @@ function initRow(c,i,sorted){
     ${isDM&&c.type==='enemy'?`<button onclick="removeEnemy('${c.name}')" style="padding:1px 7px;font-size:10px;border:1px solid #444;border-radius:6px;cursor:pointer;background:transparent;color:#888">✕</button>`:''}
   </div>`;
 }
-function rollAllInit(){initiative=initiative.map(c=>({...c,init:Math.ceil(Math.random()*20)}));currentTurn=0;round=1;pushInit();renderInit();}
+function rollMyInit(){
+  if(activeCharacter==='spectator'){alert('Select your character first (top right)');return;}
+  const p=party[parseInt(activeCharacter)];const dexMod=mod(statFinal(p,'DEX'));const roll=Math.ceil(Math.random()*20);const total=roll+dexMod;
+  const existing=initiative.find(c=>c.name===p.name);if(existing){existing.init=total;existing.hp=p.hp;existing.maxHp=p.maxHp;}else initiative.push({name:p.name,type:'player',init:total,hp:p.hp,maxHp:p.maxHp,color:p.color,cardColor:p.cardColor,pfp:p.pfp});
+  pushInit();renderInit();const toast=document.createElement('div');toast.style.cssText='position:fixed;top:55px;left:50%;transform:translateX(-50%);background:#0a2a1a;border:1px solid #1D9E75;color:#5dcaa5;font-size:13px;font-weight:600;padding:7px 18px;border-radius:10px;z-index:998;pointer-events:none';toast.textContent=`🎲 ${p.name} rolled ${roll} ${dexMod>=0?'+':''}${dexMod} DEX = ${total} initiative!`;document.body.appendChild(toast);setTimeout(()=>toast.remove(),2500);
+}
+function rollAllInit(){initiative=party.map(p=>({name:p.name,type:'player',init:Math.ceil(Math.random()*20)+mod(statFinal(p,'DEX')),hp:p.hp,maxHp:p.maxHp,color:p.color,cardColor:p.cardColor,pfp:p.pfp})).concat(initiative.filter(c=>c.type==='enemy').map(c=>({...c,init:Math.ceil(Math.random()*20)})));currentTurn=0;round=1;pushInit();renderInit();}
 function nextTurn(){const s=[...initiative].sort((a,b)=>b.init-a.init);currentTurn=(currentTurn+1)%s.length;if(!currentTurn)round++;pushInit();renderInit();}
 function resetInit(){initiative=[];currentTurn=0;round=1;pushInit();renderInit();}
 function addEnemy(){
@@ -1169,7 +1336,7 @@ function placeToken(){
   const type=document.getElementById('token-type').value;let token;
   if(type==='player'){
     const idx=parseInt(document.getElementById('token-player-sel').value),p=party[idx];
-    token={id:'tok_'+Date.now(),name:p.name,type:'player',pfp:p.pfp||null,color:p.color,hp:p.hp,maxHp:p.maxHp,x:60,y:60};
+    token={id:'tok_'+Date.now(),name:p.name,type:'player',pfp:p.pfp||null,color:p.color,cardColor:p.cardColor,hp:p.hp,maxHp:p.maxHp,x:60,y:60};
   } else {
     const name=document.getElementById('token-name').value||'Enemy';
     const hp=parseInt(document.getElementById('token-hp-val').value)||10;
@@ -1182,7 +1349,7 @@ function renderTokens(){
   Object.values(tokens).forEach(tok=>layer.appendChild(createTokenEl(tok)));
 }
 function createTokenEl(tok){
-  const col=COLORS[tok.color||0],div=document.createElement('div');
+  const col=tok.cardColor||COLORS[tok.color||0],div=document.createElement('div');
   div.className='token'+(tok.type==='enemy'?' enemy-token':'');div.id='token-'+tok.id;
   div.style.cssText=`left:${tok.x}px;top:${tok.y}px;background:${col.bg};border-color:${tok.type==='enemy'?'#E24B4A':col.border};color:${col.color}`;
   if(tok.pfp){const img=document.createElement('img');img.src=tok.pfp;img.alt=tok.name;div.appendChild(img);}
@@ -1206,11 +1373,24 @@ function makeDraggable(el,tokId){
   el.addEventListener('touchend',()=>{dragging=false;dbUpdate('tokens/'+tokId,{x:parseInt(el.style.left),y:parseInt(el.style.top)});});
 }
 
+
+// ── MUSIC ─────────────────────────────────────────────────────────────
+const PRESETS={tavern:'nTjVHCBqFxE',dungeon:'HbNEFgOjQHM',combat:'2SPiqKPR_J4',forest:'Y4UMNqMaVbk'};
+let ytPlayer=null,ytApiReady=false,currentPreset=null,musicPlaying=false;
+(function(){const tag=document.createElement('script');tag.src='https://www.youtube.com/iframe_api';document.head.appendChild(tag);})();
+window.onYouTubeIframeAPIReady=function(){ytApiReady=true;ytPlayer=new YT.Player('yt-player',{height:'1',width:'1',playerVars:{autoplay:0,controls:0},events:{onReady:()=>setVol(document.getElementById('music-vol').value),onStateChange:e=>{musicPlaying=e.data===YT.PlayerState.PLAYING;document.getElementById('music-play-btn').textContent=musicPlaying?'⏸':'▶';document.getElementById('music-label').textContent=musicPlaying?`🎵 ${currentPreset||''}...`:'🎵';}}});};
+function playPreset(name){if(!ytApiReady||!ytPlayer)return;currentPreset=name;['tavern','dungeon','combat','forest'].forEach(n=>document.getElementById('btn-'+n).style.borderColor=n===name?'#7F77DD':'#333');ytPlayer.loadVideoById({videoId:PRESETS[name]});ytPlayer.playVideo();}
+function playURL(){if(!ytApiReady||!ytPlayer)return;const url=document.getElementById('music-url').value.trim();const match=url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);if(!match){alert('Enter a valid YouTube URL');return;}['tavern','dungeon','combat','forest'].forEach(n=>document.getElementById('btn-'+n).style.borderColor='#333');currentPreset='Custom';ytPlayer.loadVideoById({videoId:match[1]});ytPlayer.playVideo();}
+function toggleMusic(){if(!ytApiReady||!ytPlayer)return;musicPlaying?ytPlayer.pauseVideo():ytPlayer.playVideo();}
+function stopMusic(){if(!ytApiReady||!ytPlayer)return;ytPlayer.stopVideo();currentPreset=null;['tavern','dungeon','combat','forest'].forEach(n=>document.getElementById('btn-'+n).style.borderColor='#333');}
+function setVol(v){if(ytPlayer&&ytPlayer.setVolume)ytPlayer.setVolume(parseInt(v));}
+function wireAutoCalc(){['modal-class','modal-species','modal-dex','modal-con','modal-wis','modal-armor'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',autoCalcStats);});}
+
 // ── BOOT ─────────────────────────────────────────────────────────────
 document.getElementById('upload-map-btn').style.display='none';
 document.getElementById('add-token-btn').style.display='none';
 document.getElementById('clear-map-btn').style.display='none';
-renderParty();renderDice();
+party=party.map(normalizeCharacter);renderParty();renderDice();wireAutoCalc();applyRole();
 
 if(window._dbReady){dbReady=true;initDb();}
 else window.addEventListener('db-ready',()=>{dbReady=true;initDb();});
