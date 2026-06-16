@@ -45,11 +45,11 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .map-toolbar .sep{width:1px;height:18px;background:#333;margin:0 2px;flex-shrink:0}
 .upload-map-label{padding:4px 10px;border-radius:7px;border:1px solid #333;font-size:11px;cursor:pointer;background:#1e1e1e;color:#ccc;white-space:nowrap;display:inline-block}
 .upload-map-label:hover{background:#2a2a2a}
-.map-canvas-wrap{position:relative;width:100%;height:100%;overflow:auto}
+.map-canvas-wrap{position:relative;width:100%;height:100%;overflow:auto;flex:1}
 #map-canvas{position:relative;min-width:100%;min-height:100%;background:#0d0d0d}
 #map-img{position:absolute;top:0;left:0;user-select:none;pointer-events:none;display:none}
 #grid-overlay{position:absolute;top:0;left:0;pointer-events:none}
-.token{position:absolute;width:48px;height:48px;border-radius:50%;border:3px solid #fff;cursor:grab;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;text-align:center;overflow:hidden;user-select:none;box-shadow:0 2px 10px rgba(0,0,0,.7)}
+.token{position:absolute;width:48px;height:48px;border-radius:50%;border:3px solid #fff;cursor:grab;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;text-align:center;overflow:hidden;user-select:none;box-shadow:0 2px 10px rgba(0,0,0,.7);z-index:5}
 .token:active{cursor:grabbing}
 .token.enemy-token{border-color:#E24B4A}
 .token img{width:100%;height:100%;object-fit:cover;border-radius:50%;pointer-events:none}
@@ -58,21 +58,32 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .token-hp-fill{height:100%;transition:width .3s}
 #map-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#444;gap:12px;pointer-events:none}
 
+/* ── COMPACT COLLAPSIBLE MEDIA DOCK ── */
+.map-media-dock{background:#0d0d0d;border-top:1px solid #222;display:flex;flex-direction:column;flex-shrink:0;position:relative;z-index:40}
+.media-dock-header{display:flex;align-items:center;justify-content:between;padding:4px 12px;background:#111;border-bottom:1px solid #222}
+.media-dock-body{display:flex;flex-direction:column;gap:4px;padding:6px 12px;transition:max-height 0.25s ease-out, padding 0.25s ease-out;overflow:hidden;max-height:120px}
+.map-media-dock.collapsed .media-dock-body{max-height:0;padding-top:0;padding-bottom:0;border-top-color:transparent}
+#reaction-dock{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.music-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.music-bar button, .media-dock-header button{padding:3px 8px;border-radius:6px;border:1px solid #333;font-size:11px;cursor:pointer;background:#1e1e1e;color:#ccc}
+.music-bar button:hover, .media-dock-header button:hover{background:#2a2a2a}
+.music-bar input[type=text]{flex:1;min-width:140px;border:1px solid #333;border-radius:6px;padding:4px 8px;font-size:11px;background:#111;color:#eee}
+
 /* ── PARTY ── */
 .party-wrap{flex:1;overflow-y:auto;padding:1rem}
 .player-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
-.player-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:.9rem;position:relative;cursor:pointer;transition:border-color .15s}
+.player-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:.9rem;position:relative;transition:border-color .15s}
 .player-card:hover{border-color:#555}
 .player-card.downed{opacity:.6;border-color:#E24B4A}
-.view-sheet-btn{position:absolute;top:10px;right:36px;background:transparent;border:none;cursor:pointer;font-size:13px;color:#888;padding:4px;z-index:10;}
-.view-sheet-btn:hover{color:#fff}
-.edit-btn{position:absolute;top:10px;right:10px;background:transparent;border:none;cursor:pointer;font-size:13px;color:#888;padding:4px;z-index:10;}
-.edit-btn:hover{color:#fff}
+.view-sheet-btn{position:absolute;top:10px;right:36px;background:transparent;border:none;cursor:pointer;font-size:13px;color:#666;padding:2px;z-index:2}
+.view-sheet-btn:hover{color:#aaa}
+.edit-btn{position:absolute;top:10px;right:10px;background:transparent;border:none;cursor:pointer;font-size:13px;color:#666;z-index:2}
+.edit-btn:hover{color:#aaa}
 .card-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;overflow:hidden;border:2px solid transparent}
 .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .card-name{font-size:14px;font-weight:500;color:#fff}
-.card-sub Dino{font-size:11px;color:#888}
+.card-sub{font-size:11px;color:#888}
 .hp-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .hp-label{font-size:11px;color:#666;width:22px}
 .hp-bar-wrap{flex:1;height:6px;background:#2a2a2a;border-radius:4px;overflow:hidden}
@@ -111,7 +122,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .stat-block{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
 .stat-box{text-align:center;background:#111;border-radius:8px;padding:8px 4px}
 .stat-name{font-size:9px;color:#666;text-transform:uppercase;letter-spacing:.05em}
-.stat-score覆{font-size:20px;font-weight:700;color:#fff;line-height:1}
+.stat-score{font-size:20px;font-weight:700;color:#fff;line-height:1}
 .stat-mod{font-size:12px;color:#7F77DD;margin-top:1px}
 .combat-row{display:flex;gap:8px;flex-wrap:wrap}
 .combat-box{flex:1;min-width:70px;text-align:center;background:#111;border-radius:8px;padding:8px 4px}
@@ -243,7 +254,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .sync-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;background:#666}
 .sync-dot.live{background:#1D9E75}
 
-/* ── PARTY TOOLS, PIN, XP, INVENTORY, MUSIC ── */
+/* ── ADDED: PARTY TOOLS, PIN, XP, INVENTORY, MUSIC ── */
 .party-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:1rem}
 .add-char-btn{padding:6px 12px;border-radius:8px;border:1px solid #7F77DD;font-size:12px;cursor:pointer;background:#1e1a3a;color:#b8b4f8}
 .item-banner{position:fixed;top:60px;left:50%;transform:translateX(-50%) scale(.7);background:linear-gradient(135deg,#2a1e0a,#3a2a10);border:2px solid #EF9F27;border-radius:12px;padding:10px 22px;z-index:999;pointer-events:none;opacity:0;animation:bannerPop 3.5s ease-out forwards;text-align:center;box-shadow:0 0 30px #EF9F2744}
@@ -254,7 +265,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .pin-box{background:#1e1e1e;border:1px solid #444;border-radius:16px;padding:2rem;width:min(300px,90vw);text-align:center}
 .pin-dot{width:14px;height:14px;border-radius:50%;border:2px solid #555;display:inline-block;margin:0 6px}.pin-dot.filled{background:#7F77DD;border-color:#7F77DD}
 .pin-keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-width:200px;margin:12px auto}.pin-key{padding:12px;border-radius:9px;border:1px solid #333;font-size:17px;font-weight:600;cursor:pointer;background:#2a2a2a;color:#fff}.pin-key:active{background:#7F77DD}
-.music-bar{background:#0d0d0d;border-top:1px solid #222;padding:7px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0}.music-bar button{padding:3px 9px;border-radius:6px;border:1px solid #333;font-size:11px;cursor:pointer;background:#1e1e1e;color:#ccc}.music-bar input[type=text]{flex:1;min-width:140px;border:1px solid #333;border-radius:6px;padding:3px 7px;font-size:11px;background:#111;color:#eee}
 
 /* ── V3.1 FIXES: XP, METALLIC DICE, DASHBOARD, SCENE ── */
 .xp-bar-wrap{height:7px;background:#2a2a2a;border-radius:6px;overflow:hidden;margin-top:6px;border:1px solid #333}
@@ -273,8 +283,8 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .die-btn:nth-child(7){background:linear-gradient(135deg,#777,#fff 45%,#333);border-color:#eee}
 .die-btn svg polygon,.die-btn svg rect,.die-btn svg circle{stroke:#fff!important;fill:rgba(255,255,255,.16)!important}.die-btn svg text{fill:#fff!important;text-shadow:0 1px 3px #000}
 @keyframes twinkle{0%,100%{opacity:.25;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.25) rotate(25deg)}}
-.dashboard-modal{background:#141414;border:1px solid #444;border-radius:16px;width:min(920px,96vw);max-height:90vh;overflow-y:auto;padding:1.5rem}
-.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}.dash-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}.dash-card h3{font-size:12px;color:#b8b4f8;margin-bottom:2px;text-transform:uppercase;letter-spacing:.06em}.dash-card input,.dash-card select{border:1px solid #333;border-radius:7px;padding:6px 8px;font-size:12px;background:#111;color:#eee;width:100%}.dash-card button{padding:6px 10px;border-radius:7px;border:1px solid #444;background:#2a2a2a;color:#ccc;cursor:pointer;font-size:12px;margin:2px 0}.asset-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}.asset-pill{border-color:#7F77DD!important;background:#1e1a3a!important;color:#b8b4f8!important}.scene-panel{position:absolute;right:12px;bottom:12px;max-width:260px;max-height:180px;background:#111;border:2px solid #7F77DD;border-radius:12px;padding:6px;z-index:20;box-shadow:0 0 24px #000;display:none}.scene-panel img{max-width:100%;max-height:150px;border-radius:8px;display:block}.scene-panel-title{font-size:10px;color:#b8b4f8;margin-bottom:4px;text-align:center}.scene-close{position:absolute;top:-8px;right:-8px;border:1px solid #444;background:#111;color:#aaa;border-radius:50%;width:22px;height:22px;cursor:pointer}.toast{position:fixed;top:55px;left:50%;transform:translateX(-50%);background:#111;border:1px solid #7F77DD;color:#b8b4f8;font-size:13px;font-weight:600;padding:8px 18px;border-radius:10px;z-index:998;pointer-events:none;box-shadow:0 0 18px #000}
+.dashboard-modal{background:#141414;border:1px solid #444;border-radius:16px;width:min(920px,96vw);max-height:90vh;overflow-y:auto;padding:1rem}
+.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.dash-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:12px}.dash-card h3{font-size:12px;color:#b8b4f8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}.dash-card input,.dash-card select{border:1px solid #333;border-radius:7px;padding:6px 8px;font-size:12px;background:#111;color:#eee}.dash-card button{padding:5px 10px;border-radius:7px;border:1px solid #444;background:#2a2a2a;color:#ccc;cursor:pointer;font-size:12px;margin:2px}.asset-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.asset-pill{border-color:#7F77DD!important;background:#1e1a3a!important;color:#b8b4f8!important}.scene-panel{position:absolute;right:12px;bottom:12px;max-width:260px;max-height:180px;background:#111;border:2px solid #7F77DD;border-radius:12px;padding:6px;z-index:20;box-shadow:0 0 24px #000;display:none}.scene-panel img{max-width:100%;max-height:150px;border-radius:8px;display:block}.scene-panel-title{font-size:10px;color:#b8b4f8;margin-bottom:4px;text-align:center}.scene-close{position:absolute;top:-8px;right:-8px;border:1px solid #444;background:#111;color:#aaa;border-radius:50%;width:22px;height:22px;cursor:pointer}.toast{position:fixed;top:55px;left:50%;transform:translateX(-50%);background:#111;border:1px solid #7F77DD;color:#b8b4f8;font-size:13px;font-weight:600;padding:8px 18px;border-radius:10px;z-index:998;pointer-events:none;box-shadow:0 0 18px #000}
 
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:#111}
@@ -283,13 +293,13 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 
 /* ── V3.2 POLISH: SHINY DICE, SNAP DASHBOARD, LEVEL UP, MUSIC SYNC ── */
 .die-btn{background-size:180% 180%!important;animation:metalShift 3.5s ease-in-out infinite;filter:drop-shadow(0 0 8px rgba(255,255,255,.18))}
-.die-btn:after{content:'✦ ✧ ✦';position:absolute;left:-20%;top:45%;width:140%;font-size:13px;letter-spacing:10px;color:#fff;opacity:.0;transform:rotate(-18deg);animation:glitterSweep 1.9s ease-in-out infinite;pointer-events:none}
+.die-btn:after{content:'✧ ✦ ✧';position:absolute;left:-20%;top:45%;width:140%;font-size:13px;letter-spacing:10px;color:#fff;opacity:.0;transform:rotate(-18deg);animation:glitterSweep 1.9s ease-in-out infinite;pointer-events:none}
 .die-btn:hover{transform:translateY(-1px) scale(1.04);box-shadow:0 0 18px rgba(255,255,255,.35), inset 0 0 18px rgba(255,255,255,.22)}
 @keyframes glitterSweep{0%{opacity:0;left:-35%}25%{opacity:.95}65%{opacity:.5}100%{opacity:0;left:55%}}
 @keyframes metalShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 #dm-bottom-dock{position:fixed;left:0;right:0;bottom:0;z-index:90;background:#0d0d0d;border-top:1px solid #333;box-shadow:0 -10px 30px rgba(0,0,0,.45);padding:8px 12px;display:none;max-height:38vh;overflow:auto}
 #dm-bottom-dock .dashboard-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-#map-panel.dm-docked .map-canvas-wrap{padding-bottom:220px}
+#map-panel.dm-docked .map-canvas-wrap{padding-bottom:14px}
 .music-bar.dm-only button.dm-music-control,.music-bar.dm-only input.dm-music-control{display:none}
 .music-status-note{font-size:10px;color:#777}
 .delete-char-btn{background:#3a0a0a!important;color:#f09595!important;border-color:#7a2222!important;margin-right:auto}
@@ -309,7 +319,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 @keyframes reactionFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-110px) scale(1.5)}}
 .reaction-toast{position:fixed;bottom:56px;left:50%;transform:translateX(-50%);background:#111;border:1px solid #444;color:#eee;font-size:13px;padding:6px 16px;border-radius:10px;z-index:998;pointer-events:none}
 .dock-collapse-btn{padding:3px 8px;border:1px solid #444;background:#1e1e1e;color:#ccc;border-radius:6px;cursor:pointer;font-size:11px}
-#reaction-dock{background:#0d0d0d;border-top:1px solid #222;padding:5px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;flex-wrap:wrap;position:relative}
 .quick-hp-row{display:flex;gap:3px;margin-bottom:5px;flex-wrap:wrap}
 .quick-dmg{padding:1px 6px;border:1px solid #E24B4A44;border-radius:5px;font-size:9px;cursor:pointer;background:#2a0a0a;color:#f09595}
 .quick-heal{padding:1px 6px;border:1px solid #1D9E7544;border-radius:5px;font-size:9px;cursor:pointer;background:#0a2a1a;color:#5dcaa5}
@@ -362,6 +371,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
     <button id="add-token-btn" style="display:none" onclick="openAddToken()">＋ Token</button>
     <button id="dm-dashboard-btn" style="display:none" onclick="openDMDashboard()">👑 DM Dashboard</button>
   </div>
+  
   <div class="map-canvas-wrap">
     <div id="map-canvas">
       <img id="map-img" src="" alt="" draggable="false">
@@ -374,25 +384,36 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
       <div style="font-size:14px" id="placeholder-text">Switch to DM mode then upload a map</div>
     </div>
   </div>
-<div id="reaction-dock" style="position:relative">
-  <span style="font-size:10px;color:#555;flex-shrink:0">⚡ React:</span>
-  <div id="reaction-btns" style="display:flex;gap:4px;flex-wrap:wrap"></div>
-  <button onclick="toggleReactionMenu()" style="padding:2px 8px;border:1px solid #444;border-radius:6px;font-size:11px;cursor:pointer;background:#1e1e1e;color:#aaa;margin-left:4px">＋ More</button>
-  <div id="recent-reactions" style="margin-left:auto;font-size:14px;color:#666;display:flex;gap:4px;align-items:center"></div>
-  <div id="reaction-menu" style="display:none;position:absolute;bottom:100%;left:0;right:0;background:#111;border:1px solid #333;border-bottom:none;padding:8px 12px;z-index:90"></div>
-</div>
-<div class="music-bar">
-  <span id="music-label" style="font-size:11px;color:#666">🎵</span>
-  <button id="music-play-btn" class="dm-music-control" onclick="toggleMusic()">▶</button>
-  <button class="dm-music-control" onclick="playPreset('tavern')" id="btn-tavern">🍺 Tavern</button>
-  <button class="dm-music-control" onclick="playPreset('dungeon')" id="btn-dungeon">🕯 Dungeon</button>
-  <button class="dm-music-control" onclick="playPreset('combat')" id="btn-combat">⚔️ Combat</button>
-  <button class="dm-music-control" onclick="playPreset('forest')" id="btn-forest">🌲 Forest</button>
-  <input id="music-url" class="dm-music-control" placeholder="YouTube URL..." onkeydown="if(event.key==='Enter')playURL()">
-  <button class="dm-music-control" onclick="playURL()">Load</button>
-  <input type="range" id="music-vol" min="0" max="100" value="40" oninput="setVol(this.value)" style="width:65px;accent-color:#7F77DD"><button id="music-enable-btn" onclick="enablePlayerAudio()">🔊 Enable Audio</button><span id="music-status-note" class="music-status-note"></span>
-  <button class="dm-music-control" onclick="stopMusic()" style="color:#888">■</button>
-</div>
+
+  <div class="map-media-dock" id="map-media-dock">
+    <div class="media-dock-header">
+      <span style="font-size:11px;color:#888;font-weight:600;display:flex;align-items:center;gap:4px">📡 Media &amp; Streams</span>
+      <button onclick="toggleMediaDock()" id="media-dock-toggle-btn" style="margin-left:auto; font-size:10px; padding:2px 8px;">▼ Hide Controls</button>
+    </div>
+    <div class="media-dock-body">
+      <div id="reaction-dock">
+        <span style="font-size:10px;color:#555;flex-shrink:0">⚡ React:</span>
+        <div id="reaction-btns" style="display:flex;gap:4px;flex-wrap:wrap"></div>
+        <button onclick="toggleReactionMenu()" style="padding:2px 8px;border:1px solid #444;border-radius:6px;font-size:11px;cursor:pointer;background:#1e1e1e;color:#aaa">＋ More</button>
+        <div id="recent-reactions" style="margin-left:auto;font-size:14px;color:#666;display:flex;gap:4px;align-items:center"></div>
+        <div id="reaction-menu" style="display:none;position:absolute;bottom:100%;left:12px;right:12px;background:#111;border:1px solid #333;padding:8px 12px;z-index:95;border-radius:8px"></div>
+      </div>
+      <div class="music-bar">
+        <span id="music-label" style="font-size:11px;color:#666;white-space:nowrap">🎵 Music</span>
+        <button id="music-play-btn" class="dm-music-control" onclick="toggleMusic()">▶</button>
+        <button class="dm-music-control" onclick="playPreset('tavern')" id="btn-tavern">🍺 Tavern</button>
+        <button class="dm-music-control" onclick="playPreset('dungeon')" id="btn-dungeon">🕯 Dungeon</button>
+        <button class="dm-music-control" onclick="playPreset('combat')" id="btn-combat">⚔️ Combat</button>
+        <button class="dm-music-control" onclick="playPreset('forest')" id="btn-forest">🌲 Forest</button>
+        <input id="music-url" class="dm-music-control" placeholder="YouTube URL..." onkeydown="if(event.key==='Enter')playURL()">
+        <button class="dm-music-control" onclick="playURL()">Load</button>
+        <input type="range" id="music-vol" min="0" max="100" value="40" oninput="setVol(this.value)" style="width:65px;accent-color:#7F77DD">
+        <button id="music-enable-btn" onclick="enablePlayerAudio()">🔊 Enable Audio</button>
+        <span id="music-status-note" class="music-status-note"></span>
+        <button class="dm-music-control" onclick="stopMusic()" style="color:#888">■</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div id="party-panel" class="panel">
@@ -583,43 +604,27 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
     <div class="dashboard-grid">
       <div class="dash-card">
         <h3>XP Awards</h3>
-        <div>
-          <label style="font-size:11px;color:#888;display:block;margin-bottom:3px">Target</label>
-          <select id="dash-xp-target"></select>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <select id="dash-xp-target"><option value="all">All players</option></select>
+          <span id="dash-xp-hot-buttons"></span>
+          <input type="number" id="dash-xp-amount" placeholder="Custom XP" style="width:100px">
+          <button onclick="awardXPFromDashboard()">✨ Award</button>
+          <button onclick="clearXP()">Clear XP</button>
         </div>
-        <div style="margin:4px 0"><span id="dash-xp-hot-buttons"></span></div>
-        <div style="display:flex;gap:4px">
-          <input type="number" id="dash-xp-amount" placeholder="Custom XP" style="flex:1">
-          <button onclick="awardXPFromDashboard()" style="background:#7F77DD;color:#fff;border:none;border-radius:7px;padding:0 12px">✨ Award</button>
-        </div>
-        <button onclick="clearXP()" style="background:transparent;color:#888;border:1px solid #333;width:100%">Clear All XP</button>
       </div>
       <div class="dash-card">
         <h3>Give Item</h3>
         <div style="display:flex;flex-direction:column;gap:6px">
-          <div>
-            <label style="font-size:11px;color:#888">Target Player</label>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+            <input type="text" id="dash-item-name" placeholder="Item name..." style="flex:1;min-width:120px">
             <select id="dash-item-target"></select>
           </div>
-          <div>
-            <label style="font-size:11px;color:#888">Item Name</label>
-            <input type="text" id="dash-item-name" placeholder="Item name...">
+          <input type="text" id="dash-item-desc" placeholder="Description (optional)..." style="width:100%;border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:12px;background:#111;color:#eee">
+          <div style="display:flex;gap:5px;align-items:center">
+            <input type="number" id="dash-item-maxuses" placeholder="Max uses (0=unlimited)" min="0" style="width:160px;border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:12px;background:#111;color:#eee">
+            <input type="number" id="dash-item-qty" placeholder="Qty" min="1" value="1" style="width:60px;border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:12px;background:#111;color:#eee">
+            <button onclick="giveDashboardItem()">📦 Give</button>
           </div>
-          <div>
-            <label style="font-size:11px;color:#888">Description (optional)</label>
-            <input type="text" id="dash-item-desc" placeholder="e.g. 1d6 piercing">
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 60px;gap:6px">
-            <div>
-              <label style="font-size:11px;color:#888">Max Uses</label>
-              <input type="number" id="dash-item-maxuses" placeholder="0 = infinite" min="0">
-            </div>
-            <div>
-              <label style="font-size:11px;color:#888">Qty</label>
-              <input type="number" id="dash-item-qty" min="1" value="1">
-            </div>
-          </div>
-          <button onclick="giveDashboardItem()" style="background:#7F77DD;color:#fff;font-weight:600;width:100%;margin-top:4px">📦 Give Item</button>
         </div>
       </div>
       <div class="dash-card">
@@ -630,8 +635,8 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
       <div class="dash-card">
         <h3>NPC / Enemy Token Repository</h3>
         <input type="file" id="repo-token-file" accept="image/*" onchange="uploadRepoAsset(event,'tokens')">
-        <input type="text" id="repo-token-name" placeholder="Token name">
-        <input type="number" id="repo-token-hp" placeholder="HP">
+        <input type="text" id="repo-token-name" placeholder="Token name" style="width:110px">
+        <input type="number" id="repo-token-hp" placeholder="HP" style="width:70px">
         <div class="asset-list" id="repo-token-list"></div>
       </div>
       <div class="dash-card">
@@ -643,7 +648,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
       <div class="dash-card">
         <h3>Level Up</h3>
         <select id="dash-level-target"></select>
-        <button type="button" onclick="levelUpFromDashboard()" style="background:#EF9F27;color:#fff;border:none">🎆 Level Up</button>
+        <button type="button" onclick="levelUpFromDashboard()">🎆 Level Up</button>
         <p style="font-size:11px;color:#777;margin-top:6px">Raises the character level by 1, refreshes auto features, and plays celebration effects for everyone.</p>
       </div>
       <div class="dash-card">
@@ -691,9 +696,6 @@ const CLASS_SAVES = {
   Artificer:['CON','INT'], Barbarian:['STR','CON'], Bard:['DEX','CHA'], Cleric:['WIS','CHA'], Druid:['INT','WIS'], Fighter:['STR','CON'], Monk:['STR','DEX'], Paladin:['WIS','CHA'], Ranger:['STR','DEX'], Rogue:['DEX','INT'], Sorcerer:['CON','CHA'], Warlock:['WIS','CHA'], Wizard:['INT','WIS'], 'Blood Hunter':['STR','INT']
 };
 
-// ══════════════════════════════════════════════════════════════════════
-// COMPLETE 5E SPECIES DATABASE (SRD + Common Sourcebooks)
-// ══════════════════════════════════════════════════════════════════════
 const RACES_DB = {
   'Human':          {bonuses:{STR:1,DEX:1,CON:1,INT:1,WIS:1,CHA:1,speed:30},subraces:['Variant Human'],traits:['Versatile: +1 to all ability scores','Extra Language','Skill Versatility (Variant)']},
   'Elf':            {bonuses:{DEX:2,speed:30},subraces:['High Elf','Wood Elf','Dark Elf (Drow)'],traits:['Darkvision 60ft','Keen Senses: Perception proficiency','Fey Ancestry: Advantage vs charm, immune to sleep magic','Trance: 4 hours meditation instead of sleep']},
@@ -1089,7 +1091,7 @@ function renderInventoryPreview(p,c){
   const items=inv.slice(0,3).map((it,j)=>{
     const name=typeof it==='object'?(it.name||'Item'):it;
     const uses=typeof it==='object'?it:null;
-    const usePct=uses&&uses.maxUses?Math.max(0,(uses.usesLeft/uses.maxUses)*100):100;
+    const usePct=uses&&uses.maxUses?Math.max(0,(usesLeft/uses.maxUses)*100):100;
     const barColor=usePct>50?'#1D9E75':usePct>20?'#EF9F27':'#E24B4A';
     return `<div style="display:flex;align-items:center;gap:3px;margin-top:2px">
       <div style="flex:1">
@@ -2108,11 +2110,11 @@ let ytPlayer=null,ytApiReady=false,currentPreset=null,musicPlaying=false,lastMus
 (function(){const tag=document.createElement('script');tag.src='https://www.youtube.com/iframe_api';document.head.appendChild(tag);})();
 window.onYouTubeIframeAPIReady=function(){try{ytApiReady=true;ytPlayer=new YT.Player('yt-player',{height:'1',width:'1',playerVars:{autoplay:0,controls:0,enablejsapi:1},events:{onReady:()=>{setVol(document.getElementById('music-vol')?.value||40);applyMusicStateFromDB();},onStateChange:e=>{musicPlaying=e.data===YT.PlayerState.PLAYING;updateMusicUI();}}});}catch(e){ytApiReady=false;}};
 function updateMusicPermissions(){
-  const bar=document.querySelector('.music-bar');if(bar)bar.classList.toggle('dm-only',!isDM);
+  const bar = document.querySelector('.music-bar'); if (bar) bar.classList.toggle('dm-only', !isDM);
   document.querySelectorAll('.dm-music-control').forEach(el=>{el.disabled=!isDM;el.style.opacity=isDM?'1':'.35';});
-  const note=document.getElementById('music-status-note');if(note)note.textContent=isDM?'DM music controls':'Players hear the DM music. Use Enable Audio if your browser blocks it.';
+  const note=document.getElementById('music-status-note');if(note)note.textContent=isDM?'DM control':'Players sync';
 }
-function updateMusicUI(){const btn=document.getElementById('music-play-btn'),lab=document.getElementById('music-label');if(btn)btn.textContent=musicPlaying?'⏸':'▶';if(lab)lab.textContent=musicState?.playing?`🎵 ${musicState.label||'Custom'} playing`:'🎵 Music stopped';updateMusicPermissions();}
+function updateMusicUI(){const btn=document.getElementById('music-play-btn'),lab=document.getElementById('music-label');if(btn)btn.textContent=musicPlaying?'⏸':'▶';if(lab)lab.textContent=musicState?.playing?`🎵 ${musicState.label||'Custom'}`:'🎵 Music stopped';updateMusicPermissions();}
 function localLoadMusic(videoId,label,shouldPlay=true){
   lastMusicVideoId=videoId;currentPreset=label;['tavern','dungeon','combat','forest'].forEach(n=>{const b=document.getElementById('btn-'+n);if(b)b.style.borderColor=n===label?'#7F77DD':'#333';});
   if(ytApiReady&&ytPlayer&&ytPlayer.loadVideoById){try{ytPlayer.loadVideoById({videoId}); if(shouldPlay)ytPlayer.playVideo(); musicPlaying=!!shouldPlay; updateMusicUI(); return;}catch(e){}}
@@ -2187,7 +2189,7 @@ function toggleReactionMenu(){
   menu.style.display=open?'flex':'none';if(open)setTimeout(()=>document.getElementById('custom-emoji-input')?.focus(),50);
 }
 document.addEventListener('click',e=>{
-  const menu=document.getElementById('reaction-menu');const dock=document.getElementById('reaction-dock');
+  const menu=document.getElementById('reaction-menu');const dock=document.getElementById('map-media-dock');
   if(menu&&menu.style.display==='flex'&&dock&&!dock.contains(e.target)&&!menu.contains(e.target))menu.style.display='none';
 });
 function sendReaction(emoji,label){
@@ -2209,6 +2211,16 @@ let dockCollapsed=false;
 function toggleDockCollapse(){
   dockCollapsed=!dockCollapsed;const content=document.getElementById('dock-content');const btn=document.getElementById('dock-collapse-btn');
   if(content)content.style.display=dockCollapsed?'none':'';if(btn)btn.textContent=dockCollapsed?'▶ Expand':'▼ Collapse';
+}
+
+// ── COLLAPSIBLE MEDIA DOCK FUN ──
+let mediaDockCollapsed = false;
+function toggleMediaDock() {
+  mediaDockCollapsed = !mediaDockCollapsed;
+  const dock = document.getElementById('map-media-dock');
+  const btn = document.getElementById('media-dock-toggle-btn');
+  if(dock) dock.classList.toggle('collapsed', mediaDockCollapsed);
+  if(btn) btn.textContent = mediaDockCollapsed ? '▲ Media Controls' : '▼ Hide Controls';
 }
 
 // ── BOOT ─────────────────────────────────────────────────────────────
