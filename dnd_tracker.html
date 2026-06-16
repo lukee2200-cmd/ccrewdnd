@@ -126,7 +126,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .hp-btns button{border:1px solid #333;border-radius:7px;padding:2px 7px;font-size:11px;cursor:pointer;background:#2a2a2a;color:#ccc}
 .hp-input{width:40px;border:1px solid #333;border-radius:7px;padding:2px 5px;font-size:11px;text-align:center;background:#111;color:#eee}
 .mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:6px}
-.mini-stat{text-align:center;background:#2a2a2a;border-radius:5px;padding:4px 2px}
+.mini-stats .mini-stat{text-align:center;background:#2a2a2a;border-radius:5px;padding:4px 2px}
 .mini-stat-val{font-size:13px;font-weight:500;color:#fff}
 .mini-stat-lbl{font-size:9px;color:#777;text-transform:uppercase;letter-spacing:.04em}
 .cond-row{display:flex;gap:3px;flex-wrap:wrap;margin-top:6px}
@@ -197,7 +197,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .log-nat.nat20{background:#1a3a0a;color:#7fc45a}
 .log-nat.nat1{background:#3a0a0a;color:#f09595}
 
-/* ── MODALS & LOGINS ── */
+/* ── MODALS ── */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:200}
 .modal{background:#1e1e1e;border:1px solid #444;border-radius:16px;padding:1.5rem;width:min(500px,95vw);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
 .modal h2{font-size:16px;font-weight:600;color:#fff}
@@ -308,9 +308,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
   <select id="active-character" onchange="selectCharacter(this.value)" style="margin-left:auto;font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid #444;color:#aaa;background:#111;cursor:pointer;margin-right:6px;">
     <option value="spectator">👁 Spectator</option>
   </select>
-
-  <button class="tab" id="nav-login-btn" onclick="openLogin()">Sign In</button>
-  <span id="nav-welcome" style="display:none; font-size:12px; color:#aaa; font-weight:600; margin-right:6px;"></span>
 
   <button class="tab" id="explicit-dm-login-btn" onclick="handleRoleClick()" style="border-color:#7F77DD; color:#b8b4f8; font-weight:600; margin-right:6px;">DM Login</button>
 
@@ -539,16 +536,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 
 <div id="dm-bottom-dock"></div>
 
-<div id="login-modal-bg" class="modal-bg" style="display:none; z-index: 9999;">
-  <div class="modal" style="text-align:center; max-width:400px;">
-    <h2>Campaign Authentication</h2>
-    <p style="font-size:12px;color:#888;margin-bottom:12px">Don't have a profile yet? Create an account below to claim and construct your character sheet.</p>
-    <input type="text" id="login-username" placeholder="Choose Profile Username" style="margin-bottom:12px;text-align:center;">
-    <button onclick="submitLogin()" class="btn-primary" style="width:100%">Create Account &amp; Sign In</button>
-    <button onclick="closeLogin()" class="btn-ghost" style="width:100%;margin-top:8px">Continue as Observer</button>
-  </div>
-</div>
-
 <div id="email-prompt-bg" class="modal-bg" style="display:none; z-index: 9999;">
   <div class="modal" style="text-align:center; max-width:400px;">
     <h2>Session Concluded! 🎉</h2>
@@ -612,38 +599,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 
 <script>
 // ── IDENTITY MANAGMENT SYSTEM ────────────────────────────────────────
-let loggedInUser = null;
-
-function initLogin() {
-  loggedInUser = localStorage.getItem('dnd_user');
-  if(!loggedInUser) {
-    document.getElementById('login-modal-bg').style.display = 'flex';
-  } else {
-    document.getElementById('nav-welcome').textContent = '👤 Account: ' + loggedInUser;
-    document.getElementById('nav-welcome').style.display = 'inline-block';
-    document.getElementById('nav-login-btn').style.display = 'none';
-  }
-  applyRole(); 
-}
-function submitLogin() {
-  const n = document.getElementById('login-username').value.trim();
-  if(n) {
-    loggedInUser = n;
-    localStorage.setItem('dnd_user', n);
-    document.getElementById('login-modal-bg').style.display = 'none';
-    document.getElementById('nav-welcome').textContent = '👤 Account: ' + n;
-    document.getElementById('nav-welcome').style.display = 'inline-block';
-    document.getElementById('nav-login-btn').style.display = 'none';
-    applyRole();
-  }
-}
-function closeLogin() {
-  document.getElementById('login-modal-bg').style.display = 'none';
-}
-function openLogin() {
-  document.getElementById('login-modal-bg').style.display = 'flex';
-}
-
 const RACES_DB = {
   'Human':          {bonuses:{STR:1,DEX:1,CON:1,INT:1,WIS:1,CHA:1,speed:30},subraces:['Variant Human'],traits:['Versatile: +1 to all ability scores','Extra Language','Skill Versatility (Variant)']},
   'Elf':            {bonuses:{DEX:2,speed:30},subraces:['High Elf','Wood Elf','Dark Elf (Drow)'],traits:['Darkvision 60ft','Keen Senses: Perception proficiency','Fey Ancestry: Advantage vs charm, immune to sleep magic','Trance: 4 hours meditation instead of sleep']},
@@ -952,7 +907,7 @@ function initDb(){
   setSyncStatus('live');
 }
 
-// ── AUTHENTICATION MANAGEMENT SYSTEMS ───────────────────────────────
+// ── ROLE DEFINITIONS ──────────────────────────────────────────────────
 function applyRole(){
   const dmBtn = document.getElementById('explicit-dm-login-btn');
   if (isDM) {
@@ -974,7 +929,7 @@ function applyRole(){
   const dashBtn=document.getElementById('dm-dashboard-btn'); if(dashBtn)dashBtn.style.display=isDM?'inline-block':'none';
   document.getElementById('clear-map-btn').style.display=(isDM&&mapImageData)?'inline-block':'none';
   
-  document.getElementById('add-char-btn').style.display = (isDM || loggedInUser) ? 'inline-block' : 'none';
+  document.getElementById('add-char-btn').style.display = isDM ? 'inline-block' : 'none';
   
   document.getElementById('xp-section').style.display=isDM?'block':'none';
   const itemSec=document.getElementById('dm-item-section'); if(itemSec)itemSec.style.display=isDM?'block':'none';
@@ -1239,7 +1194,7 @@ function populateSubclassOptions(){}
 function syncClassString(){}
 function syncSkillSelectsToText(){}
 
-// ── CUSTOM MODAL ACTIONS & GENERATION ──────────────────────────────────
+// ── ROSTER LOGISTICS ENGINE ───────────────────────────────────────────
 function openModal(i){
   if(!canAccessCharacter(i,true))return;
   editingIdx=i;pendingPfp=null;const p=party[i];
@@ -1273,7 +1228,7 @@ function saveModal(){
 function closeModal(){document.getElementById('modal-bg').style.display='none';}
 function closeModalOnBg(e){if(e.target===document.getElementById('modal-bg'))closeModal();}
 function openAddChar(){
-  if(!loggedInUser && !isDM) return;
+  if(!isDM) return;
   const n=party.length+1;
   const p=normalizeCharacter({id:'p'+Date.now(),name:'New Hero '+n,cls:'Fighter · Champion · 1',species:'Human',hp:10,maxHp:10,ac:10,pp:10,speed:30,conds:[],color:n%COLORS.length});
   party.push(p);dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));renderParty();openModal(party.length-1);
@@ -1291,7 +1246,7 @@ function awardXPFromDashboard(){}
 function clearXP(){}
 function giveDashboardItem(){}
 
-// ── SNAPCHAT MEDIA EDGE CONTROLS ─────────────────────────────────────
+// ── EDGE SNAPPING MEDIA BAR CONTROLS ─────────────────────────────────
 let mediaDockHidden = false;
 function toggleMediaDock() {
   mediaDockHidden = !mediaDockHidden;
@@ -1333,7 +1288,7 @@ function showGifReactionLocally(r) {
   showToast(`🖼️ ${r.who} broadcasted an animation clip!`);
 }
 
-// ── AUDIT CAMPAIGN REPORTS DISPATCHER ─────────────────────────────────
+// ── AUTOMATED DISPATCH REPORTS GENERATION ────────────────────────────
 function completeSessionExecution() {
   if(!isDM) return;
   const notes = document.getElementById('dm-notes-main')?.value || '';
@@ -1473,7 +1428,7 @@ function clearSceneImage(){}
 function renderDockedDashboard(){}
 function toggleDockCollapse(){}
 function formatRollTime(ts){return new Date(ts).toLocaleTimeString();}
-function getCurrentRoller(){return isDM?'DM':(loggedInUser||'Player');}
+function getCurrentRoller(){return isDM?'DM':'Player';}
 function renderDice(){}
 function showToast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2000);}
 function showReactionLocally(r){}
@@ -1489,7 +1444,7 @@ function appendDiceReportToNotes(){}
 function clearDiceHistory(){}
 
 // ── BOOTSTRAP INITIALIZATION ─────────────────────────────────────────
-initLogin();
+applyRole();
 </script>
 </body>
 </html>
