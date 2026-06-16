@@ -37,8 +37,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .panel{display:none;flex:1;overflow:hidden}.panel.active{display:flex;flex-direction:column}
 
 /* ── MAP ── */
-#map-panel{position:relative;flex:1;overflow:hidden;background:#0d0d0d;flex-direction:column}
-#map-panel.active{display:flex;flex-direction:column}
+#map-panel{position:relative;flex:1;overflow:hidden;background:#0d0d0d;display:flex;flex-direction:column}
 .map-toolbar{background:#111;border-bottom:1px solid #333;padding:6px 12px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;flex-shrink:0}
 .map-toolbar button{padding:4px 10px;border-radius:7px;border:1px solid #333;font-size:11px;cursor:pointer;background:#1e1e1e;color:#ccc;white-space:nowrap}
 .map-toolbar button:hover{background:#2a2a2a}
@@ -358,6 +357,24 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .gif-reaction{position:fixed;right:18px;bottom:86px;z-index:1300;background:#111;border:2px solid #7F77DD;border-radius:14px;padding:6px;box-shadow:0 0 25px #000;animation:gifPop 5.5s ease-out forwards;pointer-events:none}.gif-reaction img{max-width:240px;max-height:180px;border-radius:10px;display:block}
 @keyframes gifPop{0%{opacity:0;transform:scale(.7)}10%{opacity:1;transform:scale(1)}85%{opacity:1}100%{opacity:0;transform:translateY(-30px) scale(.95)}}
 .report-modal textarea{width:100%;min-height:120px;border:1px solid #333;border-radius:8px;background:#111;color:#eee;padding:8px;font-size:12px}.report-link{display:block;margin-top:8px;color:#b8b4f8;font-size:12px}
+
+/* ── V5.1 QUICK DICE TOAST ── */
+.quick-roll-toast-stack{position:fixed;top:76px;right:18px;z-index:2200;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.quick-roll-toast{min-width:270px;max-width:min(360px,calc(100vw - 36px));padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,rgba(22,18,35,.96),rgba(10,10,18,.94));border:1px solid rgba(184,180,248,.45);border-left:5px solid #7F77DD;color:#fff;box-shadow:0 18px 45px rgba(0,0,0,.48),0 0 28px rgba(127,119,221,.35),inset 0 1px 0 rgba(255,255,255,.12);backdrop-filter:blur(14px);animation:quickRollToastIn .36s ease-out,quickRollToastOut .48s ease-in 3.65s forwards;overflow:hidden;position:relative}
+.quick-roll-toast:before{content:'✦';position:absolute;right:14px;top:9px;color:rgba(255,255,255,.45);font-size:14px;animation:quickToastTwinkle 1.4s ease-in-out infinite}
+.quick-roll-toast-title{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#d9d6ff;font-weight:800;margin-bottom:6px}
+.quick-roll-toast-line{display:flex;align-items:flex-end;justify-content:space-between;gap:18px}
+.quick-roll-toast-die{font-size:15px;color:#aaa}
+.quick-roll-toast-total{font-size:34px;line-height:1;font-weight:900;text-shadow:0 0 18px rgba(127,119,221,.65)}
+.quick-roll-toast-detail{font-size:11px;color:#888;margin-top:6px;line-height:1.35}
+.quick-roll-toast.nat20{border-color:rgba(239,159,39,.8);border-left-color:#EF9F27;box-shadow:0 18px 45px rgba(0,0,0,.48),0 0 34px rgba(239,159,39,.45),inset 0 1px 0 rgba(255,255,255,.14)}
+.quick-roll-toast.nat20 .quick-roll-toast-title{color:#ffe1a1}.quick-roll-toast.nat20 .quick-roll-toast-total{text-shadow:0 0 20px rgba(239,159,39,.9)}
+.quick-roll-toast.nat1{border-color:rgba(226,75,74,.75);border-left-color:#E24B4A;animation:quickRollToastIn .36s ease-out,quickToastShake .28s ease-in-out .38s 2,quickRollToastOut .48s ease-in 3.65s forwards}
+.quick-roll-toast.nat1 .quick-roll-toast-title{color:#ffc0c0}.quick-roll-toast.nat1 .quick-roll-toast-total{text-shadow:0 0 18px rgba(226,75,74,.8)}
+@keyframes quickRollToastIn{0%{opacity:0;transform:translateX(28px) scale(.94)}100%{opacity:1;transform:translateX(0) scale(1)}}
+@keyframes quickRollToastOut{to{opacity:0;transform:translateX(30px) scale(.96)}}
+@keyframes quickToastShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+@keyframes quickToastTwinkle{0%,100%{opacity:.28;transform:scale(.8) rotate(0)}50%{opacity:1;transform:scale(1.25) rotate(22deg)}}
 
 </style>
 </head>
@@ -1810,15 +1827,30 @@ function getCurrentRoller(){
 }
 function rollDie(sides,count,rollMod,label){
   count=count||1;rollMod=rollMod||0;const rolls=Array.from({length:count},()=>Math.ceil(Math.random()*sides));const total=rolls.reduce((a,b)=>a+b,0)+rollMod;const nat=count===1?rolls[0]:null;const who=getCurrentRoller();
-  rollLog.unshift({who,label,rolls,total,nat,mod:rollMod,ts:Date.now()});if(rollLog.length>100)rollLog.pop();
+  const entry={who,label,rolls,total,nat,mod:rollMod,ts:Date.now(),sides,count};
+  rollLog.unshift(entry);if(rollLog.length>100)rollLog.pop();
   dbSet('rollLog',rollLog);playDiceSound();playYouTubeSfx('9cWg_SAWv5A',4500);
   if(sides===20&&count===1&&nat===20){showNat20Celebration(who,total);playYouTubeSfx('JN8Mswri5fc',9000);}
   if(sides===20&&count===1&&nat===1){showNat1Fail(who);playYouTubeSfx('IxTiL8GVw-M',3000,0,3);}
   renderDice();
   setTimeout(()=>{const rb=document.querySelector('.roll-big');if(rb){rb.classList.remove('popping');void rb.offsetWidth;rb.classList.add('popping');}},10);
+  return entry;
 }
 function formatRollTime(ts){try{return new Date(ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
-function quickDockRoll(sides){rollDie(sides,1,0,'1d'+sides);}
+function quickDockRoll(sides){const r=rollDie(sides,1,0,'1d'+sides);showQuickRollToast(r);}
+function showQuickRollToast(r){
+  if(!r)return;
+  let stack=document.getElementById('quick-roll-toast-stack');
+  if(!stack){stack=document.createElement('div');stack.id='quick-roll-toast-stack';stack.className='quick-roll-toast-stack';document.body.appendChild(stack);}
+  const type=(r.sides===20&&r.count===1&&r.nat===20)?'nat20':(r.sides===20&&r.count===1&&r.nat===1)?'nat1':'normal';
+  const toast=document.createElement('div');toast.className='quick-roll-toast '+type;
+  const title=type==='nat20'?'✨ Critical Success ✨':type==='nat1'?'☹ Critical Failure ☹':'🎲 Dice Rolled';
+  const detail=r.mod?`${r.rolls.join(' + ')} ${r.mod>=0?'+':''}${r.mod} modifier`:`Rolled ${r.rolls.join(' + ')}`;
+  toast.innerHTML=`<div class="quick-roll-toast-title">${title}</div><div class="quick-roll-toast-line"><div class="quick-roll-toast-die">${r.who}<br><b style="color:#ddd">${r.label}</b></div><div class="quick-roll-toast-total">${r.total}</div></div><div class="quick-roll-toast-detail">${detail}${type==='nat20'?' · The gods smile upon you.':type==='nat1'?' · The dice have betrayed you.':''}</div>`;
+  stack.prepend(toast);
+  while(stack.children.length>4)stack.lastElementChild.remove();
+  setTimeout(()=>toast.remove(),4300);
+}
 function playYouTubeSfx(videoId,duration=5000,start=0,end=null){
   try{
     const box=document.createElement('div');box.style.cssText='position:fixed;left:-9999px;bottom:-9999px;width:1px;height:1px;overflow:hidden;z-index:-1';
