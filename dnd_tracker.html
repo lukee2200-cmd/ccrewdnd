@@ -175,6 +175,38 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .save-prof.prof{background:#1D9E75;border-color:#1D9E75}
 .save-val{font-size:12px;font-weight:600;min-width:24px;text-align:right;color:#ccc}
 .save-name{font-size:11px;color:#aaa}
+.feature-list{display:flex;flex-direction:column;gap:6px}
+.feature-item{background:#111;border-radius:7px;padding:8px 10px}
+.feature-name{font-size:12px;font-weight:600;color:#b8b4f8}
+.feature-desc{font-size:11px;color:#888;margin-top:3px;line-height:1.5}
+.spell-level-block{margin-bottom:12px}
+.spell-level-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.spell-level-label{font-size:11px;font-weight:600;color:#7F77DD}
+.spell-slots-row{display:flex;gap:4px}
+.spell-slot-dot{width:12px;height:12px;border-radius:50%;border:1.5px solid #7F77DD;cursor:pointer}
+.spell-slot-dot.used{background:#7F77DD}
+.spell-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.spell-item{background:#111;border-radius:6px;padding:6px 8px;font-size:11px}
+.spell-item-name{color:#ccc;font-weight:500}
+.spell-item-detail{color:#666;margin-top:1px}
+.equip-list{display:flex;flex-direction:column;gap:5px}
+.equip-item{background:#111;border-radius:7px;padding:7px 10px;display:flex;justify-content:space-between;align-items:center}
+.equip-name{font-size:12px;color:#ccc;font-weight:500}
+.equip-detail{font-size:11px;color:#666}
+.hp-edit-row{display:flex;gap:6px;align-items:center;margin-top:8px}
+.hp-edit-row input{width:52px;border:1px solid #333;border-radius:7px;padding:4px 8px;font-size:13px;text-align:center;background:#111;color:#eee}
+.hp-edit-row button{padding:4px 10px;border:1px solid #333;border-radius:7px;font-size:12px;cursor:pointer;background:#2a2a2a;color:#ccc}
+.death-saves{display:flex;gap:12px;margin-top:10px}
+.death-save-group{display:flex;flex-direction:column;gap:4px}
+.death-save-label{font-size:10px;color:#666;text-transform:uppercase}
+.death-save-dots{display:flex;gap:5px}
+.death-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid #444;cursor:pointer}
+.death-dot.success{background:#1D9E75;border-color:#1D9E75}
+.death-dot.fail{background:#E24B4A;border-color:#E24B4A}
+.notes-area{width:100%;min-height:80px;border:1px solid #333;border-radius:8px;padding:8px;font-size:12px;font-family:system-ui;background:#111;color:#eee;resize:vertical}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:8px;background:#2a2a2a;color:#888;margin:2px}
+.tag.purple{background:#1e1a3a;color:#b8b4f8}
+.proficiency-note{font-size:10px;color:#555;margin-top:6px}
 
 /* ── DICE ── */
 .dice-wrap{flex:1;overflow-y:auto;padding:1rem;max-width:700px;margin:0 auto;width:100%}
@@ -219,7 +251,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 /* ── SPELLS TAB ── */
 .spells-wrap{flex:1;overflow-y:auto;padding:1rem}
 .spell-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:1rem}
-.slot-card{background:#1e1e1e;border:1px solid #333;border-radius:8px;padding:8px 10px}
+.slot-cardを開く{background:#1e1e1e;border:1px solid #333;border-radius:8px;padding:8px 10px}
 .slot-level{font-size:11px;color:#666;margin-bottom:5px}
 .slot-dots{display:flex;gap:5px;flex-wrap:wrap}
 .slot-dot{width:15px;height:15px;border-radius:50%;border:1.5px solid #7F77DD;cursor:pointer}
@@ -230,7 +262,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .dm-notes{width:100%;min-height:150px;border:1px solid #333;border-radius:8px;padding:10px;font-size:13px;font-family:system-ui;background:#1e1e1e;color:#eee;resize:vertical}
 .section-title{font-size:11px;font-weight:600;color:#666;margin:1rem 0 .5rem;text-transform:uppercase;letter-spacing:.07em}
 
-/* ── MODALS ── */
+/* ── MODALS & LOGINS ── */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:200}
 .modal{background:#1e1e1e;border:1px solid #444;border-radius:16px;padding:1.5rem;width:min(500px,95vw);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
 .modal h2{font-size:16px;font-weight:600;color:#fff}
@@ -280,7 +312,8 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .die-btn svg polygon,.die-btn svg rect,.die-btn svg circle{stroke:#fff!important;fill:rgba(255,255,255,.16)!important}.die-btn svg text{fill:#fff!important;text-shadow:0 1px 3px #000}
 @keyframes twinkle{0%,100%{opacity:.25;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.25) rotate(25deg)}}
 .dashboard-modal{background:#141414;border:1px solid #444;border-radius:16px;width:min(920px,96vw);max-height:90vh;overflow-y:auto;padding:1rem}
-.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.dash-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:12px}.dash-card h3{font-size:12px;color:#b8b4f8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}.dash-card input,.dash-card select{border:1px solid #333;border-radius:7px;padding:6px 8px;font-size:12px;background:#111;color:#eee}.dash-card button{padding:5px 10px;border-radius:7px;border:1px solid #444;background:#2a2a2a;color:#ccc;cursor:pointer;font-size:12px;margin:2px}.asset-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.asset-pill{border-color:#7F77DD!important;background:#1e1a3a!important;color:#b8b4f8!important}.scene-panel{position:absolute;right:12px;bottom:12px;max-width:260px;max-height:180px;background:#111;border:2px solid #7F77DD;border-radius:12px;padding:6px;z-index:20;box-shadow:0 0 24px #000;display:none}.scene-panel img{max-width:100%;max-height:150px;border-radius:8px;display:block}.scene-close{position:absolute;top:-8px;right:-8px;border:1px solid #444;background:#111;color:#aaa;border-radius:50%;width:22px;height:22px;cursor:pointer}.toast{position:fixed;top:55px;left:50%;transform:translateX(-50%);background:#111;border:1px solid #7F77DD;color:#b8b4f8;font-size:13px;font-weight:600;padding:8px 18px;border-radius:10px;z-index:998;pointer-events:none;box-shadow:0 0 18px #000}
+.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.dash-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:12px}.dash-card h3{font-size:12px;color:#b8b4f8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}.dash-card input,.dash-card select{border:1px solid #333;border-radius:7px;padding:6px 8px;font-size:12px;background:#111;color:#eee}.dash-card button{padding:5px 10px;border-radius:7px;border:1px solid #444;background:#2a2a2a;color:#ccc;cursor:pointer;font-size:12px;margin:2px}.asset-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.asset-pill{border-color:#7F77DD!important;background:#1e1a3a!important;color:#b8b4f8!important}.scene-panel{position:absolute;right:12px;bottom:12px;max-width:260px;max-height:180px;background:#111;border:2px solid #7F77DD;border-radius:12px;padding:6px;z-index:20;box-shadow:0 0 24px #000;display:none}.scene-panel img{max-width:100%;max-height:150px;border-radius:8px;display:block}.scene-panel-title{font-size:10px;color:#b8b4f8;margin-bottom:4px;text-align:center}.scene-close{position:absolute;top:-8px;right:-8px;border:1px solid #444;background:#111;color:#aaa;border-radius:50%;width:22px;height:22px;cursor:pointer}
+.toast{position:fixed;top:55px;left:50%;transform:translateX(-50%);background:#111;border:1px solid #7F77DD;color:#b8b4f8;font-size:13px;font-weight:600;padding:8px 18px;border-radius:10px;z-index:998;pointer-events:none;box-shadow:0 0 18px #000}
 
 #dm-bottom-dock{position:fixed;left:0;right:0;bottom:0;z-index:90;background:#0d0d0d;border-top:1px solid #333;box-shadow:0 -10px 30px rgba(0,0,0,.45);padding:8px 12px;display:none;max-height:38vh;overflow:auto}
 #dm-bottom-dock .dashboard-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
@@ -293,6 +326,8 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .firework{position:absolute;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff;animation:firework 1.2s ease-out forwards}
 @keyframes levelText{0%{opacity:0;transform:translate(-50%,-50%) scale(.45)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-70%) scale(.9)}}
 @keyframes firework{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(.25)}}
+.modal select.multi-select{min-height:90px}
+.autofill-note{font-size:10px;color:#777;margin-top:4px;line-height:1.35}
 
 /* ── INTERACTIVE MEDIA ADDITIONS ── */
 .reaction-bar{display:flex;gap:5px;flex-wrap:wrap}
@@ -341,8 +376,13 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
     <option value="spectator">👁 Spectator</option>
   </select>
 
-  <button class="tab" id="explicit-dm-login-btn" onclick="handleRoleClick()" style="border-color:#7F77DD; color:#b8b4f8; font-weight:600; margin-right:6px;">DM Login</button>
-  <span style="display:none" id="role-btn"><span class="sync-dot" id="sync-dot"></span><span id="role-label">Player</span></span>
+  <button class="tab" id="nav-login-btn" onclick="openLogin()">Sign In</button>
+  <span id="nav-welcome" style="display:none; font-size:12px; color:#aaa; font-weight:600"></span>
+
+  <button class="role-badge" id="role-btn" onclick="handleRoleClick()" style="margin-left:6px">
+    <span class="sync-dot" id="sync-dot"></span>
+    <span id="role-label">Player</span>
+  </button>
 </nav>
 
 <div id="map-panel" class="panel active">
@@ -441,17 +481,9 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
   </div>
 </div>
 
-<div id="dice-panel" class="panel">
-  <div class="dice-wrap" id="dice-wrap"></div>
-</div>
-
-<div id="init-panel" class="panel">
-  <div class="init-wrap" id="init-wrap"></div>
-</div>
-
-<div id="spells-panel" class="panel">
-  <div class="spells-wrap" id="spells-wrap"></div>
-</div>
+<div id="dice-panel" class="panel"><div class="dice-wrap" id="dice-wrap"></div></div>
+<div id="init-panel" class="panel"><div class="init-wrap" id="init-wrap"></div></div>
+<div id="spells-panel" class="panel"><div class="spells-wrap" id="spells-wrap"></div></div>
 
 <div id="notes-panel" class="panel">
   <div class="notes-wrap">
@@ -477,10 +509,32 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
   </div>
 </div>
 
+<div id="sheet-modal-bg" class="sheet-modal-bg" style="display:none">
+  <div class="sheet-modal">
+    <div class="sheet-header">
+      <div class="avatar" id="sheet-avatar">🧙</div>
+      <div class="sheet-title">
+        <h2 id="sheet-char-name">Character</h2>
+        <p id="sheet-char-sub">Level 1 · Human · Fighter</p>
+      </div>
+      <button class="sheet-close" onclick="closeSheet()">✕ Close</button>
+    </div>
+    <div class="sheet-tabs">
+      <button class="sheet-tab active" onclick="switchSheetTab('core')">Core</button>
+      <button class="sheet-tab" onclick="switchSheetTab('skills')">Skills</button>
+      <button class="sheet-tab" onclick="switchSheetTab('features')">Features</button>
+      <button class="sheet-tab" onclick="switchSheetTab('spells')">Spells</button>
+      <button class="sheet-tab" onclick="switchSheetTab('equipment')">Equipment</button>
+      <button class="sheet-tab" onclick="switchSheetTab('notes')">Notes</button>
+    </div>
+    <div class="sheet-body" id="sheet-body"></div>
+  </div>
+</div>
+
 <div id="dm-dashboard-bg" class="modal-bg" style="display:none" onclick="closeDMDashboardOnBg(event)">
   <div class="dashboard-modal">
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-      <h2 style="font-size:18px;color:#fff;flex:1">👑 DM Workspace Dashboard</h2>
+      <h2 style="font-size:18px;color:#fff;flex:1">👑 DM Workspace Terminal</h2>
       <button class="sheet-close" onclick="closeDMDashboard()">✕ Close</button>
     </div>
     <div class="dashboard-grid">
@@ -553,11 +607,21 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 
 <div id="dm-bottom-dock"></div>
 
+<div id="login-modal-bg" class="modal-bg" style="display:none; z-index: 9999;">
+  <div class="modal" style="text-align:center; max-width:400px;">
+    <h2>Campaign Authentication</h2>
+    <p style="font-size:12px;color:#888;margin-bottom:12px">Sign into the workspace with your name to create or modify characters.</p>
+    <input type="text" id="login-username" placeholder="Character or Player Name" style="margin-bottom:12px;text-align:center;">
+    <button onclick="submitLogin()" class="btn-primary" style="width:100%">Authenticate Access</button>
+    <button onclick="closeLogin()" class="btn-ghost" style="width:100%;margin-top:8px">Continue as Observer</button>
+  </div>
+</div>
+
 <div id="email-prompt-bg" class="modal-bg" style="display:none; z-index: 9999;">
   <div class="modal" style="text-align:center; max-width:400px;">
     <h2>Session Concluded! 🎉</h2>
-    <p style="font-size:12px;color:#888;margin-bottom:12px">The DM has closed the records. Enter your email address below to join the update wire and receive game summary briefs.</p>
-    <input type="email" id="player-email-input" placeholder="hero@domain.com" style="margin-bottom:12px;text-align:center;">
+    <p style="font-size:12px;color:#888;margin-bottom:12px">The DM has closed the records. Please provide your email address to receive your full session logs and character review statement.</p>
+    <input type="email" id="player-email-input" placeholder="adventure@domain.com" style="margin-bottom:12px;text-align:center;">
     <button onclick="submitPlayerEmail()" class="btn-primary" style="width:100%">Receive Group Report</button>
     <button onclick="document.getElementById('email-prompt-bg').style.display='none'" class="btn-ghost" style="width:100%;margin-top:8px">Skip Summary</button>
   </div>
@@ -565,11 +629,11 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 
 <div id="dm-report-bg" class="modal-bg" style="display:none; z-index: 9999;">
   <div class="modal" style="max-width:600px;">
-    <h2>Automated Session Dispatcher</h2>
-    <p style="font-size:12px;color:#888;margin-bottom:6px">Active table players are being prompted for report lines. Hit dispatch below to compile game logs directly to your operating email application client.</p>
+    <h2>Automated Campaign Dispatch Dispatcher</h2>
+    <p style="font-size:12px;color:#888;margin-bottom:6px">Active players are being prompted for routing destination lines. Hit dispatch below to route compiled game notes and dice timelines to your local operating client.</p>
     <textarea id="dm-final-report-area" style="width:100%;height:150px;border:1px solid #333;border-radius:8px;padding:8px;font-size:12px;background:#111;color:#eee;resize:vertical;margin-bottom:8px"></textarea>
     <div style="background:#111;border:1px solid #333;border-radius:8px;padding:8px;margin-bottom:12px">
-      <span style="font-size:10px;color:#666;text-transform:uppercase;">Collected Distribution Sync Lines</span>
+      <span style="font-size:10px;color:#666;text-transform:uppercase;">Collected Distribution Lines</span>
       <div id="dm-collected-emails" style="font-size:13px;color:#b8b4f8;margin-top:4px">Awaiting synchronization lines...</div>
     </div>
     <div class="modal-actions">
@@ -582,9 +646,9 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 <div id="gif-modal-bg" class="modal-bg" style="display:none; z-index:9999;">
   <div class="modal" style="max-width:400px; text-align:center;">
     <h2>Broadcast Visual Animation</h2>
-    <p style="font-size:12px; color:#888; margin-bottom:10px;">Select a default visual asset preset or paste a unique external reference link below.</p>
+    <p style="font-size:12px; color:#888; margin-bottom:10px;">Select a default visual asset preset or paste a unique external reference node line link below.</p>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:12px;">
-      <button onclick="sendGifReaction('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbks1amZ5Nms4Mndubm84bms5MzhpMXVpM3JpdmcxN3V0bnpwNmI1NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKsnS88LAnm0wF2/giphy.gif', 'Dragon Fire')" style="padding:6px; font-size:11px;">🔥 Dragon Fire</button>
+      <button onclick="sendGifReaction('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbms1amZ5Nms4Mndubm84bms5MzhpMXVpM3JpdmcxN3V0bnpwNmI1NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKsnS88LAnm0wF2/giphy.gif', 'Dragon Fire')" style="padding:6px; font-size:11px;">🔥 Dragon Fire</button>
       <button onclick="sendGifReaction('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXN6cm85am14bnF0NWw0b2dtMDhkcm4wcmR3ZXB4YWhpZTN4N28zbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26AHAw0aMmWwLEBvW/giphy.gif', 'Magic Spell')" style="padding:6px; font-size:11px;">✨ Spell Burst</button>
       <button onclick="sendGifReaction('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3VwMzZ3OHl5MXg2MTBoN2pveHR3ZmdmMXFpZnl0Y2k4M3dybHRheSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0ExsgrTuACF7CG08/giphy.gif', 'Victory Dance')" style="padding:6px; font-size:11px;">🍻 Tavern Hype</button>
       <button onclick="sendGifReaction('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Z0dzB2Y3pybmNtbXoxeHN0YnlndmxtNGV0YzNycDJidTZvYnBjeCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3M4NpbLCTxBqU/giphy.gif', 'Facepalm')" style="padding:6px; font-size:11px;">🤦 Fail Cry</button>
@@ -597,129 +661,9 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
   </div>
 </div>
 
-<div id="sheet-modal-bg" class="sheet-modal-bg" style="display:none">
-  <div class="sheet-modal">
-    <div class="sheet-header">
-      <div class="avatar" id="sheet-avatar">🧙</div>
-      <div class="sheet-title">
-        <h2 id="sheet-char-name">Character</h2>
-        <p id="sheet-char-sub">Level 1 · Human · Fighter</p>
-      </div>
-      <button class="sheet-close" onclick="closeSheet()">✕ Close</button>
-    </div>
-    <div class="sheet-tabs">
-      <button class="sheet-tab active" onclick="switchSheetTab('core')">Core</button>
-      <button class="sheet-tab" onclick="switchSheetTab('skills')">Skills</button>
-      <button class="sheet-tab" onclick="switchSheetTab('features')">Features</button>
-      <button class="sheet-tab" onclick="switchSheetTab('spells')">Spells</button>
-      <button class="sheet-tab" onclick="switchSheetTab('equipment')">Equipment</button>
-      <button class="sheet-tab" onclick="switchSheetTab('notes')">Notes</button>
-    </div>
-    <div class="sheet-body" id="sheet-body"></div>
-  </div>
-</div>
-
-<div id="modal-bg" class="modal-bg" style="display:none" onclick="closeModalOnBg(event)">
-  <div class="modal">
-    <h2>Edit Character</h2>
-    <div class="pfp-upload">
-      <div class="pfp-preview" id="modal-pfp-preview">🧙</div>
-      <div>
-        <label>Profile picture</label>
-        <button onclick="document.getElementById('pfp-file').click()" style="padding:5px 10px;border:1px solid #444;border-radius:7px;font-size:11px;cursor:pointer;background:#2a2a2a;color:#ccc">Upload</button>
-        <input type="file" id="pfp-file" accept="image/*" style="display:none" onchange="handlePfpUpload(event)">
-      </div>
-    </div>
-    <div><label>Character name</label><input type="text" id="modal-name"></div>
-    <div><label>Class, Subclass &amp; Level</label>
-      <div style="display:grid;grid-template-columns:1fr 1fr 70px;gap:6px">
-        <select id="modal-class-name" onchange="syncClassString();populateSubclassOptions();autoFillFeatures();autoCalcStats()"></select>
-        <select id="modal-subclass-name" onchange="syncClassString();autoFillFeatures()"></select>
-        <input type="number" id="modal-level" min="1" max="20" value="1" onchange="syncClassString();autoFillFeatures();autoCalcStats()">
-      </div>
-      <input type="text" id="modal-class" style="margin-top:6px" onchange="parseClassStringToControls();autoFillFeatures();autoCalcStats()" placeholder="Fighter · Champion · 5">
-    </div>
-    <div><label>Species (Race)</label><select id="modal-species" onchange="onSpeciesChange()"></select></div>
-    <div><label>Subspecies (Subrace)</label><select id="modal-subspecies" onchange="updateSubraceTraits(this.value);autoFillFeatures();autoCalcStats()"><option value="">None / No subrace</option></select><div id="subspecies-traits" style="font-size:10px;color:#7F77DD;margin-top:4px;line-height:1.5"></div></div>
-    <div><label>Background</label><input type="text" id="modal-background"></div>
-    <div><label>Optional Character PIN (4 digits)</label><input type="text" id="modal-charpin" maxlength="4" placeholder="Leave blank for no PIN"></div>
-    <div><label>Card font</label>
-      <select id="modal-font">
-        <option value="system-ui">Default (System)</option>
-        <option value="Georgia, serif">Georgia (Elegant)</option>
-        <option value="Palatino, serif">Palatino (Classic)</option>
-        <option value="Courier New, monospace">Courier (Typewriter)</option>
-        <option value="Impact, sans-serif">Impact (Bold)</option>
-        <option value="fantasy">Fantasy</option>
-        <option value="cursive">Cursive</option>
-      </select>
-    </div>
-    <div><label>Card color</label><div class="color-row" id="modal-colors"></div>
-      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:7px">
-        <input type="color" id="custom-bg-color" value="#1a2a3a" style="width:32px;height:32px;border-radius:50%;border:2px solid #555;cursor:pointer;padding:0">
-        <input type="color" id="custom-text-color" value="#7ab8f5" style="width:32px;height:32px;border-radius:50%;border:2px solid #555;cursor:pointer;padding:0">
-        <input type="color" id="custom-border-color" value="#378ADD" style="width:32px;height:32px;border-radius:50%;border:2px solid #555;cursor:pointer;padding:0">
-        <span style="font-size:10px;color:#666">BG · Text · Border</span>
-      </div>
-    </div>
-    <div class="stat-grid-edit">
-      <div><label>STR</label><input type="number" id="modal-str" min="1" max="20"></div>
-      <div><label>DEX</label><input type="number" id="modal-dex" min="1" max="20"></div>
-      <div><label>CON</label><input type="number" id="modal-con" min="1" max="20"></div>
-      <div><label>INT</label><input type="number" id="modal-int" min="1" max="20"></div>
-      <div><label>WIS</label><input type="number" id="modal-wis" min="1" max="20"></div>
-      <div><label>CHA</label><input type="number" id="modal-cha" min="1" max="20"></div>
-    </div>
-    <div class="stat-grid-edit">
-      <div><label>Max HP</label><input type="number" id="modal-maxhp" min="1"></div>
-      <div><label>Current HP</label><input type="number" id="modal-hp" min="0"></div>
-      <div><label>Temp HP</label><input type="number" id="modal-temphp" min="0"></div>
-    </div>
-    <div class="stat-grid-edit">
-      <div><label>AC</label><input type="number" id="modal-ac" min="1"></div>
-      <div><label>Speed (ft)</label><input type="number" id="modal-speed" min="0"></div>
-      <div><label>Passive Perc.</label><input type="number" id="modal-pp" min="1"></div>
-    </div>
-    <div><label>Armor worn</label><select id="modal-armor" onchange="autoCalcStats()"></select></div>
-    <div><label>Spell slots</label><select id="modal-caster"><option value="none">None</option><option value="half">Half caster</option><option value="full">Full caster</option><option value="pact">Pact caster</option></select></div>
-    <div><label>Proficient skills</label><select id="modal-profskills-select" class="multi-select" multiple onchange="syncSkillSelectsToText()"></select><input type="text" id="modal-profskills" style="margin-top:6px"></div>
-    <div><label>Expert skills</label><select id="modal-expertskills-select" class="multi-select" multiple onchange="syncSkillSelectsToText()"></select><input type="text" id="modal-expertskills" style="margin-top:6px"></div>
-    <div><label>Features &amp; traits</label><textarea id="modal-features" style="width:100%;height:80px;background:#111;color:#eee;resize:vertical"></textarea></div>
-    <div><label>Equipment</label><textarea id="modal-equipment" style="width:100%;height:70px;background:#111;color:#eee;resize:vertical"></textarea></div>
-    <div><label>Inventory items</label><textarea id="modal-inventory" style="width:100%;height:65px;background:#111;color:#eee;resize:vertical"></textarea></div>
-    <div><label>Known spells <button type="button" onclick="autoFillSpellsFromAPI()">Auto-fill API</button></label><textarea id="modal-spells" style="width:100%;height:70px;background:#111;color:#eee;resize:vertical"></textarea></div>
-    <div class="modal-actions">
-      <button class="delete-char-btn" onclick="deleteCurrentCharacter()">Delete Character</button>
-      <button class="btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn-primary" onclick="saveModal()">Save</button>
-    </div>
-  </div>
-</div>
-
-<div id="token-modal-bg" class="modal-bg" style="display:none">
-  <div class="modal" style="max-width:360px">
-    <h2>Add Token</h2>
-    <div><label>Type</label>
-      <select id="token-type" onchange="updateTokenForm()">
-        <option value="player">Player character</option>
-        <option value="enemy">Enemy / NPC</option>
-      </select>
-    </div>
-    <div id="token-player-pick"><label>Character</label><select id="token-player-sel"></select></div>
-    <div id="token-custom-fields" style="display:none">
-      <div style="margin-bottom:8px"><label>Name</label><input type="text" id="token-name" placeholder="Goblin"></div>
-      <div><label>HP</label><input type="number" id="token-hp-val" placeholder="10"></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-ghost" onclick="closeTokenModal()">Cancel</button>
-      <button class="btn-primary" onclick="placeToken()">Place</button>
-    </div>
-  </div>
-</div>
-
 <div id="pin-overlay" style="display:none">
   <div class="pin-box">
-    <div style="font-size:28px;margin-bottom:6px">🔐</div><h2>DM Access</h2>
+    <div style="font-size:28px;margin-bottom:6px">🔐</div><h2 style="color:#fff;font-size:16px;margin-bottom:5px">DM Access</h2>
     <p style="font-size:12px;color:#888;margin-bottom:16px">Enter your 4-digit PIN</p>
     <div style="display:flex;justify-content:center;gap:10px;margin-bottom:16px"><div class="pin-dot" id="pd0"></div><div class="pin-dot" id="pd1"></div><div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div></div>
     <div class="pin-keypad">
@@ -735,45 +679,98 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 <div id="yt-container" style="position:fixed;bottom:-200px;left:-200px;width:1px;height:1px;overflow:hidden"><div id="yt-player"></div></div>
 
 <script>
-// ── CONFIGURATIONS & COMPILERS ────────────────────────────────────────
+// ── AUTHENTICATION SYSTEMS ───────────────────────────────────────────
+let loggedInUser = null;
+
+function initLogin() {
+  loggedInUser = localStorage.getItem('dnd_user');
+  if(!loggedInUser) {
+    document.getElementById('login-modal-bg').style.display = 'flex';
+  } else {
+    document.getElementById('nav-welcome').textContent = '👤 ' + loggedInUser;
+    document.getElementById('nav-welcome').style.display = 'inline-block';
+    document.getElementById('nav-login-btn').style.display = 'none';
+  }
+  applyRole(); 
+}
+function submitLogin() {
+  const n = document.getElementById('login-username').value.trim();
+  if(n) {
+    loggedInUser = n;
+    localStorage.setItem('dnd_user', n);
+    document.getElementById('login-modal-bg').style.display = 'none';
+    document.getElementById('nav-welcome').textContent = '👤 ' + n;
+    document.getElementById('nav-welcome').style.display = 'inline-block';
+    document.getElementById('nav-login-btn').style.display = 'none';
+    applyRole();
+  }
+}
+function closeLogin() {
+  document.getElementById('login-modal-bg').style.display = 'none';
+}
+function openLogin() {
+  document.getElementById('login-modal-bg').style.display = 'flex';
+}
+
 const PROF_BY_LEVEL = [2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6];
 const CLASS_SAVES = {
   Artificer:['CON','INT'], Barbarian:['STR','CON'], Bard:['DEX','CHA'], Cleric:['WIS','CHA'], Druid:['INT','WIS'], Fighter:['STR','CON'], Monk:['STR','DEX'], Paladin:['WIS','CHA'], Ranger:['STR','DEX'], Rogue:['DEX','INT'], Sorcerer:['CON','CHA'], Warlock:['WIS','CHA'], Wizard:['INT','WIS'], 'Blood Hunter':['STR','INT']
 };
 
 const RACES_DB = {
-  'Human':          {bonuses:{STR:1,DEX:1,CON:1,INT:1,WIS:1,CHA:1,speed:30},subraces:['Variant Human'],traits:['Versatile: +1 to all ability scores']},
-  'Elf':            {bonuses:{DEX:2,speed:30},subraces:['High Elf','Wood Elf','Dark Elf (Drow)'],traits:['Darkvision 60ft','Keen Senses']},
-  'Dwarf':          {bonuses:{CON:2,speed:25},subraces:['Hill Dwarf','Mountain Dwarf'],traits:['Darkvision 60ft','Dwarven Resilience']},
-  'Halfling':       {bonuses:{DEX:2,speed:25},subraces:['Lightfoot Halfling','Stout Halfling'],traits:['Lucky','Brave']},
-  'Dragonborn':     {bonuses:{STR:2,CHA:1,speed:30},subraces:['Black','Blue','Red','Gold','Silver','White','Green','Brass','Bronze','Copper'],traits:['Draconic Ancestry','Breath Weapon']},
-  'Gnome':          {bonuses:{INT:2,speed:25},subraces:['Forest Gnome','Rock Gnome'],traits:['Darkvision 60ft','Gnome Cunning']},
-  'Half-Elf':       {bonuses:{CHA:2,speed:30},subraces:[],traits:['Darkvision 60ft','Fey Ancestry','Skill Versatility']},
-  'Half-Orc':       {bonuses:{STR:2,CON:1,speed:30},subraces:[],traits:['Darkvision 60ft','Relentless Endurance','Savage Attacks']},
-  'Tiefling':       {bonuses:{INT:1,CHA:2,speed:30},subraces:['Asmodeus Tiefling','Feral Tiefling'],traits:['Darkvision 60ft','Hellish Resistance']},
-  'Aasimar':        {bonuses:{WIS:1,CHA:2,speed:30},subraces:['Protector Aasimar','Scourge Aasimar','Fallen Aasimar'],traits:['Darkvision 60ft','Celestial Resistance']},
-  'Tabaxi':         {bonuses:{DEX:2,CHA:1,speed:30},subraces:[],traits:["Darkvision 60ft","Feline Agility","Cat's Claws"]},
-  'Goliath':        {bonuses:{STR:2,CON:1,speed:30},subraces:[],traits:['Natural Athlete',"Stone's Endurance",'Powerful Build']},
-  'Orc':            {bonuses:{STR:2,CON:1,speed:30},subraces:[],traits:['Darkvision 60ft','Aggressive','Powerful Build']},
-  'Firbolg':        {bonuses:{STR:1,WIS:2,speed:30},subraces:[],traits:['Firbolg Magic','Hidden Step','Powerful Build']},
+  'Human':          {bonuses:{STR:1,DEX:1,CON:1,INT:1,WIS:1,CHA:1,speed:30},subraces:['Variant Human'],traits:['Versatile: +1 to all ability scores','Extra Language','Skill Versatility (Variant)']},
+  'Elf':            {bonuses:{DEX:2,speed:30},subraces:['High Elf','Wood Elf','Dark Elf (Drow)'],traits:['Darkvision 60ft','Keen Senses: Perception proficiency','Fey Ancestry: Advantage vs charm, immune to sleep magic','Trance: 4 hours meditation instead of sleep']},
+  'Dwarf':          {bonuses:{CON:2,speed:25},subraces:['Hill Dwarf','Mountain Dwarf'],traits:['Darkvision 60ft','Dwarven Resilience: Advantage vs poison, poison resistance','Dwarven Combat Training: Battleaxe/handaxe/hammer proficiency','Tool Proficiency: Smith/brewer/mason tools','Stonecunning: Double proficiency on stonework History']},
+  'Halfling':       {bonuses:{DEX:2,speed:25},subraces:['Lightfoot Halfling','Stout Halfling'],traits:['Lucky: Reroll natural 1s','Brave: Advantage vs Frightened','Halfling Nimbleness: Move through larger creature space']},
+  'Dragonborn':     {bonuses:{STR:2,CHA:1,speed:30},subraces:['Black','Blue','Brass','Bronze','Copper','Gold','Green','Red','Silver','White'],traits:['Draconic Ancestry: Choose dragon type','Breath Weapon: Exhale destructive energy','Damage Resistance: Resistance to draconic damage type']},
+  'Gnome':          {bonuses:{INT:2,speed:25},subraces:['Forest Gnome','Rock Gnome'],traits:['Darkvision 60ft','Gnome Cunning: Advantage on INT/WIS/CHA saves vs magic']},
+  'Half-Elf':       {bonuses:{CHA:2,speed:30},subraces:[],traits:['Darkvision 60ft','Fey Ancestry: Advantage vs charm','Skill Versatility: Two skill proficiencies','Extra Language']},
+  'Half-Orc':       {bonuses:{STR:2,CON:1,speed:30},subraces:[],traits:['Darkvision 60ft','Menacing: Intimidation proficiency','Relentless Endurance: Drop to 1 HP instead of 0 (1/long rest)','Savage Attacks: Extra die on critical hits']},
+  'Tiefling':       {bonuses:{INT:1,CHA:2,speed:30},subraces:['Asmodeus Tiefling','Feral Tiefling','Infernal Legacy'],traits:['Darkvision 60ft','Hellish Resistance: Fire resistance','Infernal Legacy: Thaumaturgy; Hellish Rebuke at 3rd; Darkness at 5th']},
+  'Aasimar':        {bonuses:{WIS:1,CHA:2,speed:30},subraces:['Protector Aasimar','Scourge Aasimar','Fallen Aasimar'],traits:['Darkvision 60ft','Celestial Resistance: Necrotic and radiant resistance','Healing Hands: Heal HP equal to level (1/long rest)','Light Bearer: Know Light cantrip']},
+  'Tabaxi':         {bonuses:{DEX:2,CHA:1,speed:30},subraces:[],traits:["Darkvision 60ft","Feline Agility: Double speed (recharge by not moving)","Cat's Claws: Climb 20ft, 1d4 slashing","Cat's Talent: Perception and Stealth proficiency"]},
+  'Goliath':        {bonuses:{STR:2,CON:1,speed:30},subraces:[],traits:['Natural Athlete: Athletics proficiency',"Stone's Endurance: Reduce damage by 1d12+CON (1/short rest)",'Powerful Build: Count as Large for carrying','Mountain Born: High altitude and cold acclimation']},
+  'Orc':            {bonuses:{STR:2,CON:1,speed:30},subraces:[],traits:['Darkvision 60ft','Aggressive: Bonus action move toward enemy','Powerful Build: Count as Large for carrying','Primal Intuition: 2 skill proficiencies from survival list']},
+  'Firbolg':        {bonuses:{STR:1,WIS:2,speed:30},subraces:[],traits:['Firbolg Magic: Detect Magic and Disguise Self (1/short rest)','Hidden Step: Invisibility as bonus action (1/short rest)','Powerful Build: Count as Large','Speech of Beast and Leaf: Communicate with beasts and plants']},
+  'Githyanki':      {bonuses:{STR:2,INT:1,speed:30},subraces:['Githzerai'],traits:['Astral Knowledge: Skill proficiency (1/short rest)','Psychic Resilience: Psychic resistance','Githyanki Psionics: Mage Hand; Jump at 3rd; Misty Step at 5th','Martial Prodigy: Light/medium armor, swords proficiency']},
+  'Kenku':          {bonuses:{DEX:2,WIS:1,speed:30},subraces:[],traits:['Expert Forgery: Duplicate handwriting and crafts','Kenku Training: 2 skills from Acrobatics/Deception/Stealth/Sleight of Hand','Mimicry: Mimic sounds heard, DC Insight vs Deception']},
+  'Lizardfolk':     {bonuses:{CON:2,WIS:1,speed:30},subraces:[],traits:['Bite: 1d6 piercing natural weapon','Cunning Artisan: Craft items from slain enemies','Hold Breath: 15 minutes','Natural Armor: AC = 13+DEX','Hungry Jaws: Bonus action bite + temp HP']},
+  'Triton':         {bonuses:{STR:1,CON:1,CHA:1,speed:30},subraces:[],traits:['Amphibious: Breathe air and water','Control Air and Water: Fog Cloud; Gust of Wind at 3rd; Wall of Water at 5th','Darkvision 60ft','Emissary of the Sea: Speak to water-breathing beasts','Guardians of the Depths: Cold/pressure immunity']},
+  'Yuan-ti Pureblood':{bonuses:{INT:1,CHA:2,speed:30},subraces:[],traits:['Darkvision 60ft','Innate Spellcasting: Poison Spray; Animal Friendship (snakes); Suggestion at 3rd','Magic Resistance: Advantage on saves vs spells','Poison Immunity: Immune to poison']},
+  'Bugbear':        {bonuses:{STR:2,DEX:1,speed:30},subraces:[],traits:['Darkvision 60ft','Long-Limbed: +5ft melee reach on first combat turn','Powerful Build: Count as Large','Sneaky: Stealth proficiency','Surprise Attack: +2d6 damage to surprised creatures']},
+  'Goblin':         {bonuses:{DEX:2,CON:1,speed:30},subraces:[],traits:['Darkvision 60ft','Fury of the Small: Extra damage equal to level (1/short rest)','Nimble Escape: Disengage or Hide as bonus action']},
+  'Hobgoblin':      {bonuses:{CON:2,INT:1,speed:30},subraces:[],traits:['Darkvision 60ft','Martial Training: 2 martial weapons + light armor','Saving Face: Add bonus to failed roll based on allies nearby (1/short rest)']},
+  'Kobold':         {bonuses:{DEX:2,speed:30},subraces:[],traits:['Darkvision 60ft','Grovel Cower and Beg: Give allies advantage as action','Pack Tactics: Advantage on attacks when ally is adjacent to target']},
 };
 
 const SUBRACES_DB = {
-  'Variant Human':       {parent:'Human',   bonuses:{STR:1,DEX:1,speed:30},    traits:['Choose 2 stats','Feat']},
-  'High Elf':            {parent:'Elf',     bonuses:{DEX:2,INT:1,speed:30},    traits:['+1 INT','Cantrip']},
-  'Wood Elf':            {parent:'Elf',     bonuses:{DEX:2,WIS:1,speed:35},    traits:['+1 WIS','Fleet of Foot']},
-  'Dark Elf (Drow)':     {parent:'Elf',     bonuses:{DEX:2,CHA:1,speed:30},    traits:['+1 CHA','Drow Magic']},
-  'Hill Dwarf':          {parent:'Dwarf',   bonuses:{WIS:1,CON:2,speed:25},    traits:['+1 WIS','Dwarven Toughness']},
-  'Mountain Dwarf':      {parent:'Dwarf',   bonuses:{STR:2,CON:2,speed:25},    traits:['+2 STR','Dwarven Armor']},
-  'Lightfoot Halfling':  {parent:'Halfling',bonuses:{DEX:2,CHA:1,speed:25},    traits:['+1 CHA','Naturally Stealthy']},
-  'Stout Halfling':      {parent:'Halfling',bonuses:{DEX:2,CON:1,speed:25},    traits:['+1 CON','Stout Resilience']},
-  'Forest Gnome':        {parent:'Gnome',   bonuses:{DEX:1,INT:2,speed:25},    traits:['+1 DEX','Natural Illusionist']},
-  'Rock Gnome':          {parent:'Gnome',   bonuses:{CON:1,INT:2,speed:25},    traits:["+1 CON","Tinker"]},
-  'Asmodeus Tiefling':   {parent:'Tiefling',bonuses:{INT:1,CHA:2,speed:30},    traits:['Standard Bloodline Spells']},
-  'Feral Tiefling':      {parent:'Tiefling',bonuses:{DEX:1,INT:1,speed:30},    traits:['+1 DEX +1 INT']},
-  'Protector Aasimar':   {parent:'Aasimar', bonuses:{WIS:1,CHA:2,speed:30},    traits:['Radiant Soul Wings']},
-  'Scourge Aasimar':     {parent:'Aasimar', bonuses:{CON:1,CHA:2,speed:30},    traits:['Radiant Consumption']},
-  'Fallen Aasimar':      {parent:'Aasimar', bonuses:{STR:1,CHA:2,speed:30},    traits:['Necrotic Shroud']},
+  'Variant Human':       {parent:'Human',   bonuses:{STR:1,DEX:1,speed:30},    traits:['Choose 2 stats to increase by 1','One skill proficiency','One feat']},
+  'High Elf':            {parent:'Elf',     bonuses:{DEX:2,INT:1,speed:30},    traits:['+1 INT','Elf Weapon Training: Longsword/shortsword/bows','Cantrip: One wizard cantrip (INT)','Extra Language']},
+  'Wood Elf':            {parent:'Elf',     bonuses:{DEX:2,WIS:1,speed:35},    traits:['+1 WIS, Speed 35ft','Elf Weapon Training: Longsword/shortsword/bows','Fleet of Foot: Speed 35ft','Mask of the Wild: Hide in natural cover']},
+  'Dark Elf (Drow)':     {parent:'Elf',     bonuses:{DEX:2,CHA:1,speed:30},    traits:['+1 CHA, Superior Darkvision 120ft','Sunlight Sensitivity: Disadvantage in sunlight','Drow Magic: Dancing Lights; Faerie Fire at 3rd; Darkness at 5th','Drow Weapon Training: Rapier/shortsword/hand crossbow']},
+  'Hill Dwarf':          {parent:'Dwarf',   bonuses:{WIS:1,CON:2,speed:25},    traits:['+1 WIS','Dwarven Toughness: +1 max HP per level']},
+  'Mountain Dwarf':      {parent:'Dwarf',   bonuses:{STR:2,CON:2,speed:25},    traits:['+2 STR','Dwarven Armor Training: Light and medium armor']},
+  'Lightfoot Halfling':  {parent:'Halfling',bonuses:{DEX:2,CHA:1,speed:25},    traits:['+1 CHA','Naturally Stealthy: Hide behind larger creatures']},
+  'Stout Halfling':      {parent:'Halfling',bonuses:{DEX:2,CON:1,speed:25},    traits:['+1 CON','Stout Resilience: Advantage vs poison, poison resistance']},
+  'Forest Gnome':        {parent:'Gnome',   bonuses:{DEX:1,INT:2,speed:25},    traits:['+1 DEX','Natural Illusionist: Minor Illusion cantrip','Speak with Small Beasts']},
+  'Rock Gnome':          {parent:'Gnome',   bonuses:{CON:1,INT:2,speed:25},    traits:["+1 CON","Artificer's Lore: Double History prof for magic items","Tinker: Create clockwork devices with tinker's tools"]},
+  'Asmodeus Tiefling':   {parent:'Tiefling',bonuses:{INT:1,CHA:2,speed:30},    traits:['Standard Tiefling traits with Asmodeus bloodline spells']},
+  'Feral Tiefling':      {parent:'Tiefling',bonuses:{DEX:1,INT:1,speed:30},    traits:['+1 DEX +1 INT instead of CHA boost','Hellish Resistance and Darkvision still apply']},
+  'Infernal Legacy':     {parent:'Tiefling',bonuses:{INT:1,CHA:2,speed:30},    traits:['Devil Tongue variant: Vicious Mockery; Charm Person at 3rd; Enthrall at 5th']},
+  'Protector Aasimar':   {parent:'Aasimar', bonuses:{WIS:1,CHA:2,speed:30},    traits:['Radiant Soul: Wings and fly speed = walk speed, +CHA radiant damage for 1 min (1/long rest)']},
+  'Scourge Aasimar':     {parent:'Aasimar', bonuses:{CON:1,CHA:2,speed:30},    traits:['Radiant Consumption: Shed light, hurt nearby enemies, +level radiant damage (1/long rest)']},
+  'Fallen Aasimar':      {parent:'Aasimar', bonuses:{STR:1,CHA:2,speed:30},    traits:['Necrotic Shroud: Frighten enemies, +level necrotic damage (1/long rest)']},
+  'Black Dragonborn':    {parent:'Dragonborn',bonuses:{STR:2,CHA:1,speed:30},  traits:['Acid breath: 5×30ft line, DEX save']},
+  'Blue Dragonborn':     {parent:'Dragonborn',bonuses:{STR:2,CHA:1,speed:30},  traits:['Lightning breath: 5×30ft line, DEX save']},
+  'Red Dragonborn':      {parent:'Dragonborn',bonuses:{STR:2,CHA:1,speed:30},  traits:['Fire breath: 15ft cone, DEX save']},
+  'Gold Dragonborn':     {parent:'Dragonborn',bonuses:{STR:2,CHA:1,speed:30},  traits:['Fire breath: 15ft cone, DEX save']},
+  'Silver Dragonborn':   {parent:'Dragonborn',bonuses:{STR:2,CHA:1,speed:30},  traits:['Cold breath: 15ft cone, CON save']},
+  'White Dragonborn':    {parent:'Dragonborn',bonuses:{STR:2,CHA:1,speed:30},  traits:['Cold breath: 15ft cone, CON save']},
+  'Green Dragonborn':    {parent:'Dragonborn',bonuses:{STR:2,CHA:1,speed:30},  traits:['Poison breath: 15ft cone, CON save']},
+  'Brass Dragonborn':    {parent:'Dragonborn',bonuses:{STR:2,CHA:1,speed:30},  traits:['Fire breath: 5×30ft line, DEX save']},
+  'Bronze Dragonborn':   {parent:'Dragonborn',bonuses:{STR:2,CHA:1,speed:30},  traits:['Lightning breath: 5×30ft line, DEX save']},
+  'Copper Dragonborn':   {parent:'Dragonborn',bonuses:{STR:2,CHA:1,speed:30},  traits:['Acid breath: 5×30ft line, DEX save']},
+  'Githzerai':           {parent:'Githyanki',bonuses:{DEX:1,WIS:2,speed:30},   traits:['+1 DEX +2 WIS','Monastic Training: Mage Hand (invisible); Shield at 3rd; Detect Thoughts at 5th']},
 };
 
 const SPECIES_BONUSES = {};
@@ -792,88 +789,113 @@ const SUBCLASS_OPTIONS = {
   'Blood Hunter':['Order of the Ghostslayer','Order of the Lycan','Order of the Mutant','Order of the Profane Soul']
 };
 const ARMOR_OPTIONS=['Unarmored','Padded','Leather','Studded Leather','Hide','Chain Shirt','Scale Mail','Breastplate','Half Plate','Ring Mail','Chain Mail','Splint','Plate','Mage Armor (spell)'];
-
 const CLASS_AUTO_FEATURES={
-  Barbarian:[[1,'Rage: Bonus damage and resistance while raging'],[1,'Unarmored Defense: AC equals 10 + DEX + CON when unarmored'],[2,'Reckless Attack'],[5,'Extra Attack']],
-  Bard:[[1,'Bardic Inspiration'],[2,'Jack of All Trades'],[3,'Expertise'],[5,'Font of Inspiration']],
-  Cleric:[[1,'Spellcasting'],[2,'Channel Divinity'],[5,'Destroy Undead']],
-  Druid:[[1,'Spellcasting'],[2,'Wild Shape'],[2,'Druid Circle']],
-  Fighter:[[1,'Fighting Style'],[1,'Second Wind'],[2,'Action Surge'],[5,'Extra Attack']],
-  Monk:[[1,'Martial Arts'],[1,'Unarmored Defense'],[2,'Ki'],[5,'Stunning Strike']],
-  Paladin:[[1,'Divine Sense'],[1,'Lay on Hands'],[2,'Divine Smite'],[5,'Extra Attack']],
-  Ranger:[[1,'Favored Enemy'],[2,'Fighting Style'],[5,'Extra Attack']],
-  Rogue:[[1,'Expertise'],[1,'Sneak Attack Extra Damage'],[2,'Cunning Action'],[5,'Uncanny Dodge']],
-  Sorcerer:[[1,'Spellcasting'],[2,'Font of Magic'],[3,'Metamagic']],
-  Warlock:[[1,'Pact Magic'],[2,'Eldritch Invocations'],[3,'Pact Boon']],
-  Wizard:[[1,'Spellcasting'],[1,'Arcane Recovery'],[2,'Arcane Tradition']],
-  Artificer:[[1,'Magical Tinkering'],[2,'Infuse Item']],
-  'Blood Hunter':[[1,"Hunter's Bane"],[1,'Blood Maledict']]
+  Barbarian:[[1,'Rage: Bonus damage and resistance while raging'],[1,'Unarmored Defense: AC equals 10 + DEX + CON when unarmored'],[2,'Reckless Attack: Advantage on STR melee attacks; attacks against you have advantage'],[2,'Danger Sense: Advantage on DEX saves against visible effects'],[5,'Extra Attack: Attack twice'],[5,'Fast Movement: +10 ft speed while unarmored']],
+  Bard:[[1,'Bardic Inspiration: Give an inspiration die to an ally'],[2,'Jack of All Trades: Add half proficiency to non-proficient checks'],[2,'Song of Rest: Extra healing on short rests'],[3,'Expertise: Double proficiency in selected skills'],[5,'Font of Inspiration: Regain Bardic Inspiration on short rest']],
+  Cleric:[[1,'Spellcasting: WIS-based divine casting'],[1,'Divine Domain: Gain domain spells and features'],[2,'Channel Divinity: Use divine power'],[5,'Destroy Undead: Destroy weaker undead after Turn Undead']],
+  Druid:[[1,'Druidic: Secret druid language'],[1,'Spellcasting: WIS-based nature casting'],[2,'Wild Shape: Transform into beasts'],[2,'Druid Circle: Gain circle features']],
+  Fighter:[[1,'Fighting Style: Specialized combat training'],[1,'Second Wind: Heal 1d10 + fighter level'],[2,'Action Surge: Take one additional action'],[3,'Martial Archetype: Gain subclass features'],[5,'Extra Attack: Attack twice']],
+  Monk:[[1,'Martial Arts: Use DEX and bonus unarmed strike'],[1,'Unarmored Defense: AC equals 10 + DEX + WIS'],[2,'Ki: Spend ki for Flurry, Patient Defense, Step of the Wind'],[2,'Unarmored Movement: Increased speed'],[5,'Extra Attack: Attack twice'],[5,'Stunning Strike: Spend ki to stun']],
+  Paladin:[[1,'Divine Sense: Sense celestial, fiend, undead'],[1,'Lay on Hands: Healing pool'],[2,'Fighting Style: Specialized combat training'],[2,'Divine Smite: Spend spell slot for radiant damage'],[3,'Sacred Oath: Gain oath features'],[5,'Extra Attack: Attack twice']],
+  Ranger:[[1,'Favored Enemy: Track and recall lore about enemies'],[1,'Natural Explorer: Benefits in favored terrain'],[2,'Fighting Style: Specialized combat training'],[2,'Spellcasting: WIS-based ranger magic'],[3,'Ranger Archetype: Gain subclass features'],[5,'Extra Attack: Attack twice']],
+  Rogue:[[1,'Expertise: Double proficiency in selected skills/tools'],[1,'Sneak Attack: Extra damage once per turn'],[1,"Thieves' Cant: Secret rogue code"],[2,'Cunning Action: Dash, Disengage, or Hide as bonus action'],[3,'Roguish Archetype: Gain subclass features'],[5,'Uncanny Dodge: Halve damage from one attack']],
+  Sorcerer:[[1,'Spellcasting: CHA-based arcane casting'],[1,'Sorcerous Origin: Gain origin features'],[2,'Font of Magic: Sorcery points'],[3,'Metamagic: Modify spells with sorcery points']],
+  Warlock:[[1,'Otherworldly Patron: Gain patron features'],[1,'Pact Magic: CHA-based pact casting'],[2,'Eldritch Invocations: Gain occult upgrades'],[3,'Pact Boon: Gain pact gift']],
+  Wizard:[[1,'Spellcasting: INT-based arcane casting'],[1,'Arcane Recovery: Recover spell slots on short rest'],[2,'Arcane Tradition: Gain school features'],[5,'3rd-Level Spells: Access major magic such as Fireball or Counterspell']],
+  Artificer:[[1,'Magical Tinkering: Imbue tiny magical effects'],[1,'Spellcasting: INT-based artificer magic'],[2,'Infuse Item: Create magical infusions'],[3,'Artificer Specialist: Gain specialist features']],
+  'Blood Hunter':[[1,"Hunter's Bane: Supernatural tracking and lore"],[1,'Blood Maledict: Use blood curses'],[2,'Fighting Style: Specialized combat training'],[3,'Blood Hunter Order: Gain order features']]
 };
-
 const SPECIES_AUTO_FEATURES={
-  Human:['Versatile bonus configurations'], Elf:['Darkvision','Fey Ancestry','Trance meditation'], Dwarf:['Darkvision','Dwarven Resilience poison block'], Halfling:['Lucky rerolls','Brave vs frightened'], Dragonborn:['Draconic Ancestry payload','Elemental Breath Weapon'], Gnome:['Darkvision','Gnome Cunning saves'], 'Half-Elf':['Darkvision','Fey Ancestry','Skill Versatility masteries'], 'Half-Orc':['Darkvision','Relentless Endurance drop counter','Savage Attacks die scaling'], Tiefling:['Darkvision','Hellish Resistance fire node'], Aasimar:['Darkvision','Celestial Resistance damage drop'], Tabaxi:['Feline Agility dash speed','Cat\'s Claws tools'], Goliath:['Stone\'s Endurance mitigation roll','Powerful Build scaling'], Orc:['Aggressive forward charge action'], Firbolg:['Hidden Step invisibility','Firbolg Magic node link']
+  Human:['Versatile: Broad ability increases and adaptable background'], 'Variant Human':['Feat: Start with one feat and one skill proficiency'], Elf:['Darkvision: See in dim light','Fey Ancestry: Advantage against being charmed; magic cannot put you to sleep','Trance: Meditate instead of sleep'], 'High Elf':['Elf Weapon Training: Proficiency with classic elven weapons','Cantrip: Know one wizard cantrip'], 'Wood Elf':['Mask of the Wild: Hide when lightly obscured by natural phenomena','Fleet of Foot: Increased walking speed'], 'Dark Elf':['Superior Darkvision: Extended darkvision','Drow Magic: Gain drow spells as you level'], Dwarf:['Darkvision: See in dim light','Dwarven Resilience: Advantage against poison; resistance to poison damage'], 'Hill Dwarf':['Dwarven Toughness: Extra hit points'], 'Mountain Dwarf':['Dwarven Armor Training: Armor proficiency'], Halfling:['Lucky: Reroll natural 1s','Brave: Advantage against frightened'], 'Lightfoot Halfling':['Naturally Stealthy: Hide behind larger creatures'], 'Stout Halfling':['Stout Resilience: Advantage against poison'], 'Half-Elf':['Fey Ancestry: Advantage against charm; magic cannot put you to sleep','Skill Versatility: Gain two skill proficiencies'], 'Half-Orc':['Relentless Endurance: Drop to 1 HP instead of 0 once per long rest','Savage Attacks: Extra die on melee critical hits'], Dragonborn:['Draconic Ancestry: Breath weapon and damage resistance'], Gnome:['Gnome Cunning: Advantage on mental saves against magic'], Tiefling:['Darkvision: See in dim light','Hellish Resistance: Resistance to fire damage'], Aasimar:['Celestial Resistance: Resistance to necrotic and radiant damage','Healing Hands: Touch to heal'], Tabaxi:['Feline Agility: Burst of speed',"Cat\'s Claws: Climb speed and natural weapons"], Goliath:["Stone\'s Endurance: Reduce damage once per rest",'Powerful Build: Count as one size larger for carrying'], Orc:['Aggressive: Move toward enemies as bonus action','Powerful Build: Count as one size larger for carrying'], Firbolg:['Hidden Step: Brief invisibility','Firbolg Magic: Detect Magic and Disguise Self'], Githyanki:['Githyanki Psionics: Innate psionic magic']
 };
 
-const SKILLS = [
-  {name:'Acrobatics',   ab:'DEX'},{name:'Animal Handling',ab:'WIS'},{name:'Arcana',       ab:'INT'},{name:'Athletics',      ab:'STR'},{name:'Deception',    ab:'CHA'},{name:'History',        ab:'INT'},{name:'Insight',      ab:'WIS'},{name:'Intimidation',   ab:'CHA'},{name:'Investigation',ab:'INT'},{name:'Medicine',       ab:'WIS'},{name:'Nature',       ab:'INT'},{name:'Perception',     ab:'WIS'},{name:'Performance',  ab:'CHA'},{name:'Persuasion',     ab:'CHA'},{name:'Religion',     ab:'INT'},{name:'Sleight of Hand',ab:'DEX'},{name:'Stealth',      ab:'DEX'},{name:'Survival',       ab:'WIS'}
-];
+let rollLog=[],initiative=[],currentTurn=0,round=1,selectedRoller='DM';
+let spellSlots={},spellSlotsUsed={};
+let mapImageData=null,showGrid=false,gridTool='move',tokens={},assetRepo={maps:{},tokens:{}},sceneImageData=null;
+let editingIdx=null,pendingPfp=null,dbReady=false;
+window._lastSessionTs = Date.now();
 
-const SPELL_SLOTS = {
-  full: [null,[2],[3],[4,2],[4,3],[4,3,2],[4,3,3],[4,3,3,1],[4,3,3,2],[4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2,1],[4,3,3,3,2,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1,1],[4,3,3,3,2,1,1,1],[4,3,3,3,2,1,1,1,1],[4,3,3,3,3,1,1,1,1],[4,3,3,3,3,2,1,1,1],[4,3,3,3,3,2,2,1,1]],
-  half: [null,[0],[0],[2],[3],[4,2],[4,2],[4,3],[4,3],[4,3,2],[4,3,2],[4,3,3],[4,3,3],[4,3,3,1],[4,3,3,1],[4,3,3,2],[4,3,3,2],[4,3,3,3,1],[4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2]],
-  pact: [null,[1],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2],[2]]
-};
-
-// ── CORE ENGINES & COMPILERS ──────────────────────────────────────────
+// ── CORE ENGINES ───────────────────────────────────────────────────────
 function mod(score){return Math.floor((score-10)/2);}
 function modStr(score){const m=mod(score);return (m>=0?'+':'')+m;}
 function profBonus(p){const lvl=parseInt((p.cls||'').match(/\d+/)?.[0])||1;return PROF_BY_LEVEL[Math.min(lvl,20)-1]||2;}
 function normalizeSpeciesName(name){
-  const raw=(name||'').trim(); if(SPECIES_ALIASES[raw])return SPECIES_ALIASES[raw];
-  const found=Object.keys(SPECIES_BONUSES).find(k=>k.toLowerCase()===raw.toLowerCase()); return found||raw;
+  const raw=(name||'').trim();
+  if(SPECIES_ALIASES[raw])return SPECIES_ALIASES[raw];
+  const found=Object.keys(SPECIES_BONUSES).find(k=>k.toLowerCase()===raw.toLowerCase());
+  return found||raw;
 }
 function speciesBonusFor(name){return SPECIES_BONUSES[normalizeSpeciesName(name)]||{};}
 function speciesBonusForFull(race,subrace){
-  const rb=RACES_DB[race]?.bonuses||{}; const sb=subrace&&SUBRACES_DB[subrace]?.bonuses||{}; const out={};
-  ['STR','DEX','CON','INT','WIS','CHA'].forEach(ab=>out[ab]=(rb[ab]||0)+(sb[ab]||0)); out.speed=sb.speed||rb.speed||30; return out;
+  const rb=RACES_DB[race]?.bonuses||{};
+  const sb=subrace&&SUBRACES_DB[subrace]?.bonuses||{};
+  const out={};
+  ['STR','DEX','CON','INT','WIS','CHA'].forEach(ab=>out[ab]=(rb[ab]||0)+(sb[ab]||0));
+  out.speed=sb.speed||rb.speed||30;
+  return out;
 }
-function getFullSpeciesName(p){const race=p.species||'Human'; const sub=p.subspecies||''; return sub?`${race} (${sub})`:race;}
-function statFinal(p,ab){const base=p[ab.toLowerCase()]||10; const sp=speciesBonusForFull(p.species,p.subspecies); return base+(sp[ab]||0);}
+function getFullSpeciesName(p){
+  const race=p.species||'Human';
+  const sub=p.subspecies||'';
+  return sub?`${race} (${sub})`:race;
+}
+function statFinal(p,ab){
+  const base=p[ab.toLowerCase()]||10;
+  const sp=speciesBonusForFull(p.species,p.subspecies);
+  return base+(sp[ab]||0);
+}
 function makeClassString(cls,sub,lvl){return `${cls||'Fighter'}${sub?' · '+sub:''} · ${Math.max(1,Math.min(20,parseInt(lvl)||1))}`;}
 function featureLinesFor(p){
-  const cls=getClass(p), lvl=getLevel(p), species=normalizeSpeciesName(p.species); const lines=[];
+  const cls=getClass(p), lvl=getLevel(p), species=normalizeSpeciesName(p.species);
+  const lines=[];
   (SPECIES_AUTO_FEATURES[species]||SPECIES_AUTO_FEATURES[(species||'').split(' ')[0]]||[]).forEach(f=>lines.push(f));
-  (CLASS_AUTO_FEATURES[cls]||[]).forEach(([lv,f])=>{if(lvl>=lv)lines.push(f);}); return lines;
+  (CLASS_AUTO_FEATURES[cls]||[]).forEach(([lv,f])=>{if(lvl>=lv)lines.push(f);});
+  return lines;
 }
 function skillBonus(p,skill){
-  const ab=skill.ab; const base=mod(statFinal(p,ab)); const pb=profBonus(p);
-  const profs=(p.profSkills||'').split(',').map(s=>s.trim()); const experts=(p.expertSkills||'').split(',').map(s=>s.trim());
-  if(experts.includes(skill.name)) return base+pb*2; if(profs.includes(skill.name)) return base+pb; return base;
+  const ab=skill.ab;
+  const base=mod(statFinal(p,ab));
+  const pb=profBonus(p);
+  const profs=(p.profSkills||'').split(',').map(s=>s.trim());
+  const experts=(p.expertSkills||'').split(',').map(s=>s.trim());
+  if(experts.includes(skill.name)) return base+pb*2;
+  if(profs.includes(skill.name)) return base+pb;
+  return base;
 }
 function isProfSkill(p,name){return (p.profSkills||'').split(',').map(s=>s.trim()).includes(name);}
 function isExpertSkill(p,name){return (p.expertSkills||'').split(',').map(s=>s.trim()).includes(name);}
 function saveBonus(p,ab){
-  const base=mod(statFinal(p,ab)); const pb=profBonus(p); const cls=p.cls.split('·')[0].trim();
-  const saves=CLASS_SAVES[cls]||[]; return saves.includes(ab)?base+pb:base;
+  const base=mod(statFinal(p,ab));
+  const pb=profBonus(p);
+  const cls=p.cls.split('·')[0].trim();
+  const saves=CLASS_SAVES[cls]||[];
+  return saves.includes(ab)?base+pb:base;
 }
-function isProfSave(p,ab){const cls=p.cls.split('·')[0].trim(); return (CLASS_SAVES[cls]||[]).includes(ab);}
+function isProfSave(p,ab){const cls=p.cls.split('·')[0].trim();return (CLASS_SAVES[cls]||[]).includes(ab);}
 function getSpellSlots(p){
-  const ctype=p.caster||'none'; if(ctype==='none')return null; const lvl=Math.min(parseInt((p.cls||'').match(/\d+/)?.[0])||1,20);
-  const tbl=SPELL_SLOTS[ctype]; if(!tbl)return null;
+  const ctype=p.caster||'none';
+  if(ctype==='none')return null;
+  const lvl=Math.min(parseInt((p.cls||'').match(/\d+/)?.[0])||1,20);
+  const tbl=SPELL_SLOTS[ctype];
+  if(!tbl)return null;
   if(ctype==='pact'){
-    const slotLvl=lvl<=4?1:lvl<=6?2:lvl<=8?3:lvl<=9?4:5; const count=lvl===1?1:lvl<=10?2:lvl<=16?3:4;
-    const result=Array(9).fill(0);result[slotLvl-1]=count; return result;
+    const slotLvl=lvl<=4?1:lvl<=6?2:lvl<=8?3:lvl<=9?4:5;
+    const count=lvl===1?1:lvl<=10?2:lvl<=16?3:4;
+    const result=Array(9).fill(0);result[slotLvl-1]=count;
+    return result;
   }
-  const slots=tbl[lvl]; return slots||null;
+  const slots=tbl[lvl];
+  if(!slots)return null;
+  return slots;
 }
 function getLevel(p){return parseInt((p.cls||'').match(/\d+/)?.[0])||1;}
 function getClass(p){return p.cls.split('·')[0].trim();}
-function getSubclass(p){const parts=p.cls.split('·'); return parts.length>1?parts[1].trim():'';}
+function getSubclass(p){const parts=p.cls.split('·');return parts.length>1?parts[1].trim():'';}
 function hpColor(pct){return pct>.5?'#1D9E75':pct>.25?'#EF9F27':'#E24B4A';}
 function fmtBonus(n){return (n>=0?'+':'')+n;}
 function normalizeCharacter(p){p.xp=p.xp||0;p.inventory=p.inventory||[];p.charPin=p.charPin||'';if(!p.id)p.id='p_'+Date.now()+'_'+Math.floor(Math.random()*9999);return p;}
 
-// ── AUDIT SYSTEM NODES & SYNCHRONIZATION ─────────────────────────────
+// ── SYNC LAYER ────────────────────────────────────────────────────────
 function dbSet(path,val){if(!dbReady)return;window._set(window._ref(window._db,path),val);}
 function dbUpdate(path,val){if(!dbReady)return;window._update(window._ref(window._db,path),val);}
 function dbRemove(path){if(!dbReady)return;window._remove(window._ref(window._db,path));}
@@ -898,61 +920,79 @@ function initDb(){
   dbListen('sessionStatus', data => {
     if(!data || data.state !== 'ended') return;
     if(data.ts > (window._lastSessionTs || Date.now())) {
-      window._lastSessionTs = data.ts; if(!isDM) document.getElementById('email-prompt-bg').style.display = 'flex';
+      window._lastSessionTs = data.ts;
+      if(!isDM) {
+        document.getElementById('email-prompt-bg').style.display = 'flex';
+      }
     }
   });
+
   dbListen('sessionStatus/emails', emails => {
-    const el = document.getElementById('dm-collected-emails'); if(!el) return;
-    if(emails && Object.keys(emails).length) { window._collectedEmails = Object.values(emails); el.textContent = window._collectedEmails.join(', '); }
-    else { window._collectedEmails = []; el.textContent = 'Waiting for signatures...'; }
+    const el = document.getElementById('dm-collected-emails');
+    if(!el) return;
+    if(emails && Object.keys(emails).length) {
+      window._collectedEmails = Object.values(emails);
+      el.textContent = window._collectedEmails.join(', ');
+    } else {
+      window._collectedEmails = [];
+      el.textContent = 'Waiting for signatures...';
+    }
   });
-  initReactionListener(); setSyncStatus('live');
+
+  initReactionListener();
+  setSyncStatus('live');
 }
 
-// ── WORKSPACE IDENTITY SECURITY ROUTINES ──────────────────────────────
+// ── IDENTITY MANAGMENT ───────────────────────────────────────────────
 function applyRole(){
-  const dmBtn = document.getElementById('explicit-dm-login-btn');
-  if (isDM) {
-    if(dmBtn) { dmBtn.textContent = "Exit DM Mode"; dmBtn.style.borderColor = "#E24B4A"; dmBtn.style.color = "#f09595"; }
-  } else {
-    if(dmBtn) { dmBtn.textContent = "DM Login"; dmBtn.style.borderColor = "#7F77DD"; dmBtn.style.color = "#b8b4f8"; }
-  }
+  document.getElementById('role-label').textContent=isDM?'DM 👑':'Player';
+  document.getElementById('role-btn').className='role-badge'+(isDM?' dm':'');
   document.getElementById('upload-map-btn').style.display=isDM?'inline-block':'none';
   document.getElementById('add-token-btn').style.display=isDM?'inline-block':'none';
   const dashBtn=document.getElementById('dm-dashboard-btn'); if(dashBtn)dashBtn.style.display=isDM?'inline-block':'none';
   document.getElementById('clear-map-btn').style.display=(isDM&&mapImageData)?'inline-block':'none';
-  document.getElementById('add-char-btn').style.display = isDM ? 'inline-block' : 'none';
+  
+  document.getElementById('add-char-btn').style.display = (isDM || loggedInUser) ? 'inline-block' : 'none';
+  
   document.getElementById('xp-section').style.display=isDM?'block':'none';
   const itemSec=document.getElementById('dm-item-section'); if(itemSec)itemSec.style.display=isDM?'block':'none';
   document.getElementById('placeholder-text').textContent=isDM?'Upload a map using the toolbar above':'Waiting for DM to upload a map';
   populateCharacterSelect();populateDMControls();updateMusicPermissions();renderDockedDashboard();renderCurrentPanel();
 }
 function handleRoleClick(){
-  if(isDM){isDM=false;applyRole();return;} pinBuffer='';document.getElementById('pin-error').textContent='';updatePinDots();
+  if(isDM){isDM=false;applyRole();return;}
+  pinBuffer='';document.getElementById('pin-error').textContent='';updatePinDots();
   document.getElementById('pin-overlay').style.display='flex';
 }
 function closePinOverlay(){document.getElementById('pin-overlay').style.display='none';pinBuffer='';}
 function pinPress(k){
-  if(k==='')return; if(k==='⌫'){pinBuffer=pinBuffer.slice(0,-1);updatePinDots();return;} if(pinBuffer.length>=4)return; pinBuffer+=k;updatePinDots();
+  if(k==='')return;
+  if(k==='⌫'){pinBuffer=pinBuffer.slice(0,-1);updatePinDots();return;}
+  if(pinBuffer.length>=4)return;
+  pinBuffer+=k;updatePinDots();
   if(pinBuffer.length===4){setTimeout(()=>{
     if(pinBuffer===DM_PIN){document.getElementById('pin-overlay').style.display='none';isDM=true;applyRole();pinBuffer='';}
-    else {document.getElementById('pin-error').textContent='Incorrect PIN.';pinBuffer='';updatePinDots();}
+    else{document.getElementById('pin-error').textContent='Incorrect PIN.';pinBuffer='';updatePinDots();}
   },200);}
 }
 function updatePinDots(){for(let i=0;i<4;i++){const d=document.getElementById('pd'+i);if(d)d.classList.toggle('filled',i<pinBuffer.length);}}
 function setSyncStatus(s){document.getElementById('sync-dot').className='sync-dot'+(s==='live'?' live':'');}
 function switchTab(t){
-  currentPanel=t; document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',TAB_IDS[i]===t));
-  TAB_IDS.forEach(k=>document.getElementById(k+'-panel').classList.toggle('active',k===t)); renderCurrentPanel();
+  currentPanel=t;
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',TAB_IDS[i]===t));
+  TAB_IDS.forEach(k=>document.getElementById(k+'-panel').classList.toggle('active',k===t));
+  renderCurrentPanel();
 }
 
-// ── PARTY CARD PANEL VIEWPORT LAYER ──────────────────────────────────
+// ── PARTY CARD ENGINE ─────────────────────────────────────────────────
 function renderParty(){
-  party=party.map(normalizeCharacter); populateCharacterSelect();populateDMControls();
+  party=party.map(normalizeCharacter);
+  populateCharacterSelect();populateDMControls();
   document.getElementById('player-grid').innerHTML=party.map((p,i)=>playerCard(p,i)).join('');
 }
 function playerCard(p,i){
-  const pct=p.hp/p.maxHp,c=getCardColors(p); const av=p.pfp?`<img src="${p.pfp}" alt="${p.name}">`:`${p.name.slice(0,2).toUpperCase()}`;
+  const pct=p.hp/p.maxHp,c=getCardColors(p);
+  const av=p.pfp?`<img src="${p.pfp}" alt="${p.name}">`:`${p.name.slice(0,2).toUpperCase()}`;
   const conds=CONDITIONS.map(cd=>`<span class="cond-tag${(p.conds||[]).includes(cd)?' on':''}" onclick="event.stopPropagation();toggleCond(${i},'${cd}')">${cd}</span>`).join('');
   const lvl=getLevel(p);const cls=getClass(p);
   return `<div class="player-card${p.hp<=0?' downed':''}" style="border-top:3px solid ${c.border}" onclick="openSheet(${i})">
@@ -984,17 +1024,21 @@ function playerCard(p,i){
       <div class="mini-stat"><div class="mini-stat-val">${fmtBonus(mod(statFinal(p,'DEX')))}</div><div class="mini-stat-lbl">Init</div></div>
       <div class="mini-stat"><div class="mini-stat-val">${p.speed}ft</div><div class="mini-stat-lbl">Speed</div></div>
     </div>
-    ${renderXPBar(p)} ${renderInventoryPreview(p,c)}
+    ${renderXPBar(p)}
+    ${renderInventoryPreview(p,c)}
     <div class="cond-row">${conds}</div>
   </div>`;
 }
 function xpForNextLevel(p){const lvl=getLevel(p);return Math.max(50,lvl*100);} 
 function renderXPBar(p){const xp=p.xp||0,next=xpForNextLevel(p),pct=Math.min(100,(xp%next)/next*100);return `<div class="xp-card-line"><span>✨ XP</span><span>${xp} / ${next}</span></div><div class="xp-bar-wrap"><div class="xp-bar-fill" style="width:${pct}%"></div></div>`;}
 function renderInventoryPreview(p,c){
-  const inv=p.inventory||[]; const pi=party.indexOf(p);
+  const inv=p.inventory||[];
+  const pi=party.indexOf(p);
   const items=inv.slice(0,3).map((it,j)=>{
-    const name=typeof it==='object'?(it.name||'Item'):it; const uses=typeof it==='object'?it:null;
-    const usePct=uses&&uses.maxUses?Math.max(0,(uses.usesLeft/uses.maxUses)*100):100; const barColor=usePct>50?'#1D9E75':usePct>20?'#EF9F27':'#E24B4A';
+    const name=typeof it==='object'?(it.name||'Item'):it;
+    const uses=typeof it==='object'?it:null;
+    const usePct=uses&&uses.maxUses?Math.max(0,(uses.usesLeft/uses.maxUses)*100):100;
+    const barColor=usePct>50?'#1D9E75':usePct>20?'#EF9F27':'#E24B4A';
     return `<div style="display:flex;align-items:center;gap:3px;margin-top:2px">
       <div style="flex:1">
         <div style="font-size:9px;color:${c.color}dd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">📦 ${name}${uses&&uses.maxUses?` (${uses.usesLeft||0}/${uses.maxUses})`:''}${uses&&uses.qty>1?` ×${uses.qty}`:''}</div>
@@ -1007,7 +1051,8 @@ function renderInventoryPreview(p,c){
   return `<div class="inventory-card"><div class="inventory-card-title">Inventory (${inv.length})</div>${items||'<div style="font-size:9px;color:#555">No items yet</div>'}${more}</div>`;
 }
 function changeHp(i,type){
-  const inp=document.getElementById('hpval-'+i); const amt=parseInt(inp.value)||0;if(!amt)return;
+  const inp=document.getElementById('hpval-'+i);
+  const amt=parseInt(inp.value)||0;if(!amt)return;
   party[i].hp=type==='dmg'?Math.max(0,party[i].hp-amt):Math.min(party[i].maxHp,party[i].hp+amt);
   inp.value='';dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
 }
@@ -1016,43 +1061,59 @@ function quickHp(i,type,amt){
   dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
 }
 function removeInventoryItem(partyIdx,itemIdx){
-  if(!party[partyIdx])return; party[partyIdx].inventory.splice(itemIdx,1);
+  if(!party[partyIdx])return;
+  party[partyIdx].inventory.splice(itemIdx,1);
   dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
 }
 function useInventoryItem(partyIdx,itemIdx){
-  const p=party[partyIdx];if(!p)return; const item=p.inventory[itemIdx];if(!item||typeof item!=='object')return;
+  const p=party[partyIdx];if(!p)return;
+  const item=p.inventory[itemIdx];if(!item||typeof item!=='object')return;
   if((item.usesLeft||0)<=0){showToast(`${item.name} has no uses left!`,'#E24B4A','#f09595');return;}
-  item.usesLeft=Math.max(0,(item.usesLeft||0)-1); if(item.qty>1&&item.usesLeft===0){item.qty-=1;item.usesLeft=item.maxUses;}
-  dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm]))); renderParty();if(viewingCharIdx===partyIdx)renderSheetBody();
+  item.usesLeft=Math.max(0,(item.usesLeft||0)-1);
+  if(item.qty>1&&item.usesLeft===0){item.qty-=1;item.usesLeft=item.maxUses;}
+  dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
+  renderParty();if(viewingCharIdx===partyIdx)renderSheetBody();
   showToast(`🧪 Used ${item.name}! (${item.usesLeft} uses left)`,'#7F77DD','#b8b4f8');
 }
 function restoreInventoryItem(partyIdx,itemIdx){
-  const p=party[partyIdx];if(!p)return; const item=p.inventory[itemIdx];if(!item||typeof item!=='object')return;
-  item.usesLeft=item.maxUses||0; dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm]))); renderParty();if(viewingCharIdx===partyIdx)renderSheetBody();
+  const p=party[partyIdx];if(!p)return;
+  const item=p.inventory[itemIdx];if(!item||typeof item!=='object')return;
+  item.usesLeft=item.maxUses||0;
+  dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
+  renderParty();if(viewingCharIdx===partyIdx)renderSheetBody();
 }
 function toggleCond(i,c){
-  if(!party[i].conds)party[i].conds=[]; const idx=party[i].conds.indexOf(c);
-  idx>-1?party[i].conds.splice(idx,1):party[i].conds.push(c); dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
+  if(!party[i].conds)party[i].conds=[];
+  const idx=party[i].conds.indexOf(c);
+  idx>-1?party[i].conds.splice(idx,1):party[i].conds.push(c);
+  dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
 }
 
-// ── CHARACTER FULL LEDGER ENGINE ──
+// ── SHEET MODAL ACTIONS ──────────────────────────────────────────────
 function openSheet(i){
-  if(!canAccessCharacter(i,false))return; viewingCharIdx=i;currentSheetTab='core';
-  const p=party[i];const c=getCardColors(p); const av=document.getElementById('sheet-avatar');
+  if(!canAccessCharacter(i,false))return;
+  viewingCharIdx=i;currentSheetTab='core';
+  const p=party[i];const c=getCardColors(p);
+  const av=document.getElementById('sheet-avatar');
   av.style.cssText=`background:${c.bg};color:${c.color};border-color:${c.border}`;
   av.innerHTML=p.pfp?`<img src="${p.pfp}" alt="${p.name}">`:`${p.name.slice(0,2).toUpperCase()}`;
   document.getElementById('sheet-char-name').textContent=p.name;
   document.getElementById('sheet-char-sub').textContent=`Level ${getLevel(p)} · ${p.species||''} · ${getClass(p)}${getSubclass(p)?' · '+getSubclass(p):''}`;
-  document.querySelectorAll('.sheet-tab').forEach((b,i)=>b.classList.toggle('active',i===0)); renderSheetBody();
+  document.querySelectorAll('.sheet-tab').forEach((b,i)=>b.classList.toggle('active',i===0));
+  renderSheetBody();
   document.getElementById('sheet-modal-bg').style.display='flex';
 }
 function closeSheet(){document.getElementById('sheet-modal-bg').style.display='none';viewingCharIdx=null;}
 function switchSheetTab(t){
-  currentSheetTab=t; const tabs=['core','skills','features','spells','equipment','notes'];
-  document.querySelectorAll('.sheet-tab').forEach((b,i)=>b.classList.toggle('active',tabs[i]===t)); renderSheetBody();
+  currentSheetTab=t;
+  const tabs=['core','skills','features','spells','equipment','notes'];
+  document.querySelectorAll('.sheet-tab').forEach((b,i)=>b.classList.toggle('active',tabs[i]===t));
+  renderSheetBody();
 }
 function renderSheetBody(){
-  if(viewingCharIdx===null)return; const p=party[viewingCharIdx]; const body=document.getElementById('sheet-body');
+  if(viewingCharIdx===null)return;
+  const p=party[viewingCharIdx];
+  const body=document.getElementById('sheet-body');
   if(currentSheetTab==='core')body.innerHTML=renderSheetCore(p);
   else if(currentSheetTab==='skills')body.innerHTML=renderSheetSkills(p);
   else if(currentSheetTab==='features')body.innerHTML=renderSheetFeatures(p);
@@ -1061,22 +1122,38 @@ function renderSheetBody(){
   else if(currentSheetTab==='notes')body.innerHTML=renderSheetNotes(p);
 }
 function renderSheetCore(p){
-  const pb=profBonus(p); const STATS=['STR','DEX','CON','INT','WIS','CHA'];
+  const pb=profBonus(p);
+  const STATS=['STR','DEX','CON','INT','WIS','CHA'];
   const statBlocks=STATS.map(ab=>{
     const final=statFinal(p,ab);
-    return `<div class="stat-box"><div class="stat-name">${ab}</div><div class="stat-score">${final}</div><div class="stat-mod">${modStr(final)}</div></div>`;
+    return `<div class="stat-box">
+      <div class="stat-name">${ab}</div>
+      <div class="stat-score">${final}</div>
+      <div class="stat-mod">${modStr(final)}</div>
+    </div>`;
   }).join('');
   const spellStat={Bard:'CHA',Cleric:'WIS',Druid:'WIS',Paladin:'CHA',Ranger:'WIS',Sorcerer:'CHA',Warlock:'CHA',Wizard:'INT',Artificer:'INT'};
-  const cls=getClass(p);const ss=spellStat[cls]; const spellDC=ss?8+pb+mod(statFinal(p,ss)):null; const spellAtk=ss?fmtBonus(pb+mod(statFinal(p,ss))):null; const pct=p.hp/p.maxHp;
+  const cls=getClass(p);const ss=spellStat[cls];
+  const spellDC=ss?8+pb+mod(statFinal(p,ss)):null;
+  const spellAtk=ss?fmtBonus(pb+mod(statFinal(p,ss))):null;
+  const pct=p.hp/p.maxHp;
   return `
   <div class="sheet-grid-2" style="margin-bottom:12px">
-    <div class="sheet-section"><h3>Ability Scores</h3><div class="stat-block">${statBlocks}</div></div>
+    <div class="sheet-section">
+      <h3>Ability Scores</h3>
+      <div class="stat-block">${statBlocks}</div>
+    </div>
     <div class="sheet-section">
       <h3>Combat</h3>
       <div class="combat-row" style="margin-bottom:10px">
         <div class="combat-box"><div class="combat-val">${p.ac}</div><div class="combat-lbl">AC</div></div>
         <div class="combat-box"><div class="combat-val">${fmtBonus(mod(statFinal(p,'DEX')))}</div><div class="combat-lbl">Initiative</div></div>
         <div class="combat-box"><div class="combat-val">${p.speed}ft</div><div class="combat-lbl">Speed</div></div>
+      </div>
+      <div class="combat-row">
+        <div class="combat-box"><div class="combat-val" style="font-size:14px">${fmtBonus(pb)}</div><div class="combat-lbl">Prof Bonus</div></div>
+        <div class="combat-box"><div class="combat-val">${p.pp}</div><div class="combat-lbl">Passive Perc</div></div>
+        ${spellDC?`<div class="combat-box"><div class="combat-val" style="font-size:14px">DC ${spellDC}</div><div class="combat-lbl">Spell Save</div></div>`:''}
       </div>
     </div>
   </div>
@@ -1088,34 +1165,55 @@ function renderSheetCore(p){
     </div>
     <div class="hp-edit-row">
       <input type="number" id="sheet-hp-amt" placeholder="amount" min="1">
-      <button onclick="sheetChangeHp('dmg')">− Damage</button><button onclick="sheetChangeHp('heal')">+ Heal</button>
+      <button onclick="sheetChangeHp('dmg')">− Damage</button>
+      <button onclick="sheetChangeHp('heal')">+ Heal</button>
     </div>
   </div>`;
 }
 function renderSheetSkills(p){
   const rows=SKILLS.map(sk=>{
     const bonus=skillBonus(p,sk);
-    return `<div class="skill-row"><div class="skill-prof${isExpertSkill(p,sk.name)?' exp':isProfSkill(p,sk.name)?' prof':''}"></div><div class="skill-bonus">${fmtBonus(bonus)}</div><div class="skill-name">${sk.name} <span style="color:#555">(${sk.ab})</span></div></div>`;
-  }).join(''); return `<div class="sheet-section"><h3>Skills</h3><div class="skill-list">${rows}</div></div>`;
+    return `<div class="skill-row">
+      <div class="skill-prof${isExpertSkill(p,sk.name)?' exp':isProfSkill(p,sk.name)?' prof':''}"></div>
+      <div class="skill-bonus">${fmtBonus(bonus)}</div>
+      <div class="skill-name">${sk.name} <span style="color:#555">(${sk.ab})</span></div>
+    </div>`;
+  }).join('');
+  return `<div class="sheet-section"><h3>Skills</h3><div class="skill-list">${rows}</div></div>`;
 }
 function renderSheetFeatures(p){
   const feats=(p.features||'').split('\n').filter(f=>f.trim());
   return `<div class="sheet-section"><h3>Features</h3><div class="feature-list">${feats.map(f=>`<div class="feature-item">${f}</div>`).join('')}</div></div>`;
 }
-function renderSheetSpells(p){return `<div class="sheet-section"><p style="color:#555">Spells Ledger Terminal active.</p></div>`;}
-function renderSheetEquipment(p){return `<div class="sheet-section"><p style="color:#555">Equipment config terminal active.</p></div>`;}
+function renderSheetSpells(p){
+  return `<div class="sheet-section"><p style="color:#555">Spells Ledger Terminal ready.</p></div>`;
+}
+function renderSheetEquipment(p){
+  return `<div class="sheet-section"><p style="color:#555">Equipment Node configured.</p></div>`;
+}
+// Placeholder functions to keep script running smoothly
 function renderSheetNotes(p) { return `<div class="sheet-section"><textarea class="notes-area" id="sheet-notes-area">${p.notes||''}</textarea><button onclick="saveSheetNotes()">Save</button></div>`; }
-function saveSheetNotes(){ if(viewingCharIdx===null)return; party[viewingCharIdx].notes=document.getElementById('sheet-notes-area').value; dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p]))); }
 function sheetChangeHp(type){
-  const i=viewingCharIdx; if(i===null)return; const amt=parseInt(document.getElementById('sheet-hp-amt').value)||0;
-  if(type==='dmg') party[i].hp=Math.max(0,party[i].hp-amt); else party[i].hp=Math.min(party[i].maxHp,party[i].hp+amt);
+  const i=viewingCharIdx; if(i===null)return;
+  const amt=parseInt(document.getElementById('sheet-hp-amt').value)||0;
+  if(type==='dmg') party[i].hp=Math.max(0,party[i].hp-amt);
+  else party[i].hp=Math.min(party[i].maxHp,party[i].hp+amt);
   dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p]))); renderSheetBody(); renderParty();
+}
+function saveSheetNotes(){
+  const i=viewingCharIdx; if(i===null)return;
+  party[i].notes=document.getElementById('sheet-notes-area').value;
+  dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));
 }
 
 function populateBuildControls(){
-  const clsSel=document.getElementById('modal-class-name'); if(clsSel&&!clsSel.options.length)clsSel.innerHTML=CLASS_OPTIONS.map(c=>`<option value="${c}">${c}</option>`).join('');
-  const speciesSel=document.getElementById('modal-species'); if(speciesSel&&!speciesSel.options.length) speciesSel.innerHTML=Object.keys(RACES_DB).sort().map(s=>`<option value="${s}">${s}</option>`).join('');
-  const armorSel=document.getElementById('modal-armor'); if(armorSel&&!armorSel.options.length)armorSel.innerHTML=ARMOR_OPTIONS.map(a=>`<option value="${a}">${a}</option>`).join('');
+  const clsSel=document.getElementById('modal-class-name');
+  if(clsSel&&!clsSel.options.length)clsSel.innerHTML=CLASS_OPTIONS.map(c=>`<option value="${c}">${c}</option>`).join('');
+  const speciesSel=document.getElementById('modal-species');
+  if(speciesSel&&!speciesSel.options.length)
+    speciesSel.innerHTML=Object.keys(RACES_DB).sort().map(s=>`<option value="${s}">${s}</option>`).join('');
+  const armorSel=document.getElementById('modal-armor');
+  if(armorSel&&!armorSel.options.length)armorSel.innerHTML=ARMOR_OPTIONS.map(a=>`<option value="${a}">${a}</option>`).join('');
 }
 function onSpeciesChange(){}
 function updateSubraceTraits(subrace){}
@@ -1124,227 +1222,331 @@ function populateSubclassOptions(){}
 function syncClassString(){}
 function syncSkillSelectsToText(){}
 
-// ── SYSTEM MODAL LOGISTICS TUNNELS ─────────────────────────────────────
+// ── CUSTOM LOGISTICS ENGINE ───────────────────────────────────────────
 function openModal(i){
-  if(!canAccessCharacter(i,true))return; editingIdx=i;pendingPfp=null;const p=party[i]; document.getElementById('modal-name').value=p.name; populateBuildControls();
-  document.getElementById('modal-maxhp').value=p.maxHp; document.getElementById('modal-hp').value=p.hp; document.getElementById('modal-ac').value=p.ac;
-  document.getElementById('modal-pp').value=p.pp; document.getElementById('modal-speed').value=p.speed; document.getElementById('modal-features').value=p.features||'';
-  document.getElementById('modal-equipment').value=p.equipment||''; document.getElementById('modal-spells').value=p.spells||''; document.getElementById('modal-bg').style.display='flex';
+  if(!canAccessCharacter(i,true))return;
+  editingIdx=i;pendingPfp=null;const p=party[i];
+  document.getElementById('modal-name').value=p.name;
+  populateBuildControls();
+  document.getElementById('modal-maxhp').value=p.maxHp;
+  document.getElementById('modal-hp').value=p.hp;
+  document.getElementById('modal-ac').value=p.ac;
+  document.getElementById('modal-pp').value=p.pp;
+  document.getElementById('modal-speed').value=p.speed;
+  document.getElementById('modal-features').value=p.features||'';
+  document.getElementById('modal-equipment').value=p.equipment||'';
+  document.getElementById('modal-spells').value=p.spells||'';
+  document.getElementById('modal-bg').style.display='flex';
 }
 function saveModal(){
-  if(editingIdx===null)return; const p=party[editingIdx]; p.name=document.getElementById('modal-name').value;
-  p.maxHp=parseInt(document.getElementById('modal-maxhp').value)||p.maxHp; p.hp=parseInt(document.getElementById('modal-hp').value)||p.hp;
-  p.ac=parseInt(document.getElementById('modal-ac').value)||p.ac; p.pp=parseInt(document.getElementById('modal-pp').value)||p.pp; p.speed=parseInt(document.getElementById('modal-speed').value)||p.speed;
-  p.features=document.getElementById('modal-features').value; p.equipment=document.getElementById('modal-equipment').value; p.spells=document.getElementById('modal-spells').value;
-  dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm]))); closeModal();renderParty();
+  if(editingIdx===null)return;
+  const p=party[editingIdx];
+  p.name=document.getElementById('modal-name').value;
+  p.maxHp=parseInt(document.getElementById('modal-maxhp').value)||p.maxHp;
+  p.hp=parseInt(document.getElementById('modal-hp').value)||p.hp;
+  p.ac=parseInt(document.getElementById('modal-ac').value)||p.ac;
+  p.pp=parseInt(document.getElementById('modal-pp').value)||p.pp;
+  p.speed=parseInt(document.getElementById('modal-speed').value)||p.speed;
+  p.features=document.getElementById('modal-features').value;
+  p.equipment=document.getElementById('modal-equipment').value;
+  p.spells=document.getElementById('modal-spells').value;
+  dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
+  closeModal();renderParty();
 }
 function closeModal(){document.getElementById('modal-bg').style.display='none';}
 function closeModalOnBg(e){if(e.target===document.getElementById('modal-bg'))closeModal();}
 function openAddChar(){
-  if(!isDM) return; const n=party.length+1;
+  if(!loggedInUser && !isDM) return;
+  const n=party.length+1;
   const p=normalizeCharacter({id:'p'+Date.now(),name:'New Hero '+n,cls:'Fighter · Champion · 1',species:'Human',hp:10,maxHp:10,ac:10,pp:10,speed:30,conds:[],color:n%COLORS.length});
   party.push(p);dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));renderParty();openModal(party.length-1);
 }
 function deleteCurrentCharacter(){}
-function populateCharacterSelect(){ const sel=document.getElementById('active-character');if(!sel)return; sel.innerHTML='<option value="spectator">👁 Spectator</option>'+party.map((p,i)=>`<option value="${i}">🧙 ${p.name}</option>`).join('');}
+function populateCharacterSelect(){
+  const sel=document.getElementById('active-character');if(!sel)return;
+  sel.innerHTML='<option value="spectator">👁 Spectator</option>'+party.map((p,i)=>`<option value="${i}">🧙 ${p.name}</option>`).join('');
+}
 function selectCharacter(val){activeCharacter=val;}
 function canAccessCharacter(i,requireEdit=false){return true;}
 function populateDMControls(){}
 function renderXPHotButtons(){}
 function awardXPFromDashboard(){}
 function clearXP(){}
+function giveDashboardItem(){}
 
-// ── SNAPCHAT MEDIA EDGE INTERFACES ───────────────────────────────────
+// ── MEDIA CONTROL ENGINE (COLLAPSIBLE / EDGE SNAPPING) ───────────────
+let mediaDockHidden = false;
+
 function toggleMediaDock() {
-  mediaDockHidden = !mediaDockHidden; const bottomDock = document.getElementById('map-media-dock'); const edgeTab = document.getElementById('right-media-tab');
-  if (mediaDockHidden) { bottomDock.style.setProperty('display', 'none', 'important'); edgeTab.style.display = 'flex'; }
-  else { bottomDock.style.display = 'flex'; edgeTab.style.display = 'none'; }
-}
-function openCustomGifDialog() { document.getElementById('gif-modal-bg').style.display = 'flex'; }
-function sendGifReaction(url, name) {
-  const who = getCurrentRoller(); const reaction = { emoji: '🖼️', label: `Sent GIF: ${name}`, who, ts: Date.now(), gifUrl: url };
-  dbSet('reactions/latest', reaction); showGifReactionLocally(reaction); document.getElementById('gif-modal-bg').style.display = 'none';
-}
-function submitCustomGif() {
-  const url = document.getElementById('custom-gif-url').value.trim();if(!url) return; sendGifReaction(url, 'Custom Asset'); document.getElementById('custom-gif-url').value = '';
-}
-function showGifReactionLocally(r) {
-  const bubble = document.createElement('div'); bubble.className = 'reaction-bubble'; bubble.style.left = (25 + Math.random() * 50) + 'vw'; bubble.style.bottom = '80px';
-  bubble.innerHTML = `<img src="${r.gifUrl}" style="width:120px; height:120px; object-fit:cover; border-radius:12px; border:2px solid #7F77DD; box-shadow:0 4px 15px rgba(0,0,0,0.5);">`;
-  document.body.appendChild(bubble); setTimeout(() => bubble.remove(), 3000); showToast(`🖼️ ${r.who} broadcasted an animation clip!`);
+  mediaDockHidden = !mediaDockHidden;
+  const bottomDock = document.getElementById('map-media-dock');
+  const edgeTab = document.getElementById('right-media-tab');
+  
+  if (mediaDockHidden) {
+    bottomDock.style.setProperty('display', 'none', 'important');
+    edgeTab.style.display = 'flex';
+  } else {
+    bottomDock.style.display = 'flex';
+    edgeTab.style.display = 'none';
+  }
 }
 
-// ── AUDIO MIXER SOUND LOGISTICS ENGINE (RESTORED PROMPTS) ─────────────
+// ── SOUND FX ENGINE (YOUTUBE FRAME INJECTIONS) ────────────────────────
 function fireAudioInjectedNode(videoId, duration = 8000, start = 0) {
-  const container = document.getElementById('yt-container');if(!container) return;
+  const container = document.getElementById('yt-container');
+  if(!container) return;
   container.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${videoId}?autoplay=1&start=${start}&controls=0" allow="autoplay"></iframe>`;
-  if(duration > 0) setTimeout(() => { container.innerHTML = ''; }, duration);
+  if(duration > 0) {
+    setTimeout(() => { container.innerHTML = ''; }, duration);
+  }
 }
 
+// ── CUSTOM ANIMATED ACTIONS & CELEBRATIONS ────────────────────────────
 function triggerNat20Announce(rollerName) {
-  const banner = document.createElement('div'); banner.className = 'crit-banner';
-  banner.innerHTML = `<h2>CRITICAL HIT!</h2><p>${rollerName} Rolled a Natural 20!</p>`; document.body.appendChild(banner);
+  // Spawn critical graphic banner announcement
+  const banner = document.createElement('div');
+  banner.className = 'crit-banner';
+  banner.innerHTML = `<h2>CRITICAL HIT!</h2><p>${rollerName} Rolled a Natural 20!</p>`;
+  document.body.appendChild(banner);
+  
+  // Spawn decorative fireworks particle items
   const colors = ['#ffe1a1', '#7F77DD', '#5dcaa5', '#ffc2d7', '#fff'];
   for (let i = 0; i < 45; i++) {
-    const p = document.createElement('div'); p.className = 'firework'; p.style.left = (20 + Math.random() * 60) + 'vw'; p.style.top = (15 + Math.random() * 50) + 'vh';
-    p.style.background = colors[Math.floor(Math.random() * colors.length)]; p.style.setProperty('--x', (Math.random() * 300 - 120) + 'px'); p.style.setProperty('--y', (Math.random() * 300 - 120) + 'px');
-    p.style.animation = `firework 1.3s cubic-bezier(0.1, 0.8, 0.3, 1) forwards`; p.style.animationDelay = (Math.random() * 0.4) + 's'; document.body.appendChild(p); setTimeout(() => p.remove(), 2000);
+    const p = document.createElement('div');
+    p.className = 'firework';
+    p.style.left = (20 + Math.random() * 60) + 'vw';
+    p.style.top = (15 + Math.random() * 50) + 'vh';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.setProperty('--x', (Math.random() * 300 - 120) + 'px');
+    p.style.setProperty('--y', (Math.random() * 300 - 120) + 'px');
+    p.style.animation = `firework 1.3s cubic-bezier(0.1, 0.8, 0.3, 1) forwards`;
+    p.style.animationDelay = (Math.random() * 0.4) + 's';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 2000);
   }
-  fireAudioInjectedNode('JN8Mswri5fc', 6000); setTimeout(() => banner.remove(), 3500);
+  
+  // Fire Pokémon Capture Theme sound loop
+  fireAudioInjectedNode('JN8Mswri5fc', 6000);
+  setTimeout(() => banner.remove(), 3500);
 }
 
 function triggerNat1Announce(rollerName) {
-  const overlay = document.createElement('div'); overlay.className = 'sad-overlay';
+  // Spawn full viewport dark overlay mask
+  const overlay = document.createElement('div');
+  overlay.className = 'sad-overlay';
   overlay.innerHTML = `<div class="sad-face">😭<div style="font-size:24px; color:#fff; font-weight:bold; margin-top:10px; text-shadow:0 2px 8px #000;">CRITICAL FUMBLE! (${rollerName} rolled a 1)</div></div>`;
-  document.body.appendChild(overlay); fireAudioInjectedNode('IxTiL8GVw-M', 3000, 0); setTimeout(() => overlay.remove(), 3500);
+  document.body.appendChild(overlay);
+  
+  // Execute first 3 seconds of Awkward Pause Anime edit tone
+  fireAudioInjectedNode('IxTiL8GLw-M', 3000, 0);
+  setTimeout(() => overlay.remove(), 3500);
 }
 
+// ── DICE LOGISTICS ───────────────────────────────────────────────────
 function quickRoll(sides) {
-  fireAudioInjectedNode('9cWg_SAWv5A', 1500); // Trigger Roll SFX
-  const roll = Math.ceil(Math.random() * sides); const who = getCurrentRoller();
+  // Execute general dice roll auditory sample cue
+  fireAudioInjectedNode('9cWg_SAWv5A', 1500);
+  
+  const roll = Math.ceil(Math.random() * sides);
+  const who = getCurrentRoller();
+  
   rollLog.unshift({who, label: `1d${sides} (Quick)`, rolls: [roll], total: roll, nat: (sides===20?roll:null), ts: Date.now()});
-  dbSet('rollLog', rollLog); renderDice();
+  dbSet('rollLog', rollLog);
+  renderDice();
+  
+  // Evaluate global natural milestone indicators
   if (sides === 20) {
-    if (roll === 20) triggerNat20Announce(who); else if (roll === 1) triggerNat1Announce(who);
+    if (roll === 20) {
+      triggerNat20Announce(who);
+    } else if (roll === 1) {
+      triggerNat1Announce(who);
+    }
   }
 }
 
-function rollFromBtn(sides) {
-  fireAudioInjectedNode('9cWg_SAWv5A', 1500); // Trigger Roll SFX
-  const rollMod = parseInt(document.getElementById('roll-mod custom')?.value) || 0;
-  const count = parseInt(document.getElementById('roll-count custom')?.value) || 1;
+function rollDieCustom(sides, count, rollMod, label) {
+  // Standard full panel roll execution hook
+  fireAudioInjectedNode('9cWg_SAWv5A', 1500);
   const rolls = Array.from({length: count}, () => Math.ceil(Math.random() * sides));
-  const total = rolls.reduce((a, b) => a + b, 0) + rollMod; const who = getCurrentRoller();
+  const total = rolls.reduce((a, b) => a + b, 0) + rollMod;
+  const who = getCurrentRoller();
   const nat = (sides === 20 && count === 1) ? rolls[0] : null;
-  rollLog.unshift({who, label: `${count}d${sides}`, rolls, total, nat, mod: rollMod, ts: Date.now()});
-  dbSet('rollLog', rollLog); renderDice();
-  if (nat === 20) triggerNat20Announce(who); if (nat === 1) triggerNat1Announce(who);
+  
+  rollLog.unshift({who, label, rolls, total, nat, mod: rollMod, ts: Date.now()});
+  dbSet('rollLog', rollLog);
+  renderDice();
+  
+  if (nat === 20) triggerNat20Announce(who);
+  if (nat === 1) triggerNat1Announce(who);
 }
 
-// ── INITIATIVE INTEGRATION (FF7 THEME TRIGGERS) ────────────────────────
-function rollAllInit(evt) {
-  if(evt && evt.preventDefault) evt.preventDefault(); if(!isDM) return;
-  fireAudioInjectedNode('OMJLxfCWVb8', 10000, 0); // Execute FF7 Initiative Theme Prompt Loop (10s)
-  showToast('⚔️ Rolling table initiative systems...');
-  const playerEntries = party.map(p => {
-    const dex = statFinal(p, 'DEX'); const raw = Math.ceil(Math.random() * 20);
-    return { id: p.id, name: p.name, type: 'player', init: raw + mod(dex), hp: p.hp, maxHp: p.maxHp, color: p.color, dex };
-  });
-  initiative = [...playerEntries]; currentTurn = 0; round = 1; pushInit(); renderInit();
-  if(currentPanel !== 'init') switchTab('init');
+// ── GIF BROADCAST CONFIGURE ─────────────────────────────────────────
+function openCustomGifDialog() {
+  document.getElementById('gif-modal-bg').style.display = 'flex';
 }
 
-// ── INVENTORY ALLOCATION (ITEM ACQUIRED THEME TRIGGERS) ────────────────
-function giveItem(partyIdx, itemName, desc, maxUses, qty) {
-  if(!isDM || !party[partyIdx]) return; if(!party[partyIdx].inventory) party[partyIdx].inventory = [];
-  fireAudioInjectedNode('rgUksX6eM0Y', 10000, 0); // Execute Item Fanfare Theme Prompt Loop (10s)
-  const item = maxUses ? { name: itemName, desc: desc || '', maxUses: parseInt(maxUses) || 0, usesLeft: parseInt(maxUses) || 0, qty: parseInt(qty) || 1 } : { name: itemName, desc: desc || '' };
-  party[partyIdx].inventory.push(item); dbSet('party', Object.fromEntries(party.map((p, k) => [k, p])));
-  dbSet('inventoryEvents/latest', { partyIdx, itemName, playerName: party[partyIdx].name, ts: Date.now() });
-  renderParty(); showToast(`🎁 Allocated ${itemName} to ${party[partyIdx].name}`);
+function sendGifReaction(url, name) {
+  const who = getCurrentRoller();
+  const reaction = { emoji: '🖼️', label: `Sent GIF: ${name}`, who, ts: Date.now(), gifUrl: url };
+  dbSet('reactions/latest', reaction);
+  showGifReactionLocally(reaction);
+  document.getElementById('gif-modal-bg').style.display = 'none';
 }
 
-function giveDMItem() {
-  const name = document.getElementById('item-name custom')?.value.trim(); const idx = parseInt(document.getElementById('item-target custom')?.value);
-  if(!name || isNaN(idx)) return; giveItem(idx, name, '', 0, 1); document.getElementById('item-name custom').value = '';
-}
-function giveDashboardItem() {
-  const name = document.getElementById('dash-item-name custom')?.value.trim(); const idx = parseInt(document.getElementById('dash-item-target custom')?.value);
-  if(!name || isNaN(idx)) return; giveItem(idx, name, '', 0, 1); document.getElementById('dash-item-name custom').value = '';
+function submitCustomGif() {
+  const url = document.getElementById('custom-gif-url').value.trim();
+  if(!url) return;
+  sendGifReaction(url, 'Custom Asset');
+  document.getElementById('custom-gif-url').value = '';
 }
 
-// ── REVENUE REPORT DISPATCH SCHEDULERS ────────────────────────────────
+function showGifReactionLocally(r) {
+  const bubble = document.createElement('div');
+  bubble.className = 'reaction-bubble';
+  bubble.style.left = (25 + Math.random() * 50) + 'vw';
+  bubble.style.bottom = '80px';
+  bubble.innerHTML = `<img src="${r.gifUrl}" style="width:120px; height:120px; object-fit:cover; border-radius:12px; border:2px solid #7F77DD; box-shadow:0 4px 15px rgba(0,0,0,0.5);">`;
+  document.body.appendChild(bubble);
+  setTimeout(() => bubble.remove(), 3000);
+  
+  showToast(`🖼️ ${r.who} broadcasted an animation clip!`);
+}
+
+// ── SESSION COMPILATION & ROUTING ────────────────────────────────────
 function completeSessionExecution() {
-  if(!isDM) return; const notes = document.getElementById('dm-notes-main')?.value || ''; const log = document.getElementById('dm-session-log')?.value || '';
-  let report = `CAMPAIGN SUMMARY STATEMENTS\nCompiled: ${new Date().toLocaleDateString()}\n\n== DM NOTES ==\n${notes}\n\n== SESSION CHRONICLE ==\n${log}\n\n== TIMELINE ROLLS ==\n`;
-  rollLog.forEach(r => { report += `[${formatRollTime(r.ts)}] ${r.who} checked ${r.label} -> Total: ${r.total}\n`; });
-  document.getElementById('dm-final-report-area').value = report; dbSet('sessionStatus', { state: 'ended', ts: Date.now() });
-  dbRemove('sessionStatus/emails'); document.getElementById('dm-report-bg').style.display = 'flex';
+  if(!isDM) return;
+  const notes = document.getElementById('dm-notes-main')?.value || '';
+  const log = document.getElementById('dm-session-log')?.value || '';
+  
+  let report = `CAMPAIGN CHRONICLES & REPORT\nCompiled: ${new Date().toLocaleDateString()}\n\n`;
+  report += `== SESSION NOTES ==\n${notes}\n\n`;
+  report += `== CHRONICLE LOG ==\n${log}\n\n`;
+  report += `== TIMELINE DICE ROLL LOG ==\n`;
+  
+  rollLog.forEach(r => {
+    report += `[${formatRollTime(r.ts)}] ${r.who} rolled ${r.label} -> Total: ${r.total}\n`;
+  });
+  
+  document.getElementById('dm-final-report-area').value = report;
+  dbSet('sessionStatus', { state: 'ended', ts: Date.now() });
+  
+  // Wipe out previous entries inside the signature line lists
+  dbRemove('sessionStatus/emails');
+  document.getElementById('dm-report-bg').style.display = 'flex';
 }
+
 function submitPlayerEmail() {
-  const email = document.getElementById('player-email-input').value.trim(); if(!email || !email.includes('@')) return alert('Input valid email address.');
-  const id = 'mail_' + Date.now(); window._set(window._ref(window._db, 'sessionStatus/emails/' + id), email);
-  document.getElementById('email-prompt-bg').style.display = 'none'; showToast('📬 Delivery target address synchronized.');
+  const email = document.getElementById('player-email-input').value.trim();
+  if(!email || !email.includes('@')) return alert('Please input a valid email route destination line.');
+  
+  const id = 'mail_' + Date.now();
+  window._set(window._ref(window._db, 'sessionStatus/emails/' + id), email);
+  document.getElementById('email-prompt-bg').style.display = 'none';
+  showToast('📬 Destination line synchronized with DM terminal.');
 }
+
 function generateMailto() {
-  const body = document.getElementById('dm-final-report-area').value; const recipients = window._collectedEmails ? window._collectedEmails.join(',') : '';
-  const subject = encodeURIComponent('D&D Campaign Chronicles Summary Dispatch Statement'); window.open(`mailto:${recipients}?subject=${subject}&body=${encodeURIComponent(body)}`, '_blank');
+  const body = document.getElementById('dm-final-report-area').value;
+  const recipients = window._collectedEmails ? window._collectedEmails.join(',') : '';
+  const subject = encodeURIComponent('D&D Campaign Chronicles Session Report Statement');
+  const mailtoUrl = `mailto:${recipients}?subject=${subject}&body=${encodeURIComponent(body)}`;
+  
+  window.open(mailtoUrl, '_blank');
 }
+
+// Override legacy function hooks to support custom workflow integrations
 function endSessionDiceReport() { completeSessionExecution(); }
+const originalInitReactionListener = window.initReactionListener;
+window.initReactionListener = function() {
+  dbListen('reactions/latest', data => {
+    if (data && Date.now() - (data.ts || 0) < 8000) {
+      if (data.gifUrl) showGifReactionLocally(data);
+      else showReactionLocally(data);
+    }
+  });
+};
 
-// ── VIEWPORT COMPILER HANDLERS ────────────────────────────────────────
-function renderDice(){
-  const rollMod=parseInt(document.getElementById('roll-mod custom')?.value)||0; const count=parseInt(document.getElementById('roll-count custom')?.value)||1;
-  const latest=rollLog[0]; const who=getCurrentRoller(); const el=document.getElementById('dice-wrap'); if(!el)return;
-  el.innerHTML = `
-    <div class="roll-controls">
-      <span style="font-size:12px;color:#888">Roller Context Node: <b style="color:#b8b4f8">${who}</b></span>
-      <input id="roll-count custom" type="number" min="1" max="20" value="${count}" style="width:50px">
-      <span style="font-size:12px;color:#666">modifier:</span><input id="roll-mod custom" type="number" value="${rollMod}" style="width:50px">
-      ${isDM?`<button onclick="appendDiceReportToNotes()">Log to Notes</button><button onclick="clearDiceHistory()">Clear Timeline</button>`:''}
-    </div>
-    <div class="dice-grid">${[4,6,8,10,12,20,100].map(d=>`<button class="die-btn" onclick="rollFromBtn(${d})">${dieSVG(d)}</button>`).join('')}</div>
-    <div class="roll-result">
-      ${latest?`<div class="roll-big">${latest.total}</div><div class="roll-detail">${latest.who} rolled ${latest.label}${latest.mod?` (${fmtBonus(latest.mod)})`:''}${latest.nat===20?' 🎉 NAT 20':latest.nat===1?' 💀 CRIT FAIL':''}</div>`:'<div style="color:#555;font-size:14px">Roll dice array engines...</div>'}
-    </div>
-    <p class="section-title">Timeline History Statement</p><div class="roll-log">${rollLog.map(r=>`<div class="log-entry">[${formatRollTime(r.ts)}] ${r.who} executed ${r.label} -> <b>${r.total}</b></div>`).join('')}</div>`;
-}
-
-function renderInit(){
-  ensureInitList(); const sorted=initiative; const el=document.getElementById('init-wrap'); if(!el)return;
-  el.innerHTML = `
-    <div class="init-controls">
-      ${isDM?`<button type="button" onclick="rollAllInit(event)">🎲 Roll Table Initiative All</button><button onclick="nextTurn()">Next Turn →</button><button onclick="resetInit()">Reset Turn Order</button>`:`<button onclick="rollMyInit()">🎲 Execute Player Initiative Check</button>`}
-      <span class="round-badge">Combat Round ${round}</span>
-    </div>
-    <div class="init-list">${sorted.map((c,idx)=>`<div class="init-row ${idx===currentTurn?'active-turn':''} ${c.type==='enemy'?'enemy-row':''}"><b>[${c.init||0}]</b> ${c.name} (${c.type}) ${c.hp?`[${c.hp} HP]`:''}</div>`).join('')}</div>
-    ${isDM?`<p class="section-title">Inject Hostile Entity Node</p>
-    <div class="add-enemy-form">
-      <input id="enemy-name" placeholder="Entity Tag" style="width:115px"><input id="enemy-init" type="number" placeholder="Init" style="width:50px"><input id="enemy-hp" type="number" placeholder="HP" style="width:50px"><button onclick="addEnemy()">Deploy</button>
-    </div>`:''}`;
-}
-
-function renderSpellsTab(){
-  const casters=party.filter(p=>p.caster&&p.caster!=='none'); const el=document.getElementById('spells-wrap'); if(!el)return;
-  el.innerHTML = casters.length?casters.map(p=>`<p class="section-title">${p.name} Ledger Matrix</p><div style="font-size:12px; color:#aaa;">Slots database grid array configured.</div>`).join(''):'<p style="color:#555">No active slot casters synchronized.</p>';
-}
-
+// ── MAP RENDERING BACKWARDS COMPATIBILITY ────────────────────────────
 function uploadMap(e){
-  const file=e.target.files[0];if(!file)return; const reader=new FileReader();
-  reader.onload=ev=>{ mapImageData=ev.target.result; applyMapImage(mapImageData); dbUpdate('map',{img:mapImageData}); }; reader.readAsDataURL(file);
+  const file=e.target.files[0];if(!file)return;const reader=new FileReader();
+  reader.onload=ev=>{
+    mapImageData=ev.target.result;applyMapImage(mapImageData);document.getElementById('map-placeholder').style.display='none';
+    if(isDM)document.getElementById('clear-map-btn').style.display='inline-block';
+    dbUpdate('map',{img:mapImageData});
+  };
+  reader.readAsDataURL(file);e.target.value='';
 }
 function applyMapImage(src){
   const img=document.getElementById('map-img');img.style.display='block';img.src=src;
   img.onload=()=>{
     const canvas=document.getElementById('map-canvas');canvas.style.width=img.naturalWidth+'px';canvas.style.height=img.naturalHeight+'px';
-    document.getElementById('map-placeholder').style.display='none'; drawGrid();renderTokens();
+    document.getElementById('map-placeholder').style.display='none';drawGrid();renderTokens();
   };
 }
-function clearMap(){ if(!isDM)return; mapImageData=null; document.getElementById('map-img').style.display='none'; document.getElementById('map-placeholder').style.display='flex'; dbRemove('map'); }
-function toggleGrid(){showGrid=!showGrid; drawGrid(); if(isDM)dbUpdate('map',{grid:showGrid});}
-function drawGrid(){ const gc=document.getElementById('grid-overlay'); if(!gc)return; gc.getContext('2d').clearRect(0,0,gc.width,gc.height); }
-function setTool(t){gridTool=t;}
-function renderTokens(){}
-function addEnemy(){
-  const name=document.getElementById('enemy-name').value; const init=parseInt(document.getElementById('enemy-init').value)||0; const hp=parseInt(document.getElementById('enemy-hp').value)||10;
-  initiative.push({name, type:'enemy', init, hp, maxHp:hp}); pushInit(); renderInit();
+function clearMap(){
+  if(!isDM)return;mapImageData=null;const img=document.getElementById('map-img');img.src='';img.style.display='none';
+  document.getElementById('map-placeholder').style.display='flex';document.getElementById('clear-map-btn').style.display='none';
+  const gc=document.getElementById('grid-overlay');gc.getContext('2d').clearRect(0,0,gc.width,gc.height);dbRemove('map');
 }
-function nextTurn(){ if(initiative.length) currentTurn=(currentTurn+1)%initiative.length; pushInit(); renderInit(); }
-function resetInit(){ initiative=[]; currentTurn=0; round=1; pushInit(); renderInit(); }
-function appendDiceReportToNotes(){}
-function clearDiceHistory(){}
-function showToast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2000);}
-function showReactionLocally(r){}
-function getCurrentRoller(){return isDM?'DM':'Player';}
-function formatRollTime(ts){return new Date(ts).toLocaleTimeString();}
+function toggleGrid(){showGrid=!showGrid;document.getElementById('grid-btn').textContent='⊞ Grid: '+(showGrid?'ON':'OFF');drawGrid();if(isDM)dbUpdate('map',{grid:showGrid});}
+function drawGrid(){
+  const img=document.getElementById('map-img'),gc=document.getElementById('grid-overlay');
+  if(!showGrid||!img.naturalWidth){gc.getContext('2d').clearRect(0,0,gc.width,gc.height);return;}
+  gc.width=img.naturalWidth;gc.height=img.naturalHeight;gc.style.width=img.naturalWidth+'px';gc.style.height=img.naturalHeight+'px';
+  const ctx=gc.getContext('2d');ctx.clearRect(0,0,gc.width,gc.height);ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=1;
+  for(let x=0;x<=gc.width;x+=GRID_SIZE){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,gc.height);ctx.stroke();}
+  for(let y=0;y<=gc.height;y+=GRID_SIZE){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(gc.width,y);ctx.stroke();}
+}
+function setTool(t){gridTool=t;document.getElementById('tool-move').classList.toggle('active-tool',t==='move');document.getElementById('tool-pan').classList.toggle('active-tool',t==='pan');}
+function renderTokens(){
+  const layer=document.getElementById('tokens-layer');layer.innerHTML='';
+  Object.values(tokens).forEach(tok=>layer.appendChild(createTokenEl(tok)));
+}
+function createTokenEl(tok){
+  const col=tok.cardColor||COLORS[tok.color||0],div=document.createElement('div');
+  div.className='token'+(tok.type==='enemy'?' enemy-token':'');div.id='token-'+tok.id;div.style.cssText=`left:${tok.x}px;top:${tok.y}px;background:${col.bg};border-color:${tok.type==='enemy'?'#E24B4A':col.border};color:${col.color}`;
+  if(tok.pfp){const img=document.createElement('img');img.src=tok.pfp;img.alt=tok.name;div.appendChild(img);}
+  else div.textContent=(tok.name||'?').slice(0,2).toUpperCase();
+  const bar=document.createElement('div');bar.className='token-hp-bar';const fill=document.createElement('div');fill.className='token-hp-fill';
+  const pct=tok.maxHp?tok.hp/tok.maxHp:1;fill.style.cssText=`width:${Math.max(0,pct*100)}%;background:${hpColor(pct)}`;
+  bar.appendChild(fill);div.appendChild(bar);
+  const lbl=document.createElement('div');lbl.className='token-label';lbl.textContent=tok.name;div.appendChild(lbl);makeDraggable(div,tok.id);
+  div.addEventListener('contextmenu',e=>{e.preventDefault();if(isDM&&confirm('Remove '+tok.name+'?'))dbRemove('tokens/'+tok.id);});
+  return div;
+}
+function makeDraggable(el,tokId){
+  let ox,oy,dragging=false;
+  el.addEventListener('mousedown',e=>{if(gridTool!=='move')return;e.stopPropagation();dragging=true;const r=document.getElementById('map-canvas').getBoundingClientRect();ox=e.clientX-r.left-el.offsetLeft;oy=e.clientY-r.top-el.offsetTop;el.style.zIndex=999;});
+  document.addEventListener('mousemove',e=>{if(!dragging)return;const r=document.getElementById('map-canvas').getBoundingClientRect();let nx=e.clientX-r.left-ox,ny=e.clientY-r.top-oy;if(showGrid){nx=Math.round(nx/GRID_SIZE)*GRID_SIZE;ny=Math.round(ny/GRID_SIZE)*GRID_SIZE;}el.style.left=Math.max(0,nx)+'px';el.style.top=Math.max(0,ny)+'px';});
+  document.addEventListener('mouseup',()=>{if(!dragging)return;dragging=false;el.style.zIndex='';dbUpdate('tokens/'+tokId,{x:parseInt(el.style.left),y:parseInt(el.style.top)});});
+}
+function uploadRepoAsset(e,type){const file=e.target.files[0];if(!file||!isDM)return;fileToDataURL(file,data=>{if(!assetRepo[type])assetRepo[type]={};const id=type+'_'+Date.now();const name=type==='tokens'?(document.getElementById('repo-token-name').value||file.name):file.name;const hp=parseInt(document.getElementById('repo-token-hp')?.value)||10;assetRepo[type][id]={id,name,data,hp};dbSet('assetRepo',assetRepo);renderAssetRepo();e.target.value='';});}
+function renderAssetRepo(){
+  const ml=document.getElementById('repo-map-list');if(ml){const maps=assetRepo.maps||{};ml.innerHTML=Object.values(maps).map(a=>`<button class="asset-pill" onclick="loadRepoMap('${a.id}')">🗺 ${a.name}</button><button onclick="deleteRepoAsset('maps','${a.id}')">×</button>`).join('')||'<span style="font-size:11px;color:#666">No saved maps.</span>'; }
+  const tl=document.getElementById('repo-token-list');if(tl){const toks=assetRepo.tokens||{};tl.innerHTML=Object.values(toks).map(a=>`<button class="asset-pill" onclick="placeRepoToken('${a.id}')">💀 ${a.name}</button><button onclick="deleteRepoAsset('tokens','${a.id}')">×</button>`).join('')||'<span style="font-size:11px;color:#666">No saved tokens.</span>'; }
+}
+function uploadSceneImage(e){const file=e.target.files[0];if(!file||!isDM)return;fileToDataURL(file,data=>{sceneImageData=data;dbSet('sceneImage',data);applySceneImage(data);e.target.value='';});}
+function applySceneImage(data){const panel=document.getElementById('scene-panel'),img=document.getElementById('scene-img');if(!panel||!img)return;if(data){img.src=data;panel.style.display='block';}else{img.src='';panel.style.display='none';}}
+function clearSceneImage(){if(!isDM)return;sceneImageData=null;dbRemove('sceneImage');applySceneImage(null);}
+function awardXP(){}
+function clearXP(){}
+function showItemBanner(playerName,itemName){const banner=document.createElement('div');banner.className='item-banner';banner.innerHTML=`<div class="item-banner-name">🎁 ${playerName} received</div><div class="item-banner-item">⚔️ ${itemName}</div>`;document.body.appendChild(banner);setTimeout(()=>banner.remove(),3600);}
+function toggleMusic(){}
+function playPreset(name){}
+function playURL(){}
+function stopMusic(){}
 function updateMusicPermissions(){}
 function updateMusicUI(){}
 function applyMusicStateFromDB(){}
 function enablePlayerAudio(){}
 function setVol(v){}
+function ensureInitList(){}
+function sortedInitList(){return [];}
+function renderInit(){}
+const TAB_IDS=['map','party','dice','init','spells','notes'];
 
 // ── BOOTSTRAP INITIALIZATION ─────────────────────────────────────────
-let mediaDockHidden = false; applyRole();
+initLogin();
 </script>
 </body>
 </html>
