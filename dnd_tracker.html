@@ -28,60 +28,145 @@ window.dispatchEvent(new Event('db-ready'));
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,sans-serif;background:#1a1a1a;color:#eee;min-height:100vh;display:flex;flex-direction:column}
-nav{background:#111;border-bottom:1px solid #333;display:flex;align-items:center;gap:4px;padding:8px 12px;flex-wrap:wrap}
-nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:nowrap}
-.tab{padding:6px 14px;border-radius:8px;border:1px solid #333;font-size:13px;cursor:pointer;background:transparent;color:#aaa;white-space:nowrap}
+nav{background:#111;border-bottom:1px solid #333;display:flex;align-items:center;gap:4px;padding:8px 12px;flex-wrap:wrap;flex-shrink:0}
+nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:nowrap}
+.tab{padding:5px 12px;border-radius:8px;border:1px solid #333;font-size:12px;cursor:pointer;background:transparent;color:#aaa;white-space:nowrap}
 .tab.active{background:#2a2a2a;color:#fff;border-color:#555}
 .role-badge{margin-left:auto;font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid #444;color:#aaa;cursor:pointer;white-space:nowrap}
 .role-badge.dm{border-color:#7F77DD;color:#b8b4f8}
 .panel{display:none;flex:1;overflow:hidden}.panel.active{display:flex;flex-direction:column}
+
+/* ── MAP ── */
 #map-panel{position:relative;flex:1;overflow:hidden;background:#0d0d0d}
-.map-toolbar{background:#111;border-bottom:1px solid #333;padding:8px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0}
-.map-toolbar button{padding:5px 12px;border-radius:7px;border:1px solid #333;font-size:12px;cursor:pointer;background:#1e1e1e;color:#ccc;white-space:nowrap}
+.map-toolbar{background:#111;border-bottom:1px solid #333;padding:6px 12px;display:flex;gap:6px;align-items:center;flex-wrap:wrap;flex-shrink:0}
+.map-toolbar button{padding:4px 10px;border-radius:7px;border:1px solid #333;font-size:11px;cursor:pointer;background:#1e1e1e;color:#ccc;white-space:nowrap}
 .map-toolbar button:hover{background:#2a2a2a}
 .map-toolbar button.active-tool{border-color:#7F77DD;color:#b8b4f8}
-.map-toolbar .sep{width:1px;height:20px;background:#333;margin:0 2px;flex-shrink:0}
-.upload-map-label{padding:5px 12px;border-radius:7px;border:1px solid #333;font-size:12px;cursor:pointer;background:#1e1e1e;color:#ccc;white-space:nowrap;display:inline-block}
+.map-toolbar .sep{width:1px;height:18px;background:#333;margin:0 2px;flex-shrink:0}
+.upload-map-label{padding:4px 10px;border-radius:7px;border:1px solid #333;font-size:11px;cursor:pointer;background:#1e1e1e;color:#ccc;white-space:nowrap;display:inline-block}
 .upload-map-label:hover{background:#2a2a2a}
 .map-canvas-wrap{position:relative;width:100%;height:100%;overflow:auto}
 #map-canvas{position:relative;min-width:100%;min-height:100%;background:#0d0d0d}
 #map-img{position:absolute;top:0;left:0;user-select:none;pointer-events:none;display:none}
 #grid-overlay{position:absolute;top:0;left:0;pointer-events:none}
-.token{position:absolute;width:50px;height:50px;border-radius:50%;border:3px solid #fff;cursor:grab;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;text-align:center;overflow:hidden;user-select:none;box-shadow:0 2px 10px rgba(0,0,0,.7)}
+.token{position:absolute;width:48px;height:48px;border-radius:50%;border:3px solid #fff;cursor:grab;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;text-align:center;overflow:hidden;user-select:none;box-shadow:0 2px 10px rgba(0,0,0,.7)}
 .token:active{cursor:grabbing}
 .token.enemy-token{border-color:#E24B4A}
 .token img{width:100%;height:100%;object-fit:cover;border-radius:50%;pointer-events:none}
-.token-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:10px;white-space:nowrap;background:rgba(0,0,0,.8);padding:2px 6px;border-radius:4px;pointer-events:none;color:#fff}
+.token-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:10px;white-space:nowrap;background:rgba(0,0,0,.8);padding:2px 5px;border-radius:4px;pointer-events:none;color:#fff}
 .token-hp-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:#333}
 .token-hp-fill{height:100%;transition:width .3s}
 #map-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#444;gap:12px;pointer-events:none}
+
+/* ── PARTY ── */
 .party-wrap{flex:1;overflow-y:auto;padding:1rem}
-.player-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
-.player-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:1rem;position:relative}
+.player-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.player-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:.9rem;position:relative;cursor:pointer;transition:border-color .15s}
+.player-card:hover{border-color:#555}
 .player-card.downed{opacity:.6;border-color:#E24B4A}
-.edit-btn{position:absolute;top:10px;right:10px;background:transparent;border:none;cursor:pointer;font-size:15px;color:#666}
-.card-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;overflow:hidden;border:2px solid transparent}
+.view-sheet-btn{position:absolute;top:10px;right:36px;background:transparent;border:none;cursor:pointer;font-size:13px;color:#666;padding:2px}
+.view-sheet-btn:hover{color:#aaa}
+.edit-btn{position:absolute;top:10px;right:10px;background:transparent;border:none;cursor:pointer;font-size:13px;color:#666}
+.card-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;overflow:hidden;border:2px solid transparent}
 .avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.card-name{font-size:15px;font-weight:500;color:#fff}
-.card-sub{font-size:12px;color:#888}
-.hp-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.hp-label{font-size:12px;color:#666;width:24px}
-.hp-bar-wrap{flex:1;height:7px;background:#2a2a2a;border-radius:4px;overflow:hidden}
+.card-name{font-size:14px;font-weight:500;color:#fff}
+.card-sub{font-size:11px;color:#888}
+.hp-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.hp-label{font-size:11px;color:#666;width:22px}
+.hp-bar-wrap{flex:1;height:6px;background:#2a2a2a;border-radius:4px;overflow:hidden}
 .hp-bar{height:100%;border-radius:4px;transition:width .3s}
-.hp-nums{font-size:13px;font-weight:500;min-width:52px;text-align:right;color:#ccc}
-.hp-btns{display:flex;gap:4px;margin-bottom:8px}
-.hp-btns button{border:1px solid #333;border-radius:7px;padding:3px 8px;font-size:12px;cursor:pointer;background:#2a2a2a;color:#ccc}
-.hp-input{width:44px;border:1px solid #333;border-radius:7px;padding:3px 6px;font-size:12px;text-align:center;background:#111;color:#eee}
-.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
-.mini-stat{text-align:center;background:#2a2a2a;border-radius:6px;padding:5px 2px}
-.mini-stat-val{font-size:14px;font-weight:500;color:#fff}
+.hp-nums{font-size:12px;font-weight:500;min-width:48px;text-align:right;color:#ccc}
+.hp-btns{display:flex;gap:4px;margin-bottom:7px}
+.hp-btns button{border:1px solid #333;border-radius:7px;padding:2px 7px;font-size:11px;cursor:pointer;background:#2a2a2a;color:#ccc}
+.hp-input{width:40px;border:1px solid #333;border-radius:7px;padding:2px 5px;font-size:11px;text-align:center;background:#111;color:#eee}
+.mini-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:6px}
+.mini-stat{text-align:center;background:#2a2a2a;border-radius:5px;padding:4px 2px}
+.mini-stat-val{font-size:13px;font-weight:500;color:#fff}
 .mini-stat-lbl{font-size:9px;color:#777;text-transform:uppercase;letter-spacing:.04em}
-.cond-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
-.cond-tag{font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;border:1px solid #333;color:#666;background:#1a1a1a}
+.cond-row{display:flex;gap:3px;flex-wrap:wrap;margin-top:6px}
+.cond-tag{font-size:9px;padding:2px 6px;border-radius:10px;cursor:pointer;border:1px solid #333;color:#666;background:#1a1a1a}
 .cond-tag.on{background:#3a1a0a;color:#F0997B;border-color:#D85A30}
+
+/* ── CHARACTER SHEET MODAL ── */
+.sheet-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;display:flex;align-items:stretch;justify-content:center;overflow:hidden}
+.sheet-modal{background:#141414;width:min(900px,100vw);max-height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.sheet-header{background:#111;border-bottom:1px solid #333;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.sheet-header .avatar{width:52px;height:52px;font-size:16px}
+.sheet-title{flex:1}
+.sheet-title h2{font-size:18px;font-weight:600;color:#fff}
+.sheet-title p{font-size:12px;color:#888;margin-top:2px}
+.sheet-close{background:transparent;border:1px solid #444;border-radius:7px;color:#aaa;cursor:pointer;padding:5px 12px;font-size:13px}
+.sheet-tabs{background:#0d0d0d;border-bottom:1px solid #222;display:flex;gap:0;flex-shrink:0}
+.sheet-tab{padding:8px 16px;font-size:12px;cursor:pointer;color:#666;border-bottom:2px solid transparent;background:transparent;border-top:none;border-left:none;border-right:none}
+.sheet-tab.active{color:#b8b4f8;border-bottom-color:#7F77DD}
+.sheet-body{flex:1;overflow-y:auto;padding:1rem}
+
+/* sheet sections */
+.sheet-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sheet-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.sheet-section{background:#1e1e1e;border:1px solid #2a2a2a;border-radius:10px;padding:12px}
+.sheet-section h3{font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.stat-block{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.stat-box{text-align:center;background:#111;border-radius:8px;padding:8px 4px}
+.stat-name{font-size:9px;color:#666;text-transform:uppercase;letter-spacing:.05em}
+.stat-score{font-size:20px;font-weight:700;color:#fff;line-height:1}
+.stat-mod{font-size:12px;color:#7F77DD;margin-top:1px}
+.combat-row{display:flex;gap:8px;flex-wrap:wrap}
+.combat-box{flex:1;min-width:70px;text-align:center;background:#111;border-radius:8px;padding:8px 4px}
+.combat-val{font-size:18px;font-weight:700;color:#fff}
+.combat-lbl{font-size:9px;color:#666;text-transform:uppercase;letter-spacing:.04em}
+.skill-list{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.skill-row{display:flex;align-items:center;gap:6px;padding:3px 4px;border-radius:5px}
+.skill-row:hover{background:#2a2a2a}
+.skill-prof{width:10px;height:10px;border-radius:50%;border:1.5px solid #444;flex-shrink:0}
+.skill-prof.prof{background:#7F77DD;border-color:#7F77DD}
+.skill-prof.exp{background:#EF9F27;border-color:#EF9F27}
+.skill-bonus{font-size:12px;font-weight:600;min-width:24px;text-align:right;color:#ccc}
+.skill-name{font-size:11px;color:#aaa}
+.save-list{display:flex;flex-direction:column;gap:4px}
+.save-row{display:flex;align-items:center;gap:8px;padding:3px 4px;border-radius:5px}
+.save-row:hover{background:#2a2a2a}
+.save-prof{width:10px;height:10px;border-radius:50%;border:1.5px solid #444;flex-shrink:0}
+.save-prof.prof{background:#1D9E75;border-color:#1D9E75}
+.save-val{font-size:12px;font-weight:600;min-width:24px;text-align:right;color:#ccc}
+.save-name{font-size:11px;color:#aaa}
+.feature-list{display:flex;flex-direction:column;gap:6px}
+.feature-item{background:#111;border-radius:7px;padding:8px 10px}
+.feature-name{font-size:12px;font-weight:600;color:#b8b4f8}
+.feature-desc{font-size:11px;color:#888;margin-top:3px;line-height:1.5}
+.spell-level-block{margin-bottom:12px}
+.spell-level-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.spell-level-label{font-size:11px;font-weight:600;color:#7F77DD}
+.spell-slots-row{display:flex;gap:4px}
+.spell-slot-dot{width:12px;height:12px;border-radius:50%;border:1.5px solid #7F77DD;cursor:pointer}
+.spell-slot-dot.used{background:#7F77DD}
+.spell-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.spell-item{background:#111;border-radius:6px;padding:6px 8px;font-size:11px}
+.spell-item-name{color:#ccc;font-weight:500}
+.spell-item-detail{color:#666;margin-top:1px}
+.equip-list{display:flex;flex-direction:column;gap:5px}
+.equip-item{background:#111;border-radius:7px;padding:7px 10px;display:flex;justify-content:space-between;align-items:center}
+.equip-name{font-size:12px;color:#ccc;font-weight:500}
+.equip-detail{font-size:11px;color:#666}
+.hp-edit-row{display:flex;gap:6px;align-items:center;margin-top:8px}
+.hp-edit-row input{width:52px;border:1px solid #333;border-radius:7px;padding:4px 8px;font-size:13px;text-align:center;background:#111;color:#eee}
+.hp-edit-row button{padding:4px 10px;border:1px solid #333;border-radius:7px;font-size:12px;cursor:pointer;background:#2a2a2a;color:#ccc}
+.death-saves{display:flex;gap:12px;margin-top:10px}
+.death-save-group{display:flex;flex-direction:column;gap:4px}
+.death-save-label{font-size:10px;color:#666;text-transform:uppercase}
+.death-save-dots{display:flex;gap:5px}
+.death-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid #444;cursor:pointer}
+.death-dot.success{background:#1D9E75;border-color:#1D9E75}
+.death-dot.fail{background:#E24B4A;border-color:#E24B4A}
+.notes-area{width:100%;min-height:80px;border:1px solid #333;border-radius:8px;padding:8px;font-size:12px;font-family:system-ui;background:#111;color:#eee;resize:vertical}
+.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:8px;background:#2a2a2a;color:#888;margin:2px}
+.tag.purple{background:#1e1a3a;color:#b8b4f8}
+.proficiency-note{font-size:10px;color:#555;margin-top:6px}
+
+/* ── DICE ── */
 .dice-wrap{flex:1;overflow-y:auto;padding:1rem;max-width:700px;margin:0 auto;width:100%}
-.dice-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:1.25rem}
+.dice-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:1rem}
 .die-btn{border:1px solid #333;border-radius:10px;padding:10px 4px;cursor:pointer;background:#1e1e1e;text-align:center;transition:background .15s;display:flex;flex-direction:column;align-items:center;gap:4px}
 .die-btn:hover{background:#2a2a2a}
 .die-btn svg{display:block}
@@ -90,12 +175,12 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
 .roll-result{background:#111;border:1px solid #333;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
 .roll-big{font-size:52px;font-weight:600;line-height:1;color:#fff}
 .roll-detail{font-size:13px;color:#666;margin-top:4px}
-.roll-log{display:flex;flex-direction:column;gap:5px;max-height:300px;overflow-y:auto}
-.log-entry{padding:8px 12px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:7px;font-size:13px}
+.roll-log{display:flex;flex-direction:column;gap:5px;max-height:280px;overflow-y:auto}
+.log-entry{padding:7px 12px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:7px;font-size:13px}
 .log-top{display:flex;justify-content:space-between;align-items:center}
 .log-who{color:#666}
-.log-val{font-weight:600;color:#fff;display:flex;align-items:center;gap:6px}
-.log-breakdown{font-size:11px;color:#555;margin-top:3px;letter-spacing:.02em}
+.log-val{font-weight:600;color:#fff;display:flex;align-items:center;gap:5px}
+.log-breakdown{font-size:11px;color:#555;margin-top:2px}
 .log-nat{font-size:10px;padding:1px 6px;border-radius:6px}
 .log-nat.nat20{background:#1a3a0a;color:#7fc45a}
 .log-nat.nat1{background:#3a0a0a;color:#f09595}
@@ -103,6 +188,8 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
 @keyframes resultPop{0%{transform:scale(0.4);opacity:0}65%{transform:scale(1.18)}100%{transform:scale(1);opacity:1}}
 .die-btn.rolling svg{animation:dieShake 0.5s ease-out}
 .roll-big.popping{animation:resultPop 0.38s ease-out}
+
+/* ── INITIATIVE ── */
 .init-wrap{flex:1;overflow-y:auto;padding:1rem;max-width:700px;margin:0 auto;width:100%}
 .init-list{display:flex;flex-direction:column;gap:7px}
 .init-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#1e1e1e;border:1px solid #333;border-radius:9px}
@@ -112,14 +199,16 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
 .init-type{font-size:11px;color:#666}
 .init-hp-text{font-size:12px;color:#888}
 .init-controls{display:flex;gap:6px;align-items:center;margin-bottom:1rem;flex-wrap:wrap}
-.init-controls button{padding:6px 14px;border:1px solid #333;border-radius:7px;font-size:13px;cursor:pointer;background:#1e1e1e;color:#ccc}
+.init-controls button{padding:5px 12px;border:1px solid #333;border-radius:7px;font-size:12px;cursor:pointer;background:#1e1e1e;color:#ccc}
 .init-controls button:hover{background:#2a2a2a}
 .enemy-row{background:#2a0a0a;border-color:#5a2222}
 .enemy-row .init-name{color:#f09595}
 .round-badge{font-size:13px;color:#666;margin-left:auto}
 .add-enemy-form{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:1rem}
-.add-enemy-form input{border:1px solid #333;border-radius:7px;padding:6px 10px;font-size:13px;background:#1e1e1e;color:#eee}
-.add-enemy-form button{padding:6px 14px;border:1px solid #444;border-radius:7px;font-size:13px;cursor:pointer;background:#1e1e1e;color:#ccc}
+.add-enemy-form input{border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:12px;background:#1e1e1e;color:#eee}
+.add-enemy-form button{padding:5px 12px;border:1px solid #444;border-radius:7px;font-size:12px;cursor:pointer;background:#1e1e1e;color:#ccc}
+
+/* ── SPELLS TAB ── */
 .spells-wrap{flex:1;overflow-y:auto;padding:1rem}
 .spell-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:1rem}
 .slot-card{background:#1e1e1e;border:1px solid #333;border-radius:8px;padding:8px 10px}
@@ -127,9 +216,13 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
 .slot-dots{display:flex;gap:5px;flex-wrap:wrap}
 .slot-dot{width:15px;height:15px;border-radius:50%;border:1.5px solid #7F77DD;cursor:pointer}
 .slot-dot.used{background:#7F77DD}
+
+/* ── NOTES ── */
 .notes-wrap{flex:1;overflow-y:auto;padding:1rem;max-width:700px;margin:0 auto;width:100%}
-.dm-notes{width:100%;min-height:150px;border:1px solid #333;border-radius:8px;padding:10px;font-size:14px;font-family:system-ui,sans-serif;background:#1e1e1e;color:#eee;resize:vertical}
+.dm-notes{width:100%;min-height:150px;border:1px solid #333;border-radius:8px;padding:10px;font-size:13px;font-family:system-ui;background:#1e1e1e;color:#eee;resize:vertical}
 .section-title{font-size:11px;font-weight:600;color:#666;margin:1rem 0 .5rem;text-transform:uppercase;letter-spacing:.07em}
+
+/* ── EDIT MODAL ── */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:200}
 .modal{background:#1e1e1e;border:1px solid #444;border-radius:16px;padding:1.5rem;width:min(500px,95vw);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
 .modal h2{font-size:16px;font-weight:600;color:#fff}
@@ -141,7 +234,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
 .color-row{display:flex;gap:8px;flex-wrap:wrap}
 .color-swatch{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent}
 .color-swatch.selected{border-color:#fff}
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat-grid-edit{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
 .modal-actions button{padding:7px 20px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid #444}
 .btn-primary{background:#7F77DD;color:#fff;border-color:#7F77DD}
@@ -149,16 +242,17 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
 .sync-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;background:#666}
 .sync-dot.live{background:#1D9E75}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:#111}::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+@media(max-width:600px){.sheet-grid-2,.sheet-grid-3{grid-template-columns:1fr}.stat-block{grid-template-columns:repeat(3,1fr)}.skill-list{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <nav>
-  <h1>⚔️ D&D Tracker</h1>
+  <h1>⚔️ D&D</h1>
   <button class="tab active" onclick="switchTab('map')">🗺 Map</button>
   <button class="tab" onclick="switchTab('party')">👥 Party</button>
   <button class="tab" onclick="switchTab('dice')">🎲 Dice</button>
-  <button class="tab" onclick="switchTab('init')">⚔️ Initiative</button>
+  <button class="tab" onclick="switchTab('init')">⚔️ Init</button>
   <button class="tab" onclick="switchTab('spells')">✨ Spells</button>
   <button class="tab" onclick="switchTab('notes')">📝 Notes</button>
   <button class="role-badge" id="role-btn" onclick="toggleRole()">
@@ -167,20 +261,18 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
   </button>
 </nav>
 
+<!-- MAP -->
 <div id="map-panel" class="panel active">
   <div class="map-toolbar">
-    <label class="upload-map-label" id="upload-map-btn">
-      📁 Upload map
-      <input type="file" id="map-upload" accept="image/*" style="display:none" onchange="uploadMap(event)">
-    </label>
+    <label class="upload-map-label" id="upload-map-btn">📁 Map<input type="file" id="map-upload" accept="image/*" style="display:none" onchange="uploadMap(event)"></label>
     <div class="sep"></div>
-    <button id="tool-move" class="active-tool" onclick="setTool('move')">🖐 Move tokens</button>
-    <button id="tool-pan" onclick="setTool('pan')">✋ Pan map</button>
+    <button id="tool-move" class="active-tool" onclick="setTool('move')">🖐 Move</button>
+    <button id="tool-pan" onclick="setTool('pan')">✋ Pan</button>
     <div class="sep"></div>
     <button onclick="toggleGrid()" id="grid-btn">⊞ Grid: OFF</button>
-    <button onclick="clearMap()" id="clear-map-btn" style="display:none">🗑 Clear map</button>
+    <button onclick="clearMap()" id="clear-map-btn" style="display:none">🗑 Clear</button>
     <div class="sep"></div>
-    <button id="add-token-btn" style="display:none" onclick="openAddToken()">＋ Add token</button>
+    <button id="add-token-btn" style="display:none" onclick="openAddToken()">＋ Token</button>
   </div>
   <div class="map-canvas-wrap">
     <div id="map-canvas">
@@ -190,23 +282,26 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
     </div>
     <div id="map-placeholder">
       <div style="font-size:48px">🗺️</div>
-      <div style="font-size:14px" id="placeholder-text">Switch to DM mode (top right) then upload a map</div>
+      <div style="font-size:14px" id="placeholder-text">Switch to DM mode then upload a map</div>
     </div>
   </div>
 </div>
 
+<!-- PARTY -->
 <div id="party-panel" class="panel">
   <div class="party-wrap"><div class="player-grid" id="player-grid"></div></div>
 </div>
-<div id="dice-panel" class="panel">
-  <div class="dice-wrap" id="dice-wrap"></div>
-</div>
-<div id="init-panel" class="panel">
-  <div class="init-wrap" id="init-wrap"></div>
-</div>
-<div id="spells-panel" class="panel">
-  <div class="spells-wrap" id="spells-wrap"></div>
-</div>
+
+<!-- DICE -->
+<div id="dice-panel" class="panel"><div class="dice-wrap" id="dice-wrap"></div></div>
+
+<!-- INITIATIVE -->
+<div id="init-panel" class="panel"><div class="init-wrap" id="init-wrap"></div></div>
+
+<!-- SPELLS -->
+<div id="spells-panel" class="panel"><div class="spells-wrap" id="spells-wrap"></div></div>
+
+<!-- NOTES -->
 <div id="notes-panel" class="panel">
   <div class="notes-wrap">
     <p class="section-title">DM Notes</p>
@@ -216,6 +311,30 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
   </div>
 </div>
 
+<!-- CHARACTER SHEET MODAL -->
+<div id="sheet-modal-bg" class="sheet-modal-bg" style="display:none">
+  <div class="sheet-modal">
+    <div class="sheet-header">
+      <div class="avatar" id="sheet-avatar">🧙</div>
+      <div class="sheet-title">
+        <h2 id="sheet-char-name">Character</h2>
+        <p id="sheet-char-sub">Level 1 · Human · Fighter</p>
+      </div>
+      <button class="sheet-close" onclick="closeSheet()">✕ Close</button>
+    </div>
+    <div class="sheet-tabs">
+      <button class="sheet-tab active" onclick="switchSheetTab('core')">Core</button>
+      <button class="sheet-tab" onclick="switchSheetTab('skills')">Skills</button>
+      <button class="sheet-tab" onclick="switchSheetTab('features')">Features</button>
+      <button class="sheet-tab" onclick="switchSheetTab('spells')">Spells</button>
+      <button class="sheet-tab" onclick="switchSheetTab('equipment')">Equipment</button>
+      <button class="sheet-tab" onclick="switchSheetTab('notes')">Notes</button>
+    </div>
+    <div class="sheet-body" id="sheet-body"></div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
 <div id="modal-bg" class="modal-bg" style="display:none" onclick="closeModalOnBg(event)">
   <div class="modal">
     <h2>Edit Character</h2>
@@ -223,23 +342,42 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
       <div class="pfp-preview" id="modal-pfp-preview">🧙</div>
       <div>
         <label>Profile picture</label>
-        <button onclick="document.getElementById('pfp-file').click()" style="padding:6px 12px;border:1px solid #444;border-radius:7px;font-size:12px;cursor:pointer;background:#2a2a2a;color:#ccc">Upload image</button>
+        <button onclick="document.getElementById('pfp-file').click()" style="padding:5px 10px;border:1px solid #444;border-radius:7px;font-size:11px;cursor:pointer;background:#2a2a2a;color:#ccc">Upload</button>
         <input type="file" id="pfp-file" accept="image/*" style="display:none" onchange="handlePfpUpload(event)">
       </div>
     </div>
     <div><label>Character name</label><input type="text" id="modal-name"></div>
-    <div><label>Class & level</label><input type="text" id="modal-class"></div>
+    <div><label>Class, Subclass &amp; Level (e.g. Fighter · Champion · 5)</label><input type="text" id="modal-class"></div>
+    <div><label>Species</label><input type="text" id="modal-species"></div>
+    <div><label>Background</label><input type="text" id="modal-background"></div>
     <div><label>Card color</label><div class="color-row" id="modal-colors"></div></div>
-    <div class="stat-grid">
+    <div class="stat-grid-edit">
+      <div><label>STR (rolled)</label><input type="number" id="modal-str" min="1" max="20"></div>
+      <div><label>DEX (rolled)</label><input type="number" id="modal-dex" min="1" max="20"></div>
+      <div><label>CON (rolled)</label><input type="number" id="modal-con" min="1" max="20"></div>
+      <div><label>INT (rolled)</label><input type="number" id="modal-int" min="1" max="20"></div>
+      <div><label>WIS (rolled)</label><input type="number" id="modal-wis" min="1" max="20"></div>
+      <div><label>CHA (rolled)</label><input type="number" id="modal-cha" min="1" max="20"></div>
+    </div>
+    <div class="stat-grid-edit">
       <div><label>Max HP</label><input type="number" id="modal-maxhp" min="1"></div>
       <div><label>Current HP</label><input type="number" id="modal-hp" min="0"></div>
-      <div><label>AC</label><input type="number" id="modal-ac" min="1"></div>
-      <div><label>Passive Perc.</label><input type="number" id="modal-pp" min="1"></div>
-      <div><label>Speed (ft)</label><input type="number" id="modal-speed" min="0"></div>
-      <div><label>Spell slots</label>
-        <select id="modal-caster"><option value="none">None</option><option value="half">Half caster</option><option value="full">Full caster</option></select>
-      </div>
+      <div><label>Temp HP</label><input type="number" id="modal-temphp" min="0"></div>
     </div>
+    <div class="stat-grid-edit">
+      <div><label>AC</label><input type="number" id="modal-ac" min="1"></div>
+      <div><label>Speed (ft)</label><input type="number" id="modal-speed" min="0"></div>
+      <div><label>Passive Perc.</label><input type="number" id="modal-pp" min="1"></div>
+    </div>
+    <div><label>Armor worn</label><input type="text" id="modal-armor" placeholder="Splint, Chain Mail, Leather..."></div>
+    <div><label>Spell slots</label>
+      <select id="modal-caster"><option value="none">None</option><option value="half">Half caster (Paladin/Ranger)</option><option value="full">Full caster (Wizard/Cleric/etc)</option><option value="pact">Pact caster (Warlock)</option></select>
+    </div>
+    <div><label>Proficient skills (comma separated)</label><input type="text" id="modal-profskills" placeholder="Acrobatics, Stealth, Perception"></div>
+    <div><label>Expert skills (comma separated)</label><input type="text" id="modal-expertskills" placeholder="Stealth, Perception"></div>
+    <div><label>Features &amp; traits (one per line)</label><textarea id="modal-features" style="width:100%;height:80px;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:12px;background:#111;color:#eee;resize:vertical" placeholder="Sneak Attack: 3d6 extra damage&#10;Cunning Action: Dash/Disengage/Hide as bonus action"></textarea></div>
+    <div><label>Equipment (one per line, format: Name | detail)</label><textarea id="modal-equipment" style="width:100%;height:70px;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:12px;background:#111;color:#eee;resize:vertical" placeholder="Shortsword | 1d6 piercing, finesse&#10;Studded Leather | AC 12+DEX"></textarea></div>
+    <div><label>Known spells (one per line, format: Level | Name | School)</label><textarea id="modal-spells" style="width:100%;height:70px;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:12px;background:#111;color:#eee;resize:vertical" placeholder="0 | Fire Bolt | Evocation&#10;1 | Mage Armor | Abjuration&#10;2 | Misty Step | Conjuration"></textarea></div>
     <div class="modal-actions">
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
       <button class="btn-primary" onclick="saveModal()">Save</button>
@@ -247,30 +385,86 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
   </div>
 </div>
 
+<!-- Add Token Modal -->
 <div id="token-modal-bg" class="modal-bg" style="display:none">
   <div class="modal" style="max-width:360px">
-    <h2>Add Token to Map</h2>
+    <h2>Add Token</h2>
     <div><label>Type</label>
       <select id="token-type" onchange="updateTokenForm()">
         <option value="player">Player character</option>
         <option value="enemy">Enemy / NPC</option>
       </select>
     </div>
-    <div id="token-player-pick"><label>Select character</label><select id="token-player-sel"></select></div>
+    <div id="token-player-pick"><label>Character</label><select id="token-player-sel"></select></div>
     <div id="token-custom-fields" style="display:none">
       <div style="margin-bottom:8px"><label>Name</label><input type="text" id="token-name" placeholder="Goblin"></div>
       <div><label>HP</label><input type="number" id="token-hp-val" placeholder="10"></div>
     </div>
     <div class="modal-actions">
       <button class="btn-ghost" onclick="closeTokenModal()">Cancel</button>
-      <button class="btn-primary" onclick="placeToken()">Place on map</button>
+      <button class="btn-primary" onclick="placeToken()">Place</button>
     </div>
   </div>
 </div>
 
 <script>
+// ── SPECIES STAT BONUSES (from your spreadsheet) ──────────────────────
+const SPECIES_BONUSES = {
+  'Human':    {STR:1,DEX:1,CON:1,INT:1,WIS:1,CHA:1,speed:30},
+  'Elf':      {STR:0,DEX:2,CON:0,INT:0,WIS:0,CHA:0,speed:30},
+  'High Elf': {STR:0,DEX:2,CON:0,INT:1,WIS:0,CHA:0,speed:30},
+  'Wood Elf': {STR:0,DEX:2,CON:0,INT:0,WIS:1,CHA:0,speed:35},
+  'Dark Elf': {STR:0,DEX:2,CON:0,INT:0,WIS:0,CHA:1,speed:30},
+  'Dwarf':    {STR:0,DEX:0,CON:2,INT:0,WIS:0,CHA:0,speed:25},
+  'Hill Dwarf':{STR:0,DEX:0,CON:2,INT:0,WIS:1,CHA:0,speed:25},
+  'Mountain Dwarf':{STR:2,DEX:0,CON:2,INT:0,WIS:0,CHA:0,speed:25},
+  'Halfling': {STR:0,DEX:2,CON:0,INT:0,WIS:0,CHA:0,speed:25},
+  'Half-Elf': {STR:0,DEX:0,CON:0,INT:0,WIS:0,CHA:2,speed:30},
+  'Half-Orc': {STR:2,DEX:0,CON:1,INT:0,WIS:0,CHA:0,speed:30},
+  'Dragonborn':{STR:2,DEX:0,CON:0,INT:0,WIS:0,CHA:1,speed:30},
+  'Gnome':    {STR:0,DEX:0,CON:1,INT:2,WIS:0,CHA:0,speed:25},
+  'Tiefling': {STR:0,DEX:0,CON:0,INT:1,WIS:0,CHA:2,speed:30},
+  'Aasimar':  {STR:0,DEX:0,CON:0,INT:0,WIS:0,CHA:2,speed:30},
+  'Tabaxi':   {STR:0,DEX:2,CON:0,INT:0,WIS:0,CHA:1,speed:30},
+  'Goliath':  {STR:2,DEX:0,CON:1,INT:0,WIS:0,CHA:0,speed:30},
+  'Orc':      {STR:2,DEX:0,CON:1,INT:0,WIS:0,CHA:0,speed:30},
+  'Firbolg':  {STR:1,DEX:0,CON:0,INT:0,WIS:2,CHA:0,speed:30},
+  'Githyanki':{STR:2,DEX:0,CON:0,INT:1,WIS:0,CHA:0,speed:30},
+};
+
+const PROF_BY_LEVEL = [2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6];
+
+// ── CLASS SAVE PROFS ─────────────────────────────────────────────────
+const CLASS_SAVES = {
+  'Barbarian':['STR','CON'],'Bard':['DEX','CHA'],'Cleric':['WIS','CHA'],
+  'Druid':['INT','WIS'],'Fighter':['STR','CON'],'Monk':['STR','DEX'],
+  'Paladin':['WIS','CHA'],'Ranger':['STR','DEX'],'Rogue':['DEX','INT'],
+  'Sorcerer':['CON','CHA'],'Warlock':['WIS','CHA'],'Wizard':['INT','WIS'],
+  'Artificer':['CON','INT'],'Blood Hunter':['DEX','INT'],
+};
+
+// ── SKILLS ────────────────────────────────────────────────────────────
+const SKILLS = [
+  {name:'Acrobatics',   ab:'DEX'},{name:'Animal Handling',ab:'WIS'},
+  {name:'Arcana',       ab:'INT'},{name:'Athletics',      ab:'STR'},
+  {name:'Deception',    ab:'CHA'},{name:'History',        ab:'INT'},
+  {name:'Insight',      ab:'WIS'},{name:'Intimidation',   ab:'CHA'},
+  {name:'Investigation',ab:'INT'},{name:'Medicine',       ab:'WIS'},
+  {name:'Nature',       ab:'INT'},{name:'Perception',     ab:'WIS'},
+  {name:'Performance',  ab:'CHA'},{name:'Persuasion',     ab:'CHA'},
+  {name:'Religion',     ab:'INT'},{name:'Sleight of Hand',ab:'DEX'},
+  {name:'Stealth',      ab:'DEX'},{name:'Survival',       ab:'WIS'},
+];
+
+// ── FULL SPELL SLOT TABLE ─────────────────────────────────────────────
+const SPELL_SLOTS = {
+  full: [[0],[2],[3],[4,2],[4,3],[4,3,2],[4,3,3],[4,3,3,1],[4,3,3,2],[4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2,1],[4,3,3,3,2,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1,1],[4,3,3,3,2,1,1,1],[4,3,3,3,2,1,1,1,1],[4,3,3,3,3,1,1,1,1],[4,3,3,3,3,2,1,1,1],[4,3,3,3,3,2,2,1,1]],
+  half: [[0],[0],[2],[3],[3],[4,2],[4,2],[4,3],[4,3],[4,3,2],[4,3,2],[4,3,3],[4,3,3],[4,3,3,1],[4,3,3,1],[4,3,3,2],[4,3,3,2],[4,3,3,3,1],[4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2]],
+  pact: [[0],[1],[2],[2],[2],[2,1,0,0,0],[2,1,0,0,0],[2,0,1,0,0],[2,0,1,0,0],[2,0,0,1,0],[2,0,0,1,0],[2,0,0,0,1],[2,0,0,0,1],[2,0,0,0,2],[2,0,0,0,2],[2,0,0,0,2],[2,0,0,0,2],[2,0,0,0,3],[2,0,0,0,3],[2,0,0,0,3],[2,0,0,0,3]],
+};
+
 function dieSVG(sides){
-  const s=44,svgs={
+  const s=42,svgs={
     4:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><polygon points="22,4 40,38 4,38" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="30" text-anchor="middle" fill="#b8b4f8" font-size="13" font-weight="700">d4</text></svg>`,
     6:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><rect x="6" y="6" width="32" height="32" rx="6" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="28" text-anchor="middle" fill="#b8b4f8" font-size="13" font-weight="700">d6</text></svg>`,
     8:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><polygon points="22,3 41,22 22,41 3,22" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="27" text-anchor="middle" fill="#b8b4f8" font-size="13" font-weight="700">d8</text></svg>`,
@@ -280,6 +474,7 @@ function dieSVG(sides){
     100:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="27" text-anchor="middle" fill="#b8b4f8" font-size="10" font-weight="700">d100</text></svg>`,
   };return svgs[sides]||'';
 }
+
 const COLORS=[
   {bg:'#1a2a3a',color:'#7ab8f5',border:'#378ADD'},
   {bg:'#0d2a1a',color:'#5dcaa5',border:'#1D9E75'},
@@ -291,34 +486,108 @@ const COLORS=[
 ];
 const CONDITIONS=['Poisoned','Stunned','Blinded','Prone','Invisible','Frightened','Restrained','Charmed'];
 const GRID_SIZE=50;
-let isDM=false;
+
+// ── STATE ─────────────────────────────────────────────────────────────
+let isDM=false, currentPanel='map', currentSheetTab='core', viewingCharIdx=null;
 let party=[
-  {id:'p0',name:'Aria',cls:'Rogue 5',hp:38,maxHp:38,ac:15,pp:14,speed:35,conds:[],color:0,pfp:null,caster:'none'},
-  {id:'p1',name:'Brom',cls:'Fighter 5',hp:52,maxHp:52,ac:18,pp:12,speed:30,conds:[],color:1,pfp:null,caster:'none'},
-  {id:'p2',name:'Zyla',cls:'Wizard 5',hp:28,maxHp:28,ac:13,pp:15,speed:30,conds:[],color:2,pfp:null,caster:'full'},
-  {id:'p3',name:'Theron',cls:'Cleric 5',hp:44,maxHp:44,ac:16,pp:13,speed:25,conds:[],color:3,pfp:null,caster:'full'},
+  {id:'p0',name:'Aria',  cls:'Rogue · Thief · 5',       species:'Wood Elf',background:'Criminal',hp:38,maxHp:38,tempHp:0,ac:15,pp:14,speed:35,conds:[],color:0,pfp:null,caster:'none',
+   str:10,dex:18,con:12,int:12,wis:12,cha:10,
+   profSkills:'Acrobatics,Stealth,Sleight of Hand,Deception,Perception',
+   expertSkills:'Stealth,Perception',
+   features:'Sneak Attack: 3d6 extra damage once per turn\nCunning Action: Dash, Disengage, or Hide as bonus action\nUnreliable Talent: Min roll of 10 on proficient checks\nEvasion: No damage on DEX save success',
+   equipment:'Shortsword | 1d6 piercing, finesse, light\nDagger ×2 | 1d4 piercing, finesse, thrown\nStudded Leather | AC 12+DEX\nThieves\' Tools | +7 to use',
+   spells:'',armor:'Studded Leather',deathSaves:{s:[false,false,false],f:[false,false,false]},notes:''},
+  {id:'p1',name:'Brom',  cls:'Fighter · Champion · 5',   species:'Mountain Dwarf',background:'Soldier',hp:52,maxHp:52,tempHp:0,ac:18,pp:12,speed:25,conds:[],color:1,pfp:null,caster:'none',
+   str:18,dex:14,con:16,int:10,wis:12,cha:8,
+   profSkills:'Athletics,Intimidation,Perception,History',
+   expertSkills:'',
+   features:'Fighting Style: Great Weapon Fighting\nSecond Wind: 1d10+5 HP (Short Rest)\nAction Surge: Extra action (Short Rest)\nImproved Critical: Crit on 19-20\nExtra Attack: Attack twice',
+   equipment:'Greataxe | 1d12 slashing, heavy, two-handed\nHandaxe ×2 | 1d6 slashing, thrown\nSplint Armor | AC 17\nShield (stowed) | +2 AC',
+   spells:'',armor:'Splint',deathSaves:{s:[false,false,false],f:[false,false,false]},notes:''},
+  {id:'p2',name:'Zyla',  cls:'Wizard · School of Evocation · 5',species:'High Elf',background:'Sage',hp:28,maxHp:28,tempHp:0,ac:13,pp:15,speed:30,conds:[],color:2,pfp:null,caster:'full',
+   str:8,dex:14,con:12,int:18,wis:14,cha:10,
+   profSkills:'Arcana,History,Investigation,Medicine',
+   expertSkills:'',
+   features:'Arcane Recovery: Recover spell slots on short rest\nEvocation Savant: Learn evocation spells at half cost\nSculpt Spells: Protect allies from evocation spells\nPotent Cantrip: Cantrips deal half damage on save',
+   equipment:'Quarterstaff | 1d6 bludgeoning, versatile\nSpellbook | Arcane focus\nComponent Pouch | Spell materials\nScholarly Robes | AC 10+DEX',
+   spells:'0|Fire Bolt|Evocation\n0|Mage Hand|Conjuration\n0|Minor Illusion|Illusion\n0|Prestidigitation|Transmutation\n1|Mage Armor|Abjuration\n1|Magic Missile|Evocation\n1|Shield|Abjuration\n2|Misty Step|Conjuration\n2|Scorching Ray|Evocation\n3|Fireball|Evocation\n3|Counterspell|Abjuration',
+   armor:'Mage Armor (spell)',deathSaves:{s:[false,false,false],f:[false,false,false]},notes:''},
+  {id:'p3',name:'Theron',cls:'Cleric · Life Domain · 5', species:'Human',background:'Acolyte',hp:44,maxHp:44,tempHp:0,ac:16,pp:13,speed:30,conds:[],color:3,pfp:null,caster:'full',
+   str:14,dex:10,con:14,int:12,wis:18,cha:14,
+   profSkills:'Insight,Medicine,Persuasion,Religion,History',
+   expertSkills:'',
+   features:'Channel Divinity (1/Short Rest)\nDisciple of Life: Healing spells restore +2+spell level HP\nBlessed Healer: Heal yourself when healing others\nDestroy Undead: Auto-destroy CR 1/2 undead\nSpellcasting: WIS-based, DC 15',
+   equipment:'Mace | 1d6 bludgeoning\nShield | +2 AC\nChain Mail | AC 16\nHoly Symbol | Divine focus\nHealer\'s Kit | 10 uses',
+   spells:'0|Sacred Flame|Evocation\n0|Guidance|Divination\n0|Thaumaturgy|Transmutation\n1|Bless|Enchantment\n1|Cure Wounds|Evocation\n1|Healing Word|Evocation\n1|Guiding Bolt|Evocation\n2|Lesser Restoration|Abjuration\n2|Prayer of Healing|Evocation\n2|Spiritual Weapon|Evocation\n3|Revivify|Necromancy\n3|Spirit Guardians|Conjuration',
+   armor:'Chain Mail',deathSaves:{s:[false,false,false],f:[false,false,false]},notes:''},
 ];
 let rollLog=[],initiative=[],currentTurn=0,round=1,selectedRoller='DM';
-let spellSlots={},mapImageData=null,showGrid=false,gridTool='move',tokens={};
-let editingIdx=null,pendingPfp=null,dbReady=false,currentPanel='map';
+let spellSlots={},spellSlotsUsed={};
+let mapImageData=null,showGrid=false,gridTool='move',tokens={};
+let editingIdx=null,pendingPfp=null,dbReady=false;
 
-function dbSet(p,v){if(!dbReady)return;window._set(window._ref(window._db,p),v)}
-function dbUpdate(p,v){if(!dbReady)return;window._update(window._ref(window._db,p),v)}
-function dbRemove(p){if(!dbReady)return;window._remove(window._ref(window._db,p))}
-function dbListen(p,cb){if(!dbReady)return;window._onValue(window._ref(window._db,p),s=>cb(s.val()))}
+// ── HELPER FUNS ───────────────────────────────────────────────────────
+function mod(score){return Math.floor((score-10)/2);}
+function modStr(score){const m=mod(score);return (m>=0?'+':'')+m;}
+function profBonus(p){const lvl=parseInt((p.cls||'').match(/\d+/)?.[0])||1;return PROF_BY_LEVEL[Math.min(lvl,20)-1]||2;}
+function statFinal(p,ab){
+  const base=p[ab.toLowerCase()]||10;
+  const sp=SPECIES_BONUSES[p.species]||{};
+  return base+(sp[ab]||0);
+}
+function skillBonus(p,skill){
+  const ab=skill.ab;
+  const base=mod(statFinal(p,ab));
+  const pb=profBonus(p);
+  const profs=(p.profSkills||'').split(',').map(s=>s.trim());
+  const experts=(p.expertSkills||'').split(',').map(s=>s.trim());
+  if(experts.includes(skill.name)) return base+pb*2;
+  if(profs.includes(skill.name)) return base+pb;
+  return base;
+}
+function isProfSkill(p,name){return (p.profSkills||'').split(',').map(s=>s.trim()).includes(name);}
+function isExpertSkill(p,name){return (p.expertSkills||'').split(',').map(s=>s.trim()).includes(name);}
+function saveBonus(p,ab){
+  const base=mod(statFinal(p,ab));
+  const pb=profBonus(p);
+  const cls=p.cls.split('·')[0].trim();
+  const saves=CLASS_SAVES[cls]||[];
+  return saves.includes(ab)?base+pb:base;
+}
+function isProfSave(p,ab){const cls=p.cls.split('·')[0].trim();return (CLASS_SAVES[cls]||[]).includes(ab);}
+function getSpellSlots(p){
+  const ctype=p.caster||'none';
+  if(ctype==='none')return null;
+  const lvl=parseInt((p.cls||'').match(/\d+/)?.[0])||1;
+  const tbl=SPELL_SLOTS[ctype];
+  return tbl?tbl[Math.min(lvl,20)]||null:null;
+}
+function getLevel(p){return parseInt((p.cls||'').match(/\d+/)?.[0])||1;}
+function getClass(p){return p.cls.split('·')[0].trim();}
+function getSubclass(p){const parts=p.cls.split('·');return parts.length>1?parts[1].trim():'';}
+function hpColor(pct){return pct>.5?'#1D9E75':pct>.25?'#EF9F27':'#E24B4A';}
+function fmtBonus(n){return (n>=0?'+':'')+n;}
+
+// ── DB ────────────────────────────────────────────────────────────────
+function dbSet(path,val){if(!dbReady)return;window._set(window._ref(window._db,path),val);}
+function dbUpdate(path,val){if(!dbReady)return;window._update(window._ref(window._db,path),val);}
+function dbRemove(path){if(!dbReady)return;window._remove(window._ref(window._db,path));}
+function dbListen(path,cb){if(!dbReady)return;window._onValue(window._ref(window._db,path),s=>cb(s.val()));}
 
 function initDb(){
-  dbListen('party',d=>{if(d){party=Object.values(d);renderCurrentPanel();}});
-  dbListen('tokens',d=>{tokens=d||{};renderTokens();});
-  dbListen('initiative',d=>{if(d){initiative=d.list||[];currentTurn=d.currentTurn||0;round=d.round||1;if(currentPanel==='init')renderInit();}});
-  dbListen('rollLog',d=>{if(d){rollLog=Array.isArray(d)?d:Object.values(d);if(currentPanel==='dice')renderDice();}});
-  dbListen('map',d=>{
-    if(d&&d.img){mapImageData=d.img;applyMapImage(d.img);}
-    if(d&&d.grid!=null){showGrid=d.grid;document.getElementById('grid-btn').textContent='⊞ Grid: '+(showGrid?'ON':'OFF');drawGrid();}
+  dbListen('party',data=>{if(data){party=Object.values(data);renderCurrentPanel();if(viewingCharIdx!==null)renderSheetBody();}});
+  dbListen('tokens',data=>{tokens=data||{};renderTokens();});
+  dbListen('initiative',data=>{if(data){initiative=data.list||[];currentTurn=data.currentTurn||0;round=data.round||1;if(currentPanel==='init')renderInit();}});
+  dbListen('rollLog',data=>{if(data){rollLog=Array.isArray(data)?data:Object.values(data);if(currentPanel==='dice')renderDice();}});
+  dbListen('map',data=>{
+    if(data&&data.img){mapImageData=data.img;applyMapImage(data.img);}
+    if(data&&data.grid!=null){showGrid=data.grid;document.getElementById('grid-btn').textContent='⊞ Grid: '+(showGrid?'ON':'OFF');drawGrid();}
   });
+  dbListen('spellSlotsUsed',data=>{spellSlotsUsed=data||{};if(currentPanel==='spells')renderSpellsTab();if(viewingCharIdx!==null&&currentSheetTab==='spells')renderSheetBody();});
   setSyncStatus('live');
 }
 
+// ── ROLE & TABS ───────────────────────────────────────────────────────
 function toggleRole(){
   isDM=!isDM;
   document.getElementById('role-label').textContent=isDM?'DM 👑':'Player';
@@ -330,7 +599,6 @@ function toggleRole(){
   renderCurrentPanel();
 }
 function setSyncStatus(s){document.getElementById('sync-dot').className='sync-dot'+(s==='live'?' live':'');}
-
 const TAB_IDS=['map','party','dice','init','spells','notes'];
 function switchTab(t){
   currentPanel=t;
@@ -342,34 +610,41 @@ function renderCurrentPanel(){
   if(currentPanel==='party'){buildSpellSlots();renderParty();}
   if(currentPanel==='dice')renderDice();
   if(currentPanel==='init')renderInit();
-  if(currentPanel==='spells'){buildSpellSlots();renderSpells();}
+  if(currentPanel==='spells'){buildSpellSlots();renderSpellsTab();}
 }
 
-function hpColor(pct){return pct>.5?'#1D9E75':pct>.25?'#EF9F27':'#E24B4A'}
-function renderParty(){document.getElementById('player-grid').innerHTML=party.map((p,i)=>playerCard(p,i)).join('');}
+// ── PARTY CARDS ───────────────────────────────────────────────────────
+function renderParty(){
+  document.getElementById('player-grid').innerHTML=party.map((p,i)=>playerCard(p,i)).join('');
+}
 function playerCard(p,i){
   const pct=p.hp/p.maxHp,c=COLORS[p.color||0];
   const av=p.pfp?`<img src="${p.pfp}" alt="${p.name}">`:`${p.name.slice(0,2).toUpperCase()}`;
-  const conds=CONDITIONS.map(cd=>`<span class="cond-tag${(p.conds||[]).includes(cd)?' on':''}" onclick="toggleCond(${i},'${cd}')">${cd}</span>`).join('');
-  return `<div class="player-card${p.hp<=0?' downed':''}" style="border-top:3px solid ${c.border}">
-    <button class="edit-btn" onclick="openModal(${i})">✏️</button>
+  const conds=CONDITIONS.map(cd=>`<span class="cond-tag${(p.conds||[]).includes(cd)?' on':''}" onclick="event.stopPropagation();toggleCond(${i},'${cd}')">${cd}</span>`).join('');
+  const lvl=getLevel(p);const cls=getClass(p);
+  return `<div class="player-card${p.hp<=0?' downed':''}" style="border-top:3px solid ${c.border}" onclick="openSheet(${i})">
+    <button class="view-sheet-btn" onclick="event.stopPropagation();openSheet(${i})" title="Full sheet">📋</button>
+    <button class="edit-btn" onclick="event.stopPropagation();openModal(${i})" title="Edit">✏️</button>
     <div class="card-header">
       <div class="avatar" style="background:${c.bg};color:${c.color};border-color:${c.border}">${av}</div>
-      <div><div class="card-name">${p.name}</div><div class="card-sub">${p.cls}</div></div>
+      <div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-sub">${cls} ${lvl} · ${p.species||''}</div>
+      </div>
     </div>
     <div class="hp-row">
       <span class="hp-label">HP</span>
       <div class="hp-bar-wrap"><div class="hp-bar" style="width:${Math.max(0,pct*100)}%;background:${hpColor(pct)}"></div></div>
-      <span class="hp-nums">${p.hp}/${p.maxHp}</span>
+      <span class="hp-nums">${p.hp}/${p.maxHp}${p.tempHp?` <span style="color:#EF9F27;font-size:10px">+${p.tempHp}</span>`:''}</span>
     </div>
     <div class="hp-btns">
-      <input class="hp-input" type="number" id="hpval-${i}" placeholder="amt" min="1">
-      <button onclick="changeHp(${i},'dmg')">− dmg</button>
-      <button onclick="changeHp(${i},'heal')">+ heal</button>
+      <input class="hp-input" type="number" id="hpval-${i}" placeholder="amt" min="1" onclick="event.stopPropagation()">
+      <button onclick="event.stopPropagation();changeHp(${i},'dmg')">− dmg</button>
+      <button onclick="event.stopPropagation();changeHp(${i},'heal')">+ heal</button>
     </div>
     <div class="mini-stats">
       <div class="mini-stat"><div class="mini-stat-val">${p.ac}</div><div class="mini-stat-lbl">AC</div></div>
-      <div class="mini-stat"><div class="mini-stat-val">${p.pp}</div><div class="mini-stat-lbl">PP</div></div>
+      <div class="mini-stat"><div class="mini-stat-val">${fmtBonus(mod(statFinal(p,'DEX')))}</div><div class="mini-stat-lbl">Init</div></div>
       <div class="mini-stat"><div class="mini-stat-val">${p.speed}ft</div><div class="mini-stat-lbl">Speed</div></div>
     </div>
     <div class="cond-row">${conds}</div>
@@ -388,17 +663,280 @@ function toggleCond(i,c){
   dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
 }
 
+// ── CHARACTER SHEET ───────────────────────────────────────────────────
+function openSheet(i){
+  viewingCharIdx=i;currentSheetTab='core';
+  const p=party[i];const c=COLORS[p.color||0];
+  const av=document.getElementById('sheet-avatar');
+  av.style.cssText=`background:${c.bg};color:${c.color};border-color:${c.border}`;
+  av.innerHTML=p.pfp?`<img src="${p.pfp}" alt="${p.name}">`:`${p.name.slice(0,2).toUpperCase()}`;
+  document.getElementById('sheet-char-name').textContent=p.name;
+  document.getElementById('sheet-char-sub').textContent=`Level ${getLevel(p)} · ${p.species||''} · ${getClass(p)}${getSubclass(p)?' · '+getSubclass(p):''}`;
+  document.querySelectorAll('.sheet-tab').forEach((b,i)=>b.classList.toggle('active',i===0));
+  renderSheetBody();
+  document.getElementById('sheet-modal-bg').style.display='flex';
+}
+function closeSheet(){document.getElementById('sheet-modal-bg').style.display='none';viewingCharIdx=null;}
+function switchSheetTab(t){
+  currentSheetTab=t;
+  const tabs=['core','skills','features','spells','equipment','notes'];
+  document.querySelectorAll('.sheet-tab').forEach((b,i)=>b.classList.toggle('active',tabs[i]===t));
+  renderSheetBody();
+}
+
+function renderSheetBody(){
+  if(viewingCharIdx===null)return;
+  const p=party[viewingCharIdx];
+  const body=document.getElementById('sheet-body');
+  if(currentSheetTab==='core')body.innerHTML=renderSheetCore(p);
+  else if(currentSheetTab==='skills')body.innerHTML=renderSheetSkills(p);
+  else if(currentSheetTab==='features')body.innerHTML=renderSheetFeatures(p);
+  else if(currentSheetTab==='spells')body.innerHTML=renderSheetSpells(p);
+  else if(currentSheetTab==='equipment')body.innerHTML=renderSheetEquipment(p);
+  else if(currentSheetTab==='notes')body.innerHTML=renderSheetNotes(p);
+}
+
+function renderSheetCore(p){
+  const pb=profBonus(p);const lvl=getLevel(p);
+  const pct=p.hp/p.maxHp;
+  const STATS=['STR','DEX','CON','INT','WIS','CHA'];
+  const statBlocks=STATS.map(ab=>{
+    const final=statFinal(p,ab);
+    return `<div class="stat-box">
+      <div class="stat-name">${ab}</div>
+      <div class="stat-score">${final}</div>
+      <div class="stat-mod">${modStr(final)}</div>
+    </div>`;
+  }).join('');
+
+  const spellStat={Bard:'CHA',Cleric:'WIS',Druid:'WIS',Paladin:'CHA',Ranger:'WIS',Sorcerer:'CHA',Warlock:'CHA',Wizard:'INT',Artificer:'INT'};
+  const cls=getClass(p);const ss=spellStat[cls];
+  const spellDC=ss?8+pb+mod(statFinal(p,ss)):null;
+  const spellAtk=ss?fmtBonus(pb+mod(statFinal(p,ss))):null;
+
+  return `
+  <div class="sheet-grid-2" style="margin-bottom:12px">
+    <div class="sheet-section">
+      <h3>Ability Scores</h3>
+      <div class="stat-block">${statBlocks}</div>
+      ${p.species?`<div class="proficiency-note" style="margin-top:6px">Species bonuses from ${p.species} included</div>`:''}
+    </div>
+    <div class="sheet-section">
+      <h3>Combat</h3>
+      <div class="combat-row" style="margin-bottom:10px">
+        <div class="combat-box"><div class="combat-val">${p.ac}</div><div class="combat-lbl">AC</div></div>
+        <div class="combat-box"><div class="combat-val">${fmtBonus(mod(statFinal(p,'DEX')))}</div><div class="combat-lbl">Initiative</div></div>
+        <div class="combat-box"><div class="combat-val">${p.speed}ft</div><div class="combat-lbl">Speed</div></div>
+      </div>
+      <div class="combat-row">
+        <div class="combat-box"><div class="combat-val" style="font-size:14px">${fmtBonus(pb)}</div><div class="combat-lbl">Prof Bonus</div></div>
+        <div class="combat-box"><div class="combat-val">${p.pp}</div><div class="combat-lbl">Passive Perc</div></div>
+        ${spellDC?`<div class="combat-box"><div class="combat-val" style="font-size:14px">DC ${spellDC}</div><div class="combat-lbl">Spell Save</div></div>`:''}
+      </div>
+      ${spellAtk?`<div style="margin-top:8px;font-size:11px;color:#888">Spell attack: <span style="color:#b8b4f8;font-weight:600">${spellAtk}</span></div>`:''}
+      ${p.armor?`<div style="margin-top:6px;font-size:11px;color:#888">Armor: <span style="color:#ccc">${p.armor}</span></div>`:''}
+    </div>
+  </div>
+
+  <div class="sheet-section" style="margin-bottom:12px">
+    <h3>Hit Points</h3>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+      <div class="hp-bar-wrap" style="flex:1;height:12px"><div class="hp-bar" style="width:${Math.max(0,pct*100)}%;background:${hpColor(pct)}"></div></div>
+      <span style="font-size:16px;font-weight:700;color:#fff">${p.hp} / ${p.maxHp}</span>
+      ${p.tempHp?`<span style="font-size:13px;color:#EF9F27">+${p.tempHp} temp</span>`:''}
+    </div>
+    <div class="hp-edit-row">
+      <input type="number" id="sheet-hp-amt" placeholder="amount" min="1">
+      <button onclick="sheetChangeHp('dmg')">− Damage</button>
+      <button onclick="sheetChangeHp('heal')">+ Heal</button>
+      <button onclick="sheetChangeHp('temp')">+ Temp HP</button>
+    </div>
+    ${p.hp<=0?`<div style="margin-top:10px">
+      <div style="font-size:11px;color:#666;margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.05em">Death Saves</div>
+      <div class="death-saves">
+        <div class="death-save-group">
+          <div class="death-save-label" style="color:#1D9E75">Successes</div>
+          <div class="death-save-dots">${[0,1,2].map(j=>`<div class="death-dot${(p.deathSaves?.s||[])[j]?' success':''}" onclick="toggleDeathSave(${viewingCharIdx},'s',${j})"></div>`).join('')}</div>
+        </div>
+        <div class="death-save-group">
+          <div class="death-save-label" style="color:#E24B4A">Failures</div>
+          <div class="death-save-dots">${[0,1,2].map(j=>`<div class="death-dot${(p.deathSaves?.f||[])[j]?' fail':''}" onclick="toggleDeathSave(${viewingCharIdx},'f',${j})"></div>`).join('')}</div>
+        </div>
+      </div>
+    </div>`:''}
+  </div>
+
+  <div class="sheet-section">
+    <h3>Saving Throws</h3>
+    <div class="save-list">
+      ${['STR','DEX','CON','INT','WIS','CHA'].map(ab=>`
+        <div class="save-row">
+          <div class="save-prof${isProfSave(p,ab)?' prof':''}"></div>
+          <div class="save-val">${fmtBonus(saveBonus(p,ab))}</div>
+          <div class="save-name">${ab}</div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function renderSheetSkills(p){
+  const rows=SKILLS.map(sk=>{
+    const bonus=skillBonus(p,sk);
+    const isProf=isProfSkill(p,sk.name);
+    const isExp=isExpertSkill(p,sk.name);
+    return `<div class="skill-row">
+      <div class="skill-prof${isExp?' exp':isProf?' prof':''}"></div>
+      <div class="skill-bonus">${fmtBonus(bonus)}</div>
+      <div class="skill-name">${sk.name} <span style="color:#555">(${sk.ab})</span></div>
+    </div>`;
+  }).join('');
+  return `<div class="sheet-section">
+    <h3>Skills <span style="color:#EF9F27;font-size:9px;margin-left:4px">● Expert</span><span style="color:#7F77DD;font-size:9px;margin-left:6px">● Proficient</span></h3>
+    <div class="skill-list">${rows}</div>
+    <div class="proficiency-note">Proficiency bonus: ${fmtBonus(profBonus(p))}</div>
+  </div>`;
+}
+
+function renderSheetFeatures(p){
+  const feats=(p.features||'').split('\n').filter(f=>f.trim());
+  return `<div class="sheet-section">
+    <h3>Class &amp; Species Features</h3>
+    <div class="feature-list">
+      ${feats.length?feats.map(f=>{
+        const [name,...rest]=f.split(':');
+        return `<div class="feature-item">
+          <div class="feature-name">${name.trim()}</div>
+          ${rest.length?`<div class="feature-desc">${rest.join(':').trim()}</div>`:''}
+        </div>`;
+      }).join(''):'<div style="color:#555;font-size:13px">No features added yet. Edit character to add features.</div>'}
+    </div>
+  </div>`;
+}
+
+function renderSheetSpells(p){
+  const slots=getSpellSlots(p);
+  const spells=(p.spells||'').split('\n').filter(s=>s.trim()).map(s=>{
+    const parts=s.split('|').map(x=>x.trim());
+    return {level:parseInt(parts[0])||0,name:parts[1]||s,school:parts[2]||''};
+  });
+  const byLevel={};
+  spells.forEach(sp=>{if(!byLevel[sp.level])byLevel[sp.level]=[];byLevel[sp.level].push(sp);});
+
+  if(!slots&&!spells.length)return `<div class="sheet-section"><div style="color:#555;font-size:13px">Not a spellcaster. Set spell slots in Edit Character.</div></div>`;
+
+  const idx=viewingCharIdx;const pid=party[idx]?.id||('p'+idx);
+  const used=spellSlotsUsed[pid]||{};
+
+  return `
+  ${slots?`<div class="sheet-section" style="margin-bottom:12px">
+    <h3>Spell Slots</h3>
+    <div class="spell-slots">
+      ${slots.map((total,si)=>{
+        if(!total)return '';
+        const usedCount=used[si]||0;
+        const dots=Array.from({length:total},(_,j)=>`<div class="spell-slot-dot${j<usedCount?' used':''}" onclick="toggleSheetSlot('${pid}',${si},${j})"></div>`).join('');
+        return `<div class="slot-card"><div class="slot-level">Level ${si+1} · ${total-usedCount}/${total}</div><div class="slot-dots">${dots}</div></div>`;
+      }).join('')}
+    </div>
+    <button onclick="resetSheetSlots('${pid}')" style="margin-top:4px;padding:4px 10px;border:1px solid #333;border-radius:7px;font-size:11px;cursor:pointer;background:transparent;color:#666">Long rest — reset all</button>
+  </div>`:''}
+
+  <div class="sheet-section">
+    <h3>Known Spells</h3>
+    ${Object.keys(byLevel).sort((a,b)=>a-b).map(lv=>`
+      <div class="spell-level-block">
+        <div class="spell-level-header"><span class="spell-level-label">${lv==0?'Cantrips':'Level '+lv}</span></div>
+        <div class="spell-grid">
+          ${byLevel[lv].map(sp=>`<div class="spell-item">
+            <div class="spell-item-name">${sp.name}</div>
+            ${sp.school?`<div class="spell-item-detail">${sp.school}</div>`:''}
+          </div>`).join('')}
+        </div>
+      </div>`).join('')}
+    ${!spells.length?'<div style="color:#555;font-size:13px">No spells added. Edit character to add known spells.</div>':''}
+  </div>`;
+}
+
+function renderSheetEquipment(p){
+  const items=(p.equipment||'').split('\n').filter(e=>e.trim()).map(e=>{
+    const [name,...rest]=e.split('|');
+    return {name:name.trim(),detail:rest.join('|').trim()};
+  });
+  return `<div class="sheet-section">
+    <h3>Equipment &amp; Inventory</h3>
+    <div class="equip-list">
+      ${items.length?items.map(it=>`<div class="equip-item">
+        <div class="equip-name">${it.name}</div>
+        ${it.detail?`<div class="equip-detail">${it.detail}</div>`:''}
+      </div>`).join(''):'<div style="color:#555;font-size:13px">No equipment added. Edit character to add items.</div>'}
+    </div>
+  </div>`;
+}
+
+function renderSheetNotes(p){
+  return `<div class="sheet-section">
+    <h3>Character Notes</h3>
+    <textarea class="notes-area" id="sheet-notes-area" placeholder="Backstory, goals, relationships, DM notes...">${p.notes||''}</textarea>
+    <button onclick="saveSheetNotes()" style="margin-top:8px;padding:5px 14px;border:1px solid #444;border-radius:7px;font-size:12px;cursor:pointer;background:#2a2a2a;color:#ccc">Save notes</button>
+  </div>`;
+}
+
+function sheetChangeHp(type){
+  const i=viewingCharIdx;if(i===null)return;
+  const amt=parseInt(document.getElementById('sheet-hp-amt')?.value)||0;if(!amt)return;
+  if(type==='dmg') party[i].hp=Math.max(0,party[i].hp-amt);
+  else if(type==='heal') party[i].hp=Math.min(party[i].maxHp,party[i].hp+amt);
+  else if(type==='temp') party[i].tempHp=(party[i].tempHp||0)+amt;
+  dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));
+  renderSheetBody();renderParty();
+}
+function toggleDeathSave(i,type,j){
+  if(!party[i].deathSaves)party[i].deathSaves={s:[false,false,false],f:[false,false,false]};
+  party[i].deathSaves[type][j]=!party[i].deathSaves[type][j];
+  dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderSheetBody();
+}
+function toggleSheetSlot(pid,si,j){
+  if(!spellSlotsUsed[pid])spellSlotsUsed[pid]={};
+  const cur=spellSlotsUsed[pid][si]||0;
+  spellSlotsUsed[pid][si]=j<cur?j:Math.min(j+1,99);
+  dbSet('spellSlotsUsed',spellSlotsUsed);renderSheetBody();
+}
+function resetSheetSlots(pid){
+  spellSlotsUsed[pid]={};
+  dbSet('spellSlotsUsed',spellSlotsUsed);renderSheetBody();
+}
+function saveSheetNotes(){
+  const i=viewingCharIdx;if(i===null)return;
+  party[i].notes=document.getElementById('sheet-notes-area')?.value||'';
+  dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));
+}
+
+// ── EDIT MODAL ────────────────────────────────────────────────────────
 function openModal(i){
-  editingIdx=i;pendingPfp=null;
-  const p=party[i];
+  editingIdx=i;pendingPfp=null;const p=party[i];
   document.getElementById('modal-name').value=p.name;
   document.getElementById('modal-class').value=p.cls;
+  document.getElementById('modal-species').value=p.species||'';
+  document.getElementById('modal-background').value=p.background||'';
   document.getElementById('modal-maxhp').value=p.maxHp;
   document.getElementById('modal-hp').value=p.hp;
+  document.getElementById('modal-temphp').value=p.tempHp||0;
   document.getElementById('modal-ac').value=p.ac;
   document.getElementById('modal-pp').value=p.pp;
   document.getElementById('modal-speed').value=p.speed;
+  document.getElementById('modal-armor').value=p.armor||'';
   document.getElementById('modal-caster').value=p.caster||'none';
+  document.getElementById('modal-str').value=p.str||10;
+  document.getElementById('modal-dex').value=p.dex||10;
+  document.getElementById('modal-con').value=p.con||10;
+  document.getElementById('modal-int').value=p.int||10;
+  document.getElementById('modal-wis').value=p.wis||10;
+  document.getElementById('modal-cha').value=p.cha||10;
+  document.getElementById('modal-profskills').value=p.profSkills||'';
+  document.getElementById('modal-expertskills').value=p.expertSkills||'';
+  document.getElementById('modal-features').value=p.features||'';
+  document.getElementById('modal-equipment').value=p.equipment||'';
+  document.getElementById('modal-spells').value=p.spells||'';
   document.getElementById('modal-pfp-preview').innerHTML=p.pfp?`<img src="${p.pfp}">`:'🧙';
   document.getElementById('modal-colors').innerHTML=COLORS.map((c,ci)=>
     `<div class="color-swatch${ci===p.color?' selected':''}" style="background:${c.border}" onclick="selectColor(${ci})"></div>`).join('');
@@ -411,40 +949,42 @@ function handlePfpUpload(e){
 }
 function saveModal(){
   if(editingIdx===null)return;
-  const p=party[editingIdx],old=p.name;
+  const p=party[editingIdx];
   p.name=document.getElementById('modal-name').value||p.name;
   p.cls=document.getElementById('modal-class').value||p.cls;
+  p.species=document.getElementById('modal-species').value;
+  p.background=document.getElementById('modal-background').value;
   p.maxHp=parseInt(document.getElementById('modal-maxhp').value)||p.maxHp;
   p.hp=Math.min(parseInt(document.getElementById('modal-hp').value)||p.hp,p.maxHp);
+  p.tempHp=parseInt(document.getElementById('modal-temphp').value)||0;
   p.ac=parseInt(document.getElementById('modal-ac').value)||p.ac;
   p.pp=parseInt(document.getElementById('modal-pp').value)||p.pp;
   p.speed=parseInt(document.getElementById('modal-speed').value)||p.speed;
-  const nc=document.getElementById('modal-caster').value;
-  if(nc!==p.caster)delete spellSlots[p.name];
-  p.caster=nc;
+  p.armor=document.getElementById('modal-armor').value;
+  p.caster=document.getElementById('modal-caster').value;
+  p.str=parseInt(document.getElementById('modal-str').value)||10;
+  p.dex=parseInt(document.getElementById('modal-dex').value)||10;
+  p.con=parseInt(document.getElementById('modal-con').value)||10;
+  p.int=parseInt(document.getElementById('modal-int').value)||10;
+  p.wis=parseInt(document.getElementById('modal-wis').value)||10;
+  p.cha=parseInt(document.getElementById('modal-cha').value)||10;
+  p.profSkills=document.getElementById('modal-profskills').value;
+  p.expertSkills=document.getElementById('modal-expertskills').value;
+  p.features=document.getElementById('modal-features').value;
+  p.equipment=document.getElementById('modal-equipment').value;
+  p.spells=document.getElementById('modal-spells').value;
   if(pendingPfp)p.pfp=pendingPfp;
-  if(old!==p.name&&spellSlots[old]){spellSlots[p.name]=spellSlots[old];delete spellSlots[old];}
   dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
-  closeModal();renderParty();
+  closeModal();renderParty();if(viewingCharIdx===editingIdx)renderSheetBody();
 }
 function closeModal(){document.getElementById('modal-bg').style.display='none';document.getElementById('pfp-file').value='';editingIdx=null;pendingPfp=null;}
 function closeModalOnBg(e){if(e.target===document.getElementById('modal-bg'))closeModal();}
 
+// ── DICE ─────────────────────────────────────────────────────────────
 function playDiceSound(){
-  try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    const clicks=3+Math.floor(Math.random()*3);
-    for(let i=0;i<clicks;i++){
-      const t=ctx.currentTime+i*0.07;
-      const o=ctx.createOscillator(),g=ctx.createGain();
-      o.connect(g);g.connect(ctx.destination);
-      o.type='square';
-      o.frequency.setValueAtTime(180+Math.random()*120,t);
-      o.frequency.exponentialRampToValueAtTime(60+Math.random()*40,t+0.06);
-      g.gain.setValueAtTime(0.18,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.07);
-      o.start(t);o.stop(t+0.08);
-    }
-  }catch(e){}
+  try{const ctx=new(window.AudioContext||window.webkitAudioContext)();
+  const clicks=3+Math.floor(Math.random()*3);
+  for(let i=0;i<clicks;i++){const t=ctx.currentTime+i*0.07;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='square';o.frequency.setValueAtTime(180+Math.random()*120,t);o.frequency.exponentialRampToValueAtTime(60+Math.random()*40,t+0.06);g.gain.setValueAtTime(0.18,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.07);o.start(t);o.stop(t+0.08);}}catch(e){}
 }
 function rollDie(sides,count,mod,label){
   count=count||1;mod=mod||0;
@@ -453,9 +993,7 @@ function rollDie(sides,count,mod,label){
   const nat=count===1?rolls[0]:null;
   rollLog.unshift({who:selectedRoller,label,rolls,total,nat,ts:Date.now()});
   if(rollLog.length>50)rollLog.pop();
-  dbSet('rollLog',rollLog);
-  playDiceSound();
-  renderDice();
+  dbSet('rollLog',rollLog);playDiceSound();renderDice();
   setTimeout(()=>{const rb=document.querySelector('.roll-big');if(rb){rb.classList.remove('popping');void rb.offsetWidth;rb.classList.add('popping');}},10);
 }
 function renderDice(){
@@ -469,30 +1007,20 @@ function renderDice(){
       <select id="roller-sel" onchange="selectedRoller=this.value">
         ${rollers.map(r=>`<option${r===selectedRoller?' selected':''}>${r}</option>`).join('')}
       </select>
-      <input id="roll-count" type="number" min="1" max="20" value="${count}" style="width:52px">
-      <span style="font-size:12px;color:#666">dice &nbsp;mod:</span>
-      <input id="roll-mod" type="number" value="${mod}" style="width:52px">
+      <input id="roll-count" type="number" min="1" max="20" value="${count}" style="width:50px">
+      <span style="font-size:12px;color:#666">dice mod:</span>
+      <input id="roll-mod" type="number" value="${mod}" style="width:50px">
     </div>
-    <div class="dice-grid">
-      ${[4,6,8,10,12,20,100].map(d=>`<button class="die-btn" onclick="rollFromBtn(${d})">${dieSVG(d)}</button>`).join('')}
-    </div>
+    <div class="dice-grid">${[4,6,8,10,12,20,100].map(d=>`<button class="die-btn" onclick="rollFromBtn(${d})">${dieSVG(d)}</button>`).join('')}</div>
     <div class="roll-result">
-      ${latest
-        ?`<div class="roll-big">${latest.total}</div>
-          <div class="roll-detail">${latest.who} · ${latest.label}${mod?' + '+mod+' mod':''}${latest.nat===20?' 🎉 Nat 20!':latest.nat===1?' 💀 Nat 1!':''}</div>`
-        :`<div style="color:#555;font-size:14px">Roll a die to see results</div>`}
+      ${latest?`<div class="roll-big">${latest.total}</div>
+      <div class="roll-detail">${latest.who} · ${latest.label}${mod?' + '+mod+' mod':''}${latest.nat===20?' 🎉 Nat 20!':latest.nat===1?' 💀 Nat 1!':''}</div>`
+      :`<div style="color:#555;font-size:14px">Roll a die to see results</div>`}
     </div>
     <p class="section-title">Roll history</p>
     <div class="roll-log">
-      ${rollLog.map(r=>{
-        const breakdown=r.rolls&&r.rolls.length?`[${r.rolls.join(' + ')}]`:'';
-        return `<div class="log-entry">
-          <div class="log-top">
-            <span class="log-who">${r.who} · ${r.label}</span>
-            <span class="log-val">${r.total}${r.nat===20?'<span class="log-nat nat20">Nat 20</span>':r.nat===1?'<span class="log-nat nat1">Nat 1</span>':''}</span>
-          </div>
-          ${breakdown?`<div class="log-breakdown">${breakdown}</div>`:''}
-        </div>`;
+      ${rollLog.map(r=>{const bd=r.rolls&&r.rolls.length?`[${r.rolls.join(' + ')}]`:'';
+        return `<div class="log-entry"><div class="log-top"><span class="log-who">${r.who} · ${r.label}</span><span class="log-val">${r.total}${r.nat===20?'<span class="log-nat nat20">Nat 20</span>':r.nat===1?'<span class="log-nat nat1">Nat 1</span>':''}</span></div>${bd?`<div class="log-breakdown">${bd}</div>`:''}</div>`;
       }).join('')}
       ${!rollLog.length?'<div style="color:#555;font-size:13px;padding:8px">No rolls yet</div>':''}
     </div>`;
@@ -501,26 +1029,28 @@ function rollFromBtn(sides){
   selectedRoller=document.getElementById('roller-sel')?.value||selectedRoller;
   const mod=parseInt(document.getElementById('roll-mod')?.value)||0;
   const count=parseInt(document.getElementById('roll-count')?.value)||1;
-  const btn=document.querySelectorAll('.die-btn')[([4,6,8,10,12,20,100]).indexOf(sides)];
-  if(btn){btn.classList.add('rolling');setTimeout(()=>btn.classList.remove('rolling'),500);}
+  const btns=document.querySelectorAll('.die-btn');
+  const idx=[4,6,8,10,12,20,100].indexOf(sides);
+  if(btns[idx]){btns[idx].classList.add('rolling');setTimeout(()=>btns[idx].classList.remove('rolling'),500);}
   rollDie(sides,count,mod,count+'d'+sides+(mod?'+'+mod:''));
 }
 
+// ── INITIATIVE ────────────────────────────────────────────────────────
 function pushInit(){dbSet('initiative',{list:initiative,currentTurn,round});}
 function renderInit(){
   if(!initiative.length)initiative=party.map(p=>({name:p.name,type:'player',init:0,hp:p.hp,maxHp:p.maxHp,color:p.color,pfp:p.pfp}));
   const sorted=[...initiative].sort((a,b)=>b.init-a.init);
   document.getElementById('init-wrap').innerHTML=`
     <div class="init-controls">
-      ${isDM?`<button onclick="rollAllInit()">🎲 Roll all</button><button onclick="nextTurn()">Next turn →</button><button onclick="resetInit()">Reset</button>`:''}
+      ${isDM?`<button onclick="rollAllInit()">🎲 Roll all</button><button onclick="nextTurn()">Next →</button><button onclick="resetInit()">Reset</button>`:''}
       <span class="round-badge">Round ${round}</span>
     </div>
     <div class="init-list">${sorted.map((c,i)=>initRow(c,i,sorted)).join('')}</div>
     ${isDM?`<p class="section-title" style="margin-top:1rem">Add enemy</p>
     <div class="add-enemy-form">
-      <input id="enemy-name" placeholder="Name" style="width:110px">
-      <input id="enemy-init" type="number" placeholder="Init" style="width:58px">
-      <input id="enemy-hp" type="number" placeholder="HP" style="width:58px">
+      <input id="enemy-name" placeholder="Name" style="width:100px">
+      <input id="enemy-init" type="number" placeholder="Init" style="width:55px">
+      <input id="enemy-hp" type="number" placeholder="HP" style="width:55px">
       <button onclick="addEnemy()">+ Add</button>
     </div>`:''}`;
 }
@@ -529,11 +1059,11 @@ function initRow(c,i,sorted){
   const av=c.pfp?`<img src="${c.pfp}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`${(c.name||'?').slice(0,2).toUpperCase()}`;
   return `<div class="init-row${isActive?' active-turn':''}${c.type==='enemy'?' enemy-row':''}">
     <span class="init-badge">${c.init}</span>
-    ${c.type!=='enemy'?`<div class="avatar" style="width:30px;height:30px;font-size:11px;flex-shrink:0;background:${col.bg};color:${col.color};border:1.5px solid ${col.border};overflow:hidden">${av}</div>`:'<span>💀</span>'}
+    ${c.type!=='enemy'?`<div class="avatar" style="width:28px;height:28px;font-size:10px;flex-shrink:0;background:${col.bg};color:${col.color};border:1.5px solid ${col.border};overflow:hidden">${av}</div>`:'<span>💀</span>'}
     <span class="init-name">${c.name}</span>
     <span class="init-type">${c.type==='enemy'?'enemy':'player'}</span>
     <span class="init-hp-text">${c.hp}/${c.maxHp} hp</span>
-    ${isDM&&c.type==='enemy'?`<button onclick="removeEnemy('${c.name}')" style="padding:2px 8px;font-size:11px;border:1px solid #444;border-radius:6px;cursor:pointer;background:transparent;color:#888">✕</button>`:''}
+    ${isDM&&c.type==='enemy'?`<button onclick="removeEnemy('${c.name}')" style="padding:1px 7px;font-size:10px;border:1px solid #444;border-radius:6px;cursor:pointer;background:transparent;color:#888">✕</button>`:''}
   </div>`;
 }
 function rollAllInit(){initiative=initiative.map(c=>({...c,init:Math.ceil(Math.random()*20)}));currentTurn=0;round=1;pushInit();renderInit();}
@@ -543,51 +1073,55 @@ function addEnemy(){
   const name=document.getElementById('enemy-name').value||'Enemy';
   const init=parseInt(document.getElementById('enemy-init').value)||Math.ceil(Math.random()*20);
   const hp=parseInt(document.getElementById('enemy-hp').value)||10;
-  initiative.push({name,type:'enemy',init,hp,maxHp:hp,color:6});
-  pushInit();renderInit();
+  initiative.push({name,type:'enemy',init,hp,maxHp:hp,color:6});pushInit();renderInit();
 }
 function removeEnemy(name){initiative=initiative.filter(c=>c.name!==name);pushInit();renderInit();}
 
-function buildSpellSlots(){
-  party.forEach(p=>{
-    if(p.caster==='full'&&!spellSlots[p.name])spellSlots[p.name]=[{level:1,total:4,used:0},{level:2,total:3,used:0},{level:3,total:2,used:0}];
-    if(p.caster==='half'&&!spellSlots[p.name])spellSlots[p.name]=[{level:1,total:3,used:0},{level:2,total:2,used:0}];
-    if(p.caster==='none')delete spellSlots[p.name];
-  });
-}
-function renderSpells(){
-  const casters=Object.keys(spellSlots);
+// ── SPELLS TAB (party-wide) ───────────────────────────────────────────
+function buildSpellSlots(){}
+function renderSpellsTab(){
+  const casters=party.filter(p=>p.caster&&p.caster!=='none');
   document.getElementById('spells-wrap').innerHTML=casters.length
-    ?casters.map(name=>`<p class="section-title">${name}</p>
+    ?casters.map((p,i)=>{
+      const idx=party.indexOf(p);const pid=p.id||('p'+idx);
+      const slots=getSpellSlots(p);
+      const used=spellSlotsUsed[pid]||{};
+      if(!slots)return '';
+      return `<p class="section-title">${p.name}</p>
       <div class="spell-slots">
-        ${spellSlots[name].map((slot,si)=>`<div class="slot-card">
-          <div class="slot-level">Level ${slot.level} · ${slot.total-slot.used}/${slot.total}</div>
-          <div class="slot-dots">${Array.from({length:slot.total},(_,j)=>`<div class="slot-dot${j<slot.used?' used':''}" onclick="toggleSlot('${name}',${si},${j})"></div>`).join('')}</div>
-        </div>`).join('')}
+        ${slots.map((total,si)=>{if(!total)return '';
+          const uc=used[si]||0;
+          return `<div class="slot-card"><div class="slot-level">Level ${si+1} · ${total-uc}/${total}</div>
+          <div class="slot-dots">${Array.from({length:total},(_,j)=>`<div class="slot-dot${j<uc?' used':''}" onclick="toggleTabSlot('${pid}',${si},${j})"></div>`).join('')}</div></div>`;
+        }).join('')}
       </div>
-      <button onclick="resetSlots('${name}')" style="margin-top:6px;padding:4px 12px;border:1px solid #333;border-radius:7px;font-size:12px;cursor:pointer;background:transparent;color:#666">Long rest — reset</button>`).join('')
-    :'<p style="color:#555;font-size:14px">No casters yet. Edit a character and set spell slots.</p>';
+      <button onclick="resetTabSlots('${pid}')" style="margin-top:4px;padding:4px 10px;border:1px solid #333;border-radius:7px;font-size:11px;cursor:pointer;background:transparent;color:#666">Long rest</button>`;
+    }).join('')
+    :'<p style="color:#555;font-size:14px">No casters. Edit a character and set spell slots.</p>';
 }
-function toggleSlot(name,si,j){const s=spellSlots[name][si];s.used=j<s.used?j:Math.min(s.total,j+1);renderSpells();}
-function resetSlots(name){spellSlots[name].forEach(s=>s.used=0);renderSpells();}
+function toggleTabSlot(pid,si,j){
+  if(!spellSlotsUsed[pid])spellSlotsUsed[pid]={};
+  const cur=spellSlotsUsed[pid][si]||0;
+  spellSlotsUsed[pid][si]=j<cur?j:Math.min(j+1,99);
+  dbSet('spellSlotsUsed',spellSlotsUsed);renderSpellsTab();
+}
+function resetTabSlots(pid){spellSlotsUsed[pid]={};dbSet('spellSlotsUsed',spellSlotsUsed);renderSpellsTab();}
 
+// ── MAP ───────────────────────────────────────────────────────────────
 function uploadMap(e){
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=ev=>{
-    mapImageData=ev.target.result;
-    applyMapImage(mapImageData);
+    mapImageData=ev.target.result;applyMapImage(mapImageData);
     document.getElementById('map-placeholder').style.display='none';
     if(isDM)document.getElementById('clear-map-btn').style.display='inline-block';
     dbUpdate('map',{img:mapImageData});
   };
-  reader.onerror=()=>alert('Error reading file. Try a smaller image.');
-  reader.readAsDataURL(file);
-  e.target.value='';
+  reader.onerror=()=>alert('Error reading file.');
+  reader.readAsDataURL(file);e.target.value='';
 }
 function applyMapImage(src){
-  const img=document.getElementById('map-img');
-  img.style.display='block';img.src=src;
+  const img=document.getElementById('map-img');img.style.display='block';img.src=src;
   img.onload=()=>{
     const canvas=document.getElementById('map-canvas');
     canvas.style.width=img.naturalWidth+'px';canvas.style.height=img.naturalHeight+'px';
@@ -604,8 +1138,7 @@ function clearMap(){
   dbRemove('map');
 }
 function toggleGrid(){
-  showGrid=!showGrid;
-  document.getElementById('grid-btn').textContent='⊞ Grid: '+(showGrid?'ON':'OFF');
+  showGrid=!showGrid;document.getElementById('grid-btn').textContent='⊞ Grid: '+(showGrid?'ON':'OFF');
   drawGrid();if(isDM)dbUpdate('map',{grid:showGrid});
 }
 function drawGrid(){
@@ -618,12 +1151,9 @@ function drawGrid(){
   for(let x=0;x<=gc.width;x+=GRID_SIZE){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,gc.height);ctx.stroke();}
   for(let y=0;y<=gc.height;y+=GRID_SIZE){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(gc.width,y);ctx.stroke();}
 }
-function setTool(t){
-  gridTool=t;
-  document.getElementById('tool-move').classList.toggle('active-tool',t==='move');
-  document.getElementById('tool-pan').classList.toggle('active-tool',t==='pan');
-}
+function setTool(t){gridTool=t;document.getElementById('tool-move').classList.toggle('active-tool',t==='move');document.getElementById('tool-pan').classList.toggle('active-tool',t==='pan');}
 
+// ── TOKENS ────────────────────────────────────────────────────────────
 function openAddToken(){
   document.getElementById('token-player-sel').innerHTML=party.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('');
   updateTokenForm();document.getElementById('token-modal-bg').style.display='flex';
@@ -653,19 +1183,17 @@ function renderTokens(){
 }
 function createTokenEl(tok){
   const col=COLORS[tok.color||0],div=document.createElement('div');
-  div.className='token'+(tok.type==='enemy'?' enemy-token':'');
-  div.id='token-'+tok.id;
+  div.className='token'+(tok.type==='enemy'?' enemy-token':'');div.id='token-'+tok.id;
   div.style.cssText=`left:${tok.x}px;top:${tok.y}px;background:${col.bg};border-color:${tok.type==='enemy'?'#E24B4A':col.border};color:${col.color}`;
   if(tok.pfp){const img=document.createElement('img');img.src=tok.pfp;img.alt=tok.name;div.appendChild(img);}
   else div.textContent=(tok.name||'?').slice(0,2).toUpperCase();
   const bar=document.createElement('div');bar.className='token-hp-bar';
   const fill=document.createElement('div');fill.className='token-hp-fill';
-  const pct=tok.maxHp?tok.hp/tok.maxHp:1;
-  fill.style.cssText=`width:${Math.max(0,pct*100)}%;background:${hpColor(pct)}`;
+  const pct=tok.maxHp?tok.hp/tok.maxHp:1;fill.style.cssText=`width:${Math.max(0,pct*100)}%;background:${hpColor(pct)}`;
   bar.appendChild(fill);div.appendChild(bar);
   const lbl=document.createElement('div');lbl.className='token-label';lbl.textContent=tok.name;div.appendChild(lbl);
   makeDraggable(div,tok.id);
-  div.addEventListener('contextmenu',e=>{e.preventDefault();if(isDM&&confirm('Remove '+tok.name+' from map?'))dbRemove('tokens/'+tok.id);});
+  div.addEventListener('contextmenu',e=>{e.preventDefault();if(isDM&&confirm('Remove '+tok.name+'?'))dbRemove('tokens/'+tok.id);});
   return div;
 }
 function makeDraggable(el,tokId){
@@ -678,10 +1206,12 @@ function makeDraggable(el,tokId){
   el.addEventListener('touchend',()=>{dragging=false;dbUpdate('tokens/'+tokId,{x:parseInt(el.style.left),y:parseInt(el.style.top)});});
 }
 
-buildSpellSlots();renderParty();renderDice();
+// ── BOOT ─────────────────────────────────────────────────────────────
 document.getElementById('upload-map-btn').style.display='none';
 document.getElementById('add-token-btn').style.display='none';
 document.getElementById('clear-map-btn').style.display='none';
+renderParty();renderDice();
+
 if(window._dbReady){dbReady=true;initDb();}
 else window.addEventListener('db-ready',()=>{dbReady=true;initDb();});
 </script>
