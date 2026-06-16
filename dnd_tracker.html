@@ -175,38 +175,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .save-prof.prof{background:#1D9E75;border-color:#1D9E75}
 .save-val{font-size:12px;font-weight:600;min-width:24px;text-align:right;color:#ccc}
 .save-name{font-size:11px;color:#aaa}
-.feature-list{display:flex;flex-direction:column;gap:6px}
-.feature-item{background:#111;border-radius:7px;padding:8px 10px}
-.feature-name{font-size:12px;font-weight:600;color:#b8b4f8}
-.feature-desc{font-size:11px;color:#888;margin-top:3px;line-height:1.5}
-.spell-level-block{margin-bottom:12px}
-.spell-level-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.spell-level-label{font-size:11px;font-weight:600;color:#7F77DD}
-.spell-slots-row{display:flex;gap:4px}
-.spell-slot-dot{width:12px;height:12px;border-radius:50%;border:1.5px solid #7F77DD;cursor:pointer}
-.spell-slot-dot.used{background:#7F77DD}
-.spell-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
-.spell-item{background:#111;border-radius:6px;padding:6px 8px;font-size:11px}
-.spell-item-name{color:#ccc;font-weight:500}
-.spell-item-detail{color:#666;margin-top:1px}
-.equip-list{display:flex;flex-direction:column;gap:5px}
-.equip-item{background:#111;border-radius:7px;padding:7px 10px;display:flex;justify-content:space-between;align-items:center}
-.equip-name{font-size:12px;color:#ccc;font-weight:500}
-.equip-detail{font-size:11px;color:#666}
-.hp-edit-row{display:flex;gap:6px;align-items:center;margin-top:8px}
-.hp-edit-row input{width:52px;border:1px solid #333;border-radius:7px;padding:4px 8px;font-size:13px;text-align:center;background:#111;color:#eee}
-.hp-edit-row button{padding:4px 10px;border:1px solid #333;border-radius:7px;font-size:12px;cursor:pointer;background:#2a2a2a;color:#ccc}
-.death-saves{display:flex;gap:12px;margin-top:10px}
-.death-save-group{display:flex;flex-direction:column;gap:4px}
-.death-save-label{font-size:10px;color:#666;text-transform:uppercase}
-.death-save-dots{display:flex;gap:5px}
-.death-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid #444;cursor:pointer}
-.death-dot.success{background:#1D9E75;border-color:#1D9E75}
-.death-dot.fail{background:#E24B4A;border-color:#E24B4A}
-.notes-area{width:100%;min-height:80px;border:1px solid #333;border-radius:8px;padding:8px;font-size:12px;font-family:system-ui;background:#111;color:#eee;resize:vertical}
-.tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:8px;background:#2a2a2a;color:#888;margin:2px}
-.tag.purple{background:#1e1a3a;color:#b8b4f8}
-.proficiency-note{font-size:10px;color:#555;margin-top:6px}
 
 /* ── DICE ── */
 .dice-wrap{flex:1;overflow-y:auto;padding:1rem;max-width:700px;margin:0 auto;width:100%}
@@ -228,39 +196,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .log-nat{font-size:10px;padding:1px 6px;border-radius:6px}
 .log-nat.nat20{background:#1a3a0a;color:#7fc45a}
 .log-nat.nat1{background:#3a0a0a;color:#f09595}
-
-/* ── INITIATIVE ── */
-.init-wrap{flex:1;overflow-y:auto;padding:1rem;max-width:700px;margin:0 auto;width:100%}
-.init-list{display:flex;flex-direction:column;gap:7px}
-.init-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#1e1e1e;border:1px solid #333;border-radius:9px}
-.init-row.active-turn{border-color:#1D9E75;background:#0a2a1a}
-.init-badge{font-size:20px;font-weight:700;min-width:36px;color:#fff}
-.init-name{flex:1;font-size:14px;font-weight:500;color:#fff}
-.init-type{font-size:11px;color:#666}
-.init-hp-text{font-size:12px;color:#888}
-.init-controls{display:flex;gap:6px;align-items:center;margin-bottom:1rem;flex-wrap:wrap}
-.init-controls button{padding:5px 12px;border:1px solid #333;border-radius:7px;font-size:12px;cursor:pointer;background:#1e1e1e;color:#ccc}
-.init-controls button:hover{background:#2a2a2a}
-.enemy-row{background:#2a0a0a;border-color:#5a2222}
-.enemy-row .init-name{color:#f09595}
-.round-badge{font-size:13px;color:#666;margin-left:auto}
-.add-enemy-form{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:1rem}
-.add-enemy-form input{border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:12px;background:#1e1e1e;color:#eee}
-.add-enemy-form button{padding:5px 12px;border:1px solid #444;border-radius:7px;font-size:12px;cursor:pointer;background:#1e1e1e;color:#ccc}
-
-/* ── SPELLS TAB ── */
-.spells-wrap{flex:1;overflow-y:auto;padding:1rem}
-.spell-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:1rem}
-.slot-cardを開く{background:#1e1e1e;border:1px solid #333;border-radius:8px;padding:8px 10px}
-.slot-level{font-size:11px;color:#666;margin-bottom:5px}
-.slot-dots{display:flex;gap:5px;flex-wrap:wrap}
-.slot-dot{width:15px;height:15px;border-radius:50%;border:1.5px solid #7F77DD;cursor:pointer}
-.slot-dot.used{background:#7F77DD}
-
-/* ── NOTES ── */
-.notes-wrap{flex:1;overflow-y:auto;padding:1rem;max-width:700px;margin:0 auto;width:100%}
-.dm-notes{width:100%;min-height:150px;border:1px solid #333;border-radius:8px;padding:10px;font-size:13px;font-family:system-ui;background:#1e1e1e;color:#eee;resize:vertical}
-.section-title{font-size:11px;font-weight:600;color:#666;margin:1rem 0 .5rem;text-transform:uppercase;letter-spacing:.07em}
 
 /* ── MODALS & LOGINS ── */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:200}
@@ -312,7 +247,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .die-btn svg polygon,.die-btn svg rect,.die-btn svg circle{stroke:#fff!important;fill:rgba(255,255,255,.16)!important}.die-btn svg text{fill:#fff!important;text-shadow:0 1px 3px #000}
 @keyframes twinkle{0%,100%{opacity:.25;transform:scale(.7) rotate(0)}50%{opacity:1;transform:scale(1.25) rotate(25deg)}}
 .dashboard-modal{background:#141414;border:1px solid #444;border-radius:16px;width:min(920px,96vw);max-height:90vh;overflow-y:auto;padding:1rem}
-.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.dash-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:12px}.dash-card h3{font-size:12px;color:#b8b4f8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}.dash-card input,.dash-card select{border:1px solid #333;border-radius:7px;padding:6px 8px;font-size:12px;background:#111;color:#eee}.dash-card button{padding:5px 10px;border-radius:7px;border:1px solid #444;background:#2a2a2a;color:#ccc;cursor:pointer;font-size:12px;margin:2px}.asset-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.asset-pill{border-color:#7F77DD!important;background:#1e1a3a!important;color:#b8b4f8!important}.scene-panel{position:absolute;right:12px;bottom:12px;max-width:260px;max-height:180px;background:#111;border:2px solid #7F77DD;border-radius:12px;padding:6px;z-index:20;box-shadow:0 0 24px #000;display:none}.scene-panel img{max-width:100%;max-height:150px;border-radius:8px;display:block}.scene-panel-title{font-size:10px;color:#b8b4f8;margin-bottom:4px;text-align:center}.scene-close{position:absolute;top:-8px;right:-8px;border:1px solid #444;background:#111;color:#aaa;border-radius:50%;width:22px;height:22px;cursor:pointer}
+.dashboard-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.dash-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:12px}.dash-card h3{font-size:12px;color:#b8b4f8;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}.dash-card input,.dash-card select{border:1px solid #333;border-radius:7px;padding:6px 8px;font-size:12px;background:#111;color:#eee}.dash-card button{padding:5px 10px;border-radius:7px;border:1px solid #444;background:#2a2a2a;color:#ccc;cursor:pointer;font-size:12px;margin:2px}.asset-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.asset-pill{border-color:#7F77DD!important;background:#1e1a3a!important;color:#b8b4f8!important}.scene-panel{position:absolute;right:12px;bottom:12px;max-width:260px;max-height:180px;background:#111;border:2px solid #7F77DD;border-radius:12px;padding:6px;z-index:20;box-shadow:0 0 24px #000;display:none}.scene-panel img{max-width:100%;max-height:150px;border-radius:8px;display:block}.scene-close{position:absolute;top:-8px;right:-8px;border:1px solid #444;background:#111;color:#aaa;border-radius:50%;width:22px;height:22px;cursor:pointer}
 .toast{position:fixed;top:55px;left:50%;transform:translateX(-50%);background:#111;border:1px solid #7F77DD;color:#b8b4f8;font-size:13px;font-weight:600;padding:8px 18px;border-radius:10px;z-index:998;pointer-events:none;box-shadow:0 0 18px #000}
 
 #dm-bottom-dock{position:fixed;left:0;right:0;bottom:0;z-index:90;background:#0d0d0d;border-top:1px solid #333;box-shadow:0 -10px 30px rgba(0,0,0,.45);padding:8px 12px;display:none;max-height:38vh;overflow:auto}
@@ -326,8 +261,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .firework{position:absolute;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff;animation:firework 1.2s ease-out forwards}
 @keyframes levelText{0%{opacity:0;transform:translate(-50%,-50%) scale(.45)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-70%) scale(.9)}}
 @keyframes firework{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(.25)}}
-.modal select.multi-select{min-height:90px}
-.autofill-note{font-size:10px;color:#777;margin-top:4px;line-height:1.35}
 
 /* ── INTERACTIVE MEDIA ADDITIONS ── */
 .reaction-bar{display:flex;gap:5px;flex-wrap:wrap}
@@ -377,12 +310,11 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
   </select>
 
   <button class="tab" id="nav-login-btn" onclick="openLogin()">Sign In</button>
-  <span id="nav-welcome" style="display:none; font-size:12px; color:#aaa; font-weight:600"></span>
+  <span id="nav-welcome" style="display:none; font-size:12px; color:#aaa; font-weight:600; margin-right:6px;"></span>
 
-  <button class="role-badge" id="role-btn" onclick="handleRoleClick()" style="margin-left:6px">
-    <span class="sync-dot" id="sync-dot"></span>
-    <span id="role-label">Player</span>
-  </button>
+  <button class="tab" id="explicit-dm-login-btn" onclick="handleRoleClick()" style="border-color:#7F77DD; color:#b8b4f8; font-weight:600; margin-right:6px;">DM Login</button>
+
+  <span style="display:none" id="role-btn"><span class="sync-dot" id="sync-dot"></span><span id="role-label">Player</span></span>
 </nav>
 
 <div id="map-panel" class="panel active">
@@ -610,9 +542,9 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 <div id="login-modal-bg" class="modal-bg" style="display:none; z-index: 9999;">
   <div class="modal" style="text-align:center; max-width:400px;">
     <h2>Campaign Authentication</h2>
-    <p style="font-size:12px;color:#888;margin-bottom:12px">Sign into the workspace with your name to create or modify characters.</p>
-    <input type="text" id="login-username" placeholder="Character or Player Name" style="margin-bottom:12px;text-align:center;">
-    <button onclick="submitLogin()" class="btn-primary" style="width:100%">Authenticate Access</button>
+    <p style="font-size:12px;color:#888;margin-bottom:12px">Don't have a profile yet? Create an account below to claim and construct your character sheet.</p>
+    <input type="text" id="login-username" placeholder="Choose Profile Username" style="margin-bottom:12px;text-align:center;">
+    <button onclick="submitLogin()" class="btn-primary" style="width:100%">Create Account &amp; Sign In</button>
     <button onclick="closeLogin()" class="btn-ghost" style="width:100%;margin-top:8px">Continue as Observer</button>
   </div>
 </div>
@@ -629,7 +561,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 
 <div id="dm-report-bg" class="modal-bg" style="display:none; z-index: 9999;">
   <div class="modal" style="max-width:600px;">
-    <h2>Automated Campaign Dispatch Dispatcher</h2>
+    <h2>Automated Campaign Dispatcher</h2>
     <p style="font-size:12px;color:#888;margin-bottom:6px">Active players are being prompted for routing destination lines. Hit dispatch below to route compiled game notes and dice timelines to your local operating client.</p>
     <textarea id="dm-final-report-area" style="width:100%;height:150px;border:1px solid #333;border-radius:8px;padding:8px;font-size:12px;background:#111;color:#eee;resize:vertical;margin-bottom:8px"></textarea>
     <div style="background:#111;border:1px solid #333;border-radius:8px;padding:8px;margin-bottom:12px">
@@ -648,7 +580,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
     <h2>Broadcast Visual Animation</h2>
     <p style="font-size:12px; color:#888; margin-bottom:10px;">Select a default visual asset preset or paste a unique external reference node line link below.</p>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:12px;">
-      <button onclick="sendGifReaction('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbms1amZ5Nms4Mndubm84bms5MzhpMXVpM3JpdmcxN3V0bnpwNmI1NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKsnS88LAnm0wF2/giphy.gif', 'Dragon Fire')" style="padding:6px; font-size:11px;">🔥 Dragon Fire</button>
+      <button onclick="sendGifReaction('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbks1amZ5Nms4Mndubm84bms5MzhpMXVpM3JpdmcxN3V0bnpwNmI1NiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKsnS88LAnm0wF2/giphy.gif', 'Dragon Fire')" style="padding:6px; font-size:11px;">🔥 Dragon Fire</button>
       <button onclick="sendGifReaction('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXN6cm85am14bnF0NWw0b2dtMDhkcm4wcmR3ZXB4YWhpZTN4N28zbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26AHAw0aMmWwLEBvW/giphy.gif', 'Magic Spell')" style="padding:6px; font-size:11px;">✨ Spell Burst</button>
       <button onclick="sendGifReaction('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3VwMzZ3OHl5MXg2MTBoN2pveHR3ZmdmMXFpZnl0Y2k4M3dybHRheSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0ExsgrTuACF7CG08/giphy.gif', 'Victory Dance')" style="padding:6px; font-size:11px;">🍻 Tavern Hype</button>
       <button onclick="sendGifReaction('https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3Z0dzB2Y3pybmNtbXoxeHN0YnlndmxtNGV0YzNycDJidTZvYnBjeCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3M4NpbLCTxBqU/giphy.gif', 'Facepalm')" style="padding:6px; font-size:11px;">🤦 Fail Cry</button>
@@ -679,7 +611,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 <div id="yt-container" style="position:fixed;bottom:-200px;left:-200px;width:1px;height:1px;overflow:hidden"><div id="yt-player"></div></div>
 
 <script>
-// ── AUTHENTICATION SYSTEMS ───────────────────────────────────────────
+// ── IDENTITY MANAGMENT SYSTEM ────────────────────────────────────────
 let loggedInUser = null;
 
 function initLogin() {
@@ -687,7 +619,7 @@ function initLogin() {
   if(!loggedInUser) {
     document.getElementById('login-modal-bg').style.display = 'flex';
   } else {
-    document.getElementById('nav-welcome').textContent = '👤 ' + loggedInUser;
+    document.getElementById('nav-welcome').textContent = '👤 Account: ' + loggedInUser;
     document.getElementById('nav-welcome').style.display = 'inline-block';
     document.getElementById('nav-login-btn').style.display = 'none';
   }
@@ -699,7 +631,7 @@ function submitLogin() {
     loggedInUser = n;
     localStorage.setItem('dnd_user', n);
     document.getElementById('login-modal-bg').style.display = 'none';
-    document.getElementById('nav-welcome').textContent = '👤 ' + n;
+    document.getElementById('nav-welcome').textContent = '👤 Account: ' + n;
     document.getElementById('nav-welcome').style.display = 'inline-block';
     document.getElementById('nav-login-btn').style.display = 'none';
     applyRole();
@@ -711,11 +643,6 @@ function closeLogin() {
 function openLogin() {
   document.getElementById('login-modal-bg').style.display = 'flex';
 }
-
-const PROF_BY_LEVEL = [2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6];
-const CLASS_SAVES = {
-  Artificer:['CON','INT'], Barbarian:['STR','CON'], Bard:['DEX','CHA'], Cleric:['WIS','CHA'], Druid:['INT','WIS'], Fighter:['STR','CON'], Monk:['STR','DEX'], Paladin:['WIS','CHA'], Ranger:['STR','DEX'], Rogue:['DEX','INT'], Sorcerer:['CON','CHA'], Warlock:['WIS','CHA'], Wizard:['INT','WIS'], 'Blood Hunter':['STR','INT']
-};
 
 const RACES_DB = {
   'Human':          {bonuses:{STR:1,DEX:1,CON:1,INT:1,WIS:1,CHA:1,speed:30},subraces:['Variant Human'],traits:['Versatile: +1 to all ability scores','Extra Language','Skill Versatility (Variant)']},
@@ -733,14 +660,6 @@ const RACES_DB = {
   'Orc':            {bonuses:{STR:2,CON:1,speed:30},subraces:[],traits:['Darkvision 60ft','Aggressive: Bonus action move toward enemy','Powerful Build: Count as Large for carrying','Primal Intuition: 2 skill proficiencies from survival list']},
   'Firbolg':        {bonuses:{STR:1,WIS:2,speed:30},subraces:[],traits:['Firbolg Magic: Detect Magic and Disguise Self (1/short rest)','Hidden Step: Invisibility as bonus action (1/short rest)','Powerful Build: Count as Large','Speech of Beast and Leaf: Communicate with beasts and plants']},
   'Githyanki':      {bonuses:{STR:2,INT:1,speed:30},subraces:['Githzerai'],traits:['Astral Knowledge: Skill proficiency (1/short rest)','Psychic Resilience: Psychic resistance','Githyanki Psionics: Mage Hand; Jump at 3rd; Misty Step at 5th','Martial Prodigy: Light/medium armor, swords proficiency']},
-  'Kenku':          {bonuses:{DEX:2,WIS:1,speed:30},subraces:[],traits:['Expert Forgery: Duplicate handwriting and crafts','Kenku Training: 2 skills from Acrobatics/Deception/Stealth/Sleight of Hand','Mimicry: Mimic sounds heard, DC Insight vs Deception']},
-  'Lizardfolk':     {bonuses:{CON:2,WIS:1,speed:30},subraces:[],traits:['Bite: 1d6 piercing natural weapon','Cunning Artisan: Craft items from slain enemies','Hold Breath: 15 minutes','Natural Armor: AC = 13+DEX','Hungry Jaws: Bonus action bite + temp HP']},
-  'Triton':         {bonuses:{STR:1,CON:1,CHA:1,speed:30},subraces:[],traits:['Amphibious: Breathe air and water','Control Air and Water: Fog Cloud; Gust of Wind at 3rd; Wall of Water at 5th','Darkvision 60ft','Emissary of the Sea: Speak to water-breathing beasts','Guardians of the Depths: Cold/pressure immunity']},
-  'Yuan-ti Pureblood':{bonuses:{INT:1,CHA:2,speed:30},subraces:[],traits:['Darkvision 60ft','Innate Spellcasting: Poison Spray; Animal Friendship (snakes); Suggestion at 3rd','Magic Resistance: Advantage on saves vs spells','Poison Immunity: Immune to poison']},
-  'Bugbear':        {bonuses:{STR:2,DEX:1,speed:30},subraces:[],traits:['Darkvision 60ft','Long-Limbed: +5ft melee reach on first combat turn','Powerful Build: Count as Large','Sneaky: Stealth proficiency','Surprise Attack: +2d6 damage to surprised creatures']},
-  'Goblin':         {bonuses:{DEX:2,CON:1,speed:30},subraces:[],traits:['Darkvision 60ft','Fury of the Small: Extra damage equal to level (1/short rest)','Nimble Escape: Disengage or Hide as bonus action']},
-  'Hobgoblin':      {bonuses:{CON:2,INT:1,speed:30},subraces:[],traits:['Darkvision 60ft','Martial Training: 2 martial weapons + light armor','Saving Face: Add bonus to failed roll based on allies nearby (1/short rest)']},
-  'Kobold':         {bonuses:{DEX:2,speed:30},subraces:[],traits:['Darkvision 60ft','Grovel Cower and Beg: Give allies advantage as action','Pack Tactics: Advantage on attacks when ally is adjacent to target']},
 };
 
 const SUBRACES_DB = {
@@ -809,13 +728,105 @@ const SPECIES_AUTO_FEATURES={
   Human:['Versatile: Broad ability increases and adaptable background'], 'Variant Human':['Feat: Start with one feat and one skill proficiency'], Elf:['Darkvision: See in dim light','Fey Ancestry: Advantage against being charmed; magic cannot put you to sleep','Trance: Meditate instead of sleep'], 'High Elf':['Elf Weapon Training: Proficiency with classic elven weapons','Cantrip: Know one wizard cantrip'], 'Wood Elf':['Mask of the Wild: Hide when lightly obscured by natural phenomena','Fleet of Foot: Increased walking speed'], 'Dark Elf':['Superior Darkvision: Extended darkvision','Drow Magic: Gain drow spells as you level'], Dwarf:['Darkvision: See in dim light','Dwarven Resilience: Advantage against poison; resistance to poison damage'], 'Hill Dwarf':['Dwarven Toughness: Extra hit points'], 'Mountain Dwarf':['Dwarven Armor Training: Armor proficiency'], Halfling:['Lucky: Reroll natural 1s','Brave: Advantage against frightened'], 'Lightfoot Halfling':['Naturally Stealthy: Hide behind larger creatures'], 'Stout Halfling':['Stout Resilience: Advantage against poison'], 'Half-Elf':['Fey Ancestry: Advantage against charm; magic cannot put you to sleep','Skill Versatility: Gain two skill proficiencies'], 'Half-Orc':['Relentless Endurance: Drop to 1 HP instead of 0 once per long rest','Savage Attacks: Extra die on melee critical hits'], Dragonborn:['Draconic Ancestry: Breath weapon and damage resistance'], Gnome:['Gnome Cunning: Advantage on mental saves against magic'], Tiefling:['Darkvision: See in dim light','Hellish Resistance: Resistance to fire damage'], Aasimar:['Celestial Resistance: Resistance to necrotic and radiant damage','Healing Hands: Touch to heal'], Tabaxi:['Feline Agility: Burst of speed',"Cat\'s Claws: Climb speed and natural weapons"], Goliath:["Stone\'s Endurance: Reduce damage once per rest",'Powerful Build: Count as one size larger for carrying'], Orc:['Aggressive: Move toward enemies as bonus action','Powerful Build: Count as one size larger for carrying'], Firbolg:['Hidden Step: Brief invisibility','Firbolg Magic: Detect Magic and Disguise Self'], Githyanki:['Githyanki Psionics: Innate psionic magic']
 };
 
+const SKILLS = [
+  {name:'Acrobatics',   ab:'DEX'},{name:'Animal Handling',ab:'WIS'},
+  {name:'Arcana',       ab:'INT'},{name:'Athletics',      ab:'STR'},
+  {name:'Deception',    ab:'CHA'},{name:'History',        ab:'INT'},
+  {name:'Insight',      ab:'WIS'},{name:'Intimidation',   ab:'CHA'},
+  {name:'Investigation',ab:'INT'},{name:'Medicine',       ab:'WIS'},
+  {name:'Nature',       ab:'INT'},{name:'Perception',     ab:'WIS'},
+  {name:'Performance',  ab:'CHA'},{name:'Persuasion',     ab:'CHA'},
+  {name:'Religion',     ab:'INT'},{name:'Sleight of Hand',ab:'DEX'},
+  {name:'Stealth',      ab:'DEX'},{name:'Survival',       ab:'WIS'},
+];
+
+const SPELL_SLOTS = {
+  full: [
+    null,[2],[3],[4,2],[4,3],[4,3,2],[4,3,3],[4,3,3,1],[4,3,3,2],
+    [4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2,1],[4,3,3,3,2,1],
+    [4,3,3,3,2,1,1],[4,3,3,3,2,1,1],[4,3,3,3,2,1,1,1],[4,3,3,3,2,1,1,1],
+    [4,3,3,3,2,1,1,1,1],[4,3,3,3,3,1,1,1,1],[4,3,3,3,3,2,1,1,1],[4,3,3,3,3,2,2,1,1],
+  ],
+  half: [
+    null,[0],[0],[2],[3],[4,2],[4,2],[4,3],[4,3],[4,3,2],[4,3,2],
+    [4,3,3],[4,3,3],[4,3,3,1],[4,3,3,1],[4,3,3,2],[4,3,3,2],
+    [4,3,3,3,1],[4,3,3,3,1],[4,3,3,3,2],[4,3,3,3,2],
+  ],
+  pact: [
+    null,[1],[2],[2],[2],[2],[2],[2],[2],[2],[2],
+    [2],[2],[2],[2],[2],[2],[2],[2],[2],[2],
+  ],
+};
+
+function dieSVG(sides){
+  const s=42,svgs={
+    4:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><polygon points="22,4 40,38 4,38" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="30" text-anchor="middle" fill="#b8b4f8" font-size="13" font-weight="700">d4</text></svg>`,
+    6:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><rect x="6" y="6" width="32" height="32" rx="6" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="28" text-anchor="middle" fill="#b8b4f8" font-size="13" font-weight="700">d6</text></svg>`,
+    8:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><polygon points="22,3 41,22 22,41 3,22" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="27" text-anchor="middle" fill="#b8b4f8" font-size="13" font-weight="700">d8</text></svg>`,
+    10:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><polygon points="22,3 40,16 35,37 9,37 4,16" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="28" text-anchor="middle" fill="#b8b4f8" font-size="11" font-weight="700">d10</text></svg>`,
+    12:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><polygon points="22,2 34,8 42,20 38,34 26,42 18,42 6,34 2,20 10,8" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="28" text-anchor="middle" fill="#b8b4f8" font-size="11" font-weight="700">d12</text></svg>`,
+    20:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><polygon points="22,2 40,14 40,30 22,42 4,30 4,14" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="27" text-anchor="middle" fill="#b8b4f8" font-size="11" font-weight="700">d20</text></svg>`,
+    100:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="27" text-anchor="middle" fill="#b8b4f8" font-size="10" font-weight="700">d100</text></svg>`,
+  };return svgs[sides]||'';
+}
+
+const COLORS=[
+  {bg:'#1a2a3a',color:'#7ab8f5',border:'#378ADD'},
+  {bg:'#0d2a1a',color:'#5dcaa5',border:'#1D9E75'},
+  {bg:'#1e1a3a',color:'#b8b4f8',border:'#7F77DD'},
+  {bg:'#2a1e0a',color:'#f5c87a',border:'#EF9F27'},
+  {bg:'#2a0d1a',color:'#f093b0',border:'#D4537E'},
+  {bg:'#0d2a0d',color:'#97c459',border:'#639922'},
+  {bg:'#2a2a2a',color:'#aaa',border:'#555'},
+];
+function getCardColors(p){return p.cardColor||COLORS[p.color||0]||COLORS[0];}
+const CONDITIONS=['Poisoned','Stunned','Blinded','Prone','Invisible','Frightened','Restrained','Charmed'];
+const GRID_SIZE=50;
+
+// ── STATE ─────────────────────────────────────────────────────────────
+const DM_PIN = '2765';
+let pinBuffer = '';
+let activeCharacter = 'spectator';
+let isDM=false, currentPanel='map', currentSheetTab='core', viewingCharIdx=null;
+let party=[
+  {id:'p0',name:'Aria',  cls:'Rogue · Thief · 5',       species:'Wood Elf',background:'Criminal',hp:38,maxHp:38,tempHp:0,ac:15,pp:14,speed:35,conds:[],color:0,pfp:null,caster:'none',
+   str:10,dex:18,con:12,int:12,wis:12,cha:10,
+   profSkills:'Acrobatics,Stealth,Sleight of Hand,Deception,Perception',
+   expertSkills:'Stealth,Perception',
+   features:'Sneak Attack: 3d6 extra damage once per turn\nCunning Action: Dash, Disengage, or Hide as bonus action\nUnreliable Talent: Min roll of 10 on proficient checks\nEvasion: No damage on DEX save success',
+   equipment:'Shortsword | 1d6 piercing, finesse, light\nDagger ×2 | 1d4 piercing, finesse, thrown\nStudded Leather | AC 12+DEX\nThieves\' Tools | +7 to use',
+   spells:'',armor:'Studded Leather',deathSaves:{s:[false,false,false],f:[false,false,false]},notes:''},
+  {id:'p1',name:'Brom',  cls:'Fighter · Champion · 5',   species:'Mountain Dwarf',background:'Soldier',hp:52,maxHp:52,tempHp:0,ac:18,pp:12,speed:25,conds:[],color:1,pfp:null,caster:'none',
+   str:18,dex:14,con:16,int:10,wis:12,cha:8,
+   profSkills:'Athletics,Intimidation,Perception,History',
+   expertSkills:'',
+   features:'Fighting Style: Great Weapon Fighting\nSecond Wind: 1d10+5 HP (Short Rest)\nAction Surge: Extra action (Short Rest)\nImproved Critical: Crit on 19-20\nExtra Attack: Attack twice',
+   equipment:'Greataxe | 1d12 slashing, heavy, two-handed\nHandaxe ×2 | 1d6 slashing, thrown\nSplint Armor | AC 17\nShield (stowed) | +2 AC',
+   spells:'',armor:'Splint',deathSaves:{s:[false,false,false],f:[false,false,false]},notes:''},
+  {id:'p2',name:'Zyla',  cls:'Wizard · School of Evocation · 5',species:'High Elf',background:'Sage',hp:28,maxHp:28,tempHp:0,ac:13,pp:15,speed:30,conds:[],color:2,pfp:null,caster:'full',
+   str:8,dex:14,con:12,int:18,wis:14,cha:10,
+   profSkills:'Arcana,History,Investigation,Medicine',
+   expertSkills:'',
+   features:'Arcane Recovery: Recover spell slots on short rest\nEvocation Savant: Learn evocation spells at half cost\nSculpt Spells: Protect allies from evocation spells\nPotent Cantrip: Cantrips deal half damage on save',
+   equipment:'Quarterstaff | 1d6 bludgeoning, versatile\nSpellbook | Arcane focus\nComponent Pouch | Spell materials\nScholarly Robes | AC 10+DEX',
+   spells:'0|Fire Bolt|Evocation\n0|Mage Hand|Conjuration\n0|Minor Illusion|Illusion\n0|Prestidigitation|Transmutation\n1|Mage Armor|Abjuration\n1|Magic Missile|Evocation\n1|Shield|Abjuration\n2|Misty Step|Conjuration\n2|Scorching Ray|Evocation\n3|Fireball|Evocation\n3|Counterspell|Abjuration',
+   armor:'Mage Armor (spell)',deathSaves:{s:[false,false,false],f:[false,false,false]},notes:''},
+  {id:'p3',name:'Theron',cls:'Cleric · Life Domain · 5', species:'Human',background:'Acolyte',hp:44,maxHp:44,tempHp:0,ac:16,pp:13,speed:30,conds:[],color:3,pfp:null,caster:'full',
+   str:14,dex:10,con:14,int:12,wis:18,cha:14,
+   profSkills:'Insight,Medicine,Persuasion,Religion,History',
+   expertSkills:'',
+   features:'Channel Divinity (1/Short Rest)\nDisciple of Life: Healing spells restore +2+spell level HP\nBlessed Healer: Heal yourself when healing others\nDestroy Undead: Auto-destroy CR 1/2 undead\nSpellcasting: WIS-based, DC 15',
+   equipment:'Mace | 1d6 bludgeoning\nShield | +2 AC\nChain Mail | AC 16\nHoly Symbol | Divine focus\nHealer\'s Kit | 10 uses',
+   spells:'0|Sacred Flame|Evocation\n0|Guidance|Divination\n0|Thaumaturgy|Transmutation\n1|Bless|Enchantment\n1|Cure Wounds|Evocation\n1|Healing Word|Evocation\n1|Guiding Bolt|Evocation\n2|Lesser Restoration|Abjuration\n2|Prayer of Healing|Evocation\n2|Spiritual Weapon|Evocation\n3|Revivify|Necromancy\n3|Spirit Guardians|Conjuration',
+   armor:'Chain Mail',deathSaves:{s:[false,false,false],f:[false,false,false]},notes:''},
+];
 let rollLog=[],initiative=[],currentTurn=0,round=1,selectedRoller='DM';
 let spellSlots={},spellSlotsUsed={};
 let mapImageData=null,showGrid=false,gridTool='move',tokens={},assetRepo={maps:{},tokens:{}},sceneImageData=null;
 let editingIdx=null,pendingPfp=null,dbReady=false;
 window._lastSessionTs = Date.now();
 
-// ── CORE ENGINES ───────────────────────────────────────────────────────
+// ── CORE LOGIC ENGINES ────────────────────────────────────────────────
 function mod(score){return Math.floor((score-10)/2);}
 function modStr(score){const m=mod(score);return (m>=0?'+':'')+m;}
 function profBonus(p){const lvl=parseInt((p.cls||'').match(/\d+/)?.[0])||1;return PROF_BY_LEVEL[Math.min(lvl,20)-1]||2;}
@@ -895,7 +906,7 @@ function hpColor(pct){return pct>.5?'#1D9E75':pct>.25?'#EF9F27':'#E24B4A';}
 function fmtBonus(n){return (n>=0?'+':'')+n;}
 function normalizeCharacter(p){p.xp=p.xp||0;p.inventory=p.inventory||[];p.charPin=p.charPin||'';if(!p.id)p.id='p_'+Date.now()+'_'+Math.floor(Math.random()*9999);return p;}
 
-// ── SYNC LAYER ────────────────────────────────────────────────────────
+// ── DB REALTIME SYNC NODE ─────────────────────────────────────────────
 function dbSet(path,val){if(!dbReady)return;window._set(window._ref(window._db,path),val);}
 function dbUpdate(path,val){if(!dbReady)return;window._update(window._ref(window._db,path),val);}
 function dbRemove(path){if(!dbReady)return;window._remove(window._ref(window._db,path));}
@@ -926,7 +937,6 @@ function initDb(){
       }
     }
   });
-
   dbListen('sessionStatus/emails', emails => {
     const el = document.getElementById('dm-collected-emails');
     if(!el) return;
@@ -938,15 +948,27 @@ function initDb(){
       el.textContent = 'Waiting for signatures...';
     }
   });
-
   initReactionListener();
   setSyncStatus('live');
 }
 
-// ── IDENTITY MANAGMENT ───────────────────────────────────────────────
+// ── AUTHENTICATION MANAGEMENT SYSTEMS ───────────────────────────────
 function applyRole(){
-  document.getElementById('role-label').textContent=isDM?'DM 👑':'Player';
-  document.getElementById('role-btn').className='role-badge'+(isDM?' dm':'');
+  const dmBtn = document.getElementById('explicit-dm-login-btn');
+  if (isDM) {
+    if(dmBtn) {
+      dmBtn.textContent = "Exit DM Mode";
+      dmBtn.style.borderColor = "#E24B4A";
+      dmBtn.style.color = "#f09595";
+    }
+  } else {
+    if(dmBtn) {
+      dmBtn.textContent = "DM Login";
+      dmBtn.style.borderColor = "#7F77DD";
+      dmBtn.style.color = "#b8b4f8";
+    }
+  }
+
   document.getElementById('upload-map-btn').style.display=isDM?'inline-block':'none';
   document.getElementById('add-token-btn').style.display=isDM?'inline-block':'none';
   const dashBtn=document.getElementById('dm-dashboard-btn'); if(dashBtn)dashBtn.style.display=isDM?'inline-block':'none';
@@ -984,7 +1006,7 @@ function switchTab(t){
   renderCurrentPanel();
 }
 
-// ── PARTY CARD ENGINE ─────────────────────────────────────────────────
+// ── PARTY CARD RENDERERS ──────────────────────────────────────────────
 function renderParty(){
   party=party.map(normalizeCharacter);
   populateCharacterSelect();populateDMControls();
@@ -1089,7 +1111,7 @@ function toggleCond(i,c){
   dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
 }
 
-// ── SHEET MODAL ACTIONS ──────────────────────────────────────────────
+// ── CHARACTER FULL SHEET GENERATORS ───────────────────────────────────
 function openSheet(i){
   if(!canAccessCharacter(i,false))return;
   viewingCharIdx=i;currentSheetTab='core';
@@ -1185,13 +1207,8 @@ function renderSheetFeatures(p){
   const feats=(p.features||'').split('\n').filter(f=>f.trim());
   return `<div class="sheet-section"><h3>Features</h3><div class="feature-list">${feats.map(f=>`<div class="feature-item">${f}</div>`).join('')}</div></div>`;
 }
-function renderSheetSpells(p){
-  return `<div class="sheet-section"><p style="color:#555">Spells Ledger Terminal ready.</p></div>`;
-}
-function renderSheetEquipment(p){
-  return `<div class="sheet-section"><p style="color:#555">Equipment Node configured.</p></div>`;
-}
-// Placeholder functions to keep script running smoothly
+function renderSheetSpells(p){return `<div class="sheet-section"><p style="color:#555">Spells Ledger configured.</p></div>`;}
+function renderSheetEquipment(p){return `<div class="sheet-section"><p style="color:#555">Equipment ledger active.</p></div>`;}
 function renderSheetNotes(p) { return `<div class="sheet-section"><textarea class="notes-area" id="sheet-notes-area">${p.notes||''}</textarea><button onclick="saveSheetNotes()">Save</button></div>`; }
 function sheetChangeHp(type){
   const i=viewingCharIdx; if(i===null)return;
@@ -1222,7 +1239,7 @@ function populateSubclassOptions(){}
 function syncClassString(){}
 function syncSkillSelectsToText(){}
 
-// ── CUSTOM LOGISTICS ENGINE ───────────────────────────────────────────
+// ── CUSTOM MODAL ACTIONS & GENERATION ──────────────────────────────────
 function openModal(i){
   if(!canAccessCharacter(i,true))return;
   editingIdx=i;pendingPfp=null;const p=party[i];
@@ -1274,14 +1291,12 @@ function awardXPFromDashboard(){}
 function clearXP(){}
 function giveDashboardItem(){}
 
-// ── MEDIA CONTROL ENGINE (COLLAPSIBLE / EDGE SNAPPING) ───────────────
+// ── SNAPCHAT MEDIA EDGE CONTROLS ─────────────────────────────────────
 let mediaDockHidden = false;
-
 function toggleMediaDock() {
   mediaDockHidden = !mediaDockHidden;
   const bottomDock = document.getElementById('map-media-dock');
   const edgeTab = document.getElementById('right-media-tab');
-  
   if (mediaDockHidden) {
     bottomDock.style.setProperty('display', 'none', 'important');
     edgeTab.style.display = 'flex';
@@ -1291,100 +1306,9 @@ function toggleMediaDock() {
   }
 }
 
-// ── SOUND FX ENGINE (YOUTUBE FRAME INJECTIONS) ────────────────────────
-function fireAudioInjectedNode(videoId, duration = 8000, start = 0) {
-  const container = document.getElementById('yt-container');
-  if(!container) return;
-  container.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${videoId}?autoplay=1&start=${start}&controls=0" allow="autoplay"></iframe>`;
-  if(duration > 0) {
-    setTimeout(() => { container.innerHTML = ''; }, duration);
-  }
-}
-
-// ── CUSTOM ANIMATED ACTIONS & CELEBRATIONS ────────────────────────────
-function triggerNat20Announce(rollerName) {
-  // Spawn critical graphic banner announcement
-  const banner = document.createElement('div');
-  banner.className = 'crit-banner';
-  banner.innerHTML = `<h2>CRITICAL HIT!</h2><p>${rollerName} Rolled a Natural 20!</p>`;
-  document.body.appendChild(banner);
-  
-  // Spawn decorative fireworks particle items
-  const colors = ['#ffe1a1', '#7F77DD', '#5dcaa5', '#ffc2d7', '#fff'];
-  for (let i = 0; i < 45; i++) {
-    const p = document.createElement('div');
-    p.className = 'firework';
-    p.style.left = (20 + Math.random() * 60) + 'vw';
-    p.style.top = (15 + Math.random() * 50) + 'vh';
-    p.style.background = colors[Math.floor(Math.random() * colors.length)];
-    p.style.setProperty('--x', (Math.random() * 300 - 120) + 'px');
-    p.style.setProperty('--y', (Math.random() * 300 - 120) + 'px');
-    p.style.animation = `firework 1.3s cubic-bezier(0.1, 0.8, 0.3, 1) forwards`;
-    p.style.animationDelay = (Math.random() * 0.4) + 's';
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 2000);
-  }
-  
-  // Fire Pokémon Capture Theme sound loop
-  fireAudioInjectedNode('JN8Mswri5fc', 6000);
-  setTimeout(() => banner.remove(), 3500);
-}
-
-function triggerNat1Announce(rollerName) {
-  // Spawn full viewport dark overlay mask
-  const overlay = document.createElement('div');
-  overlay.className = 'sad-overlay';
-  overlay.innerHTML = `<div class="sad-face">😭<div style="font-size:24px; color:#fff; font-weight:bold; margin-top:10px; text-shadow:0 2px 8px #000;">CRITICAL FUMBLE! (${rollerName} rolled a 1)</div></div>`;
-  document.body.appendChild(overlay);
-  
-  // Execute first 3 seconds of Awkward Pause Anime edit tone
-  fireAudioInjectedNode('IxTiL8GLw-M', 3000, 0);
-  setTimeout(() => overlay.remove(), 3500);
-}
-
-// ── DICE LOGISTICS ───────────────────────────────────────────────────
-function quickRoll(sides) {
-  // Execute general dice roll auditory sample cue
-  fireAudioInjectedNode('9cWg_SAWv5A', 1500);
-  
-  const roll = Math.ceil(Math.random() * sides);
-  const who = getCurrentRoller();
-  
-  rollLog.unshift({who, label: `1d${sides} (Quick)`, rolls: [roll], total: roll, nat: (sides===20?roll:null), ts: Date.now()});
-  dbSet('rollLog', rollLog);
-  renderDice();
-  
-  // Evaluate global natural milestone indicators
-  if (sides === 20) {
-    if (roll === 20) {
-      triggerNat20Announce(who);
-    } else if (roll === 1) {
-      triggerNat1Announce(who);
-    }
-  }
-}
-
-function rollDieCustom(sides, count, rollMod, label) {
-  // Standard full panel roll execution hook
-  fireAudioInjectedNode('9cWg_SAWv5A', 1500);
-  const rolls = Array.from({length: count}, () => Math.ceil(Math.random() * sides));
-  const total = rolls.reduce((a, b) => a + b, 0) + rollMod;
-  const who = getCurrentRoller();
-  const nat = (sides === 20 && count === 1) ? rolls[0] : null;
-  
-  rollLog.unshift({who, label, rolls, total, nat, mod: rollMod, ts: Date.now()});
-  dbSet('rollLog', rollLog);
-  renderDice();
-  
-  if (nat === 20) triggerNat20Announce(who);
-  if (nat === 1) triggerNat1Announce(who);
-}
-
-// ── GIF BROADCAST CONFIGURE ─────────────────────────────────────────
 function openCustomGifDialog() {
   document.getElementById('gif-modal-bg').style.display = 'flex';
 }
-
 function sendGifReaction(url, name) {
   const who = getCurrentRoller();
   const reaction = { emoji: '🖼️', label: `Sent GIF: ${name}`, who, ts: Date.now(), gifUrl: url };
@@ -1392,14 +1316,12 @@ function sendGifReaction(url, name) {
   showGifReactionLocally(reaction);
   document.getElementById('gif-modal-bg').style.display = 'none';
 }
-
 function submitCustomGif() {
   const url = document.getElementById('custom-gif-url').value.trim();
   if(!url) return;
   sendGifReaction(url, 'Custom Asset');
   document.getElementById('custom-gif-url').value = '';
 }
-
 function showGifReactionLocally(r) {
   const bubble = document.createElement('div');
   bubble.className = 'reaction-bubble';
@@ -1408,65 +1330,86 @@ function showGifReactionLocally(r) {
   bubble.innerHTML = `<img src="${r.gifUrl}" style="width:120px; height:120px; object-fit:cover; border-radius:12px; border:2px solid #7F77DD; box-shadow:0 4px 15px rgba(0,0,0,0.5);">`;
   document.body.appendChild(bubble);
   setTimeout(() => bubble.remove(), 3000);
-  
   showToast(`🖼️ ${r.who} broadcasted an animation clip!`);
 }
 
-// ── SESSION COMPILATION & ROUTING ────────────────────────────────────
+// ── AUDIT CAMPAIGN REPORTS DISPATCHER ─────────────────────────────────
 function completeSessionExecution() {
   if(!isDM) return;
   const notes = document.getElementById('dm-notes-main')?.value || '';
   const log = document.getElementById('dm-session-log')?.value || '';
-  
   let report = `CAMPAIGN CHRONICLES & REPORT\nCompiled: ${new Date().toLocaleDateString()}\n\n`;
   report += `== SESSION NOTES ==\n${notes}\n\n`;
   report += `== CHRONICLE LOG ==\n${log}\n\n`;
   report += `== TIMELINE DICE ROLL LOG ==\n`;
-  
   rollLog.forEach(r => {
     report += `[${formatRollTime(r.ts)}] ${r.who} rolled ${r.label} -> Total: ${r.total}\n`;
   });
-  
   document.getElementById('dm-final-report-area').value = report;
   dbSet('sessionStatus', { state: 'ended', ts: Date.now() });
-  
-  // Wipe out previous entries inside the signature line lists
   dbRemove('sessionStatus/emails');
   document.getElementById('dm-report-bg').style.display = 'flex';
 }
-
 function submitPlayerEmail() {
   const email = document.getElementById('player-email-input').value.trim();
   if(!email || !email.includes('@')) return alert('Please input a valid email route destination line.');
-  
   const id = 'mail_' + Date.now();
   window._set(window._ref(window._db, 'sessionStatus/emails/' + id), email);
   document.getElementById('email-prompt-bg').style.display = 'none';
   showToast('📬 Destination line synchronized with DM terminal.');
 }
-
 function generateMailto() {
   const body = document.getElementById('dm-final-report-area').value;
   const recipients = window._collectedEmails ? window._collectedEmails.join(',') : '';
   const subject = encodeURIComponent('D&D Campaign Chronicles Session Report Statement');
-  const mailtoUrl = `mailto:${recipients}?subject=${subject}&body=${encodeURIComponent(body)}`;
-  
-  window.open(mailtoUrl, '_blank');
+  window.open(`mailto:${recipients}?subject=${subject}&body=${encodeURIComponent(body)}`, '_blank');
+}
+function endSessionDiceReport() { completeSessionExecution(); }
+
+// ── CUSTOM STREAM AUDIO & CELEBRATION INJECTIONS ──────────────────────
+function fireAudioInjectedNode(videoId, duration = 8000, start = 0) {
+  const container = document.getElementById('yt-container');
+  if(!container) return;
+  container.innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/${videoId}?autoplay=1&start=${start}&controls=0" allow="autoplay"></iframe>`;
+  if(duration > 0) setTimeout(() => { container.innerHTML = ''; }, duration);
+}
+function triggerNat20Announce(rollerName) {
+  const banner = document.createElement('div');
+  banner.className = 'crit-banner';
+  banner.innerHTML = `<h2>CRITICAL HIT!</h2><p>${rollerName} Rolled a Natural 20!</p>`;
+  document.body.appendChild(banner);
+  const colors = ['#ffe1a1', '#7F77DD', '#5dcaa5', '#ffc2d7', '#fff'];
+  for (let i = 0; i < 45; i++) {
+    const p = document.createElement('div'); p.className = 'firework';
+    p.style.left = (20 + Math.random() * 60) + 'vw'; p.style.top = (15 + Math.random() * 50) + 'vh';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.setProperty('--x', (Math.random() * 300 - 120) + 'px'); p.style.setProperty('--y', (Math.random() * 300 - 120) + 'px');
+    p.style.animation = `firework 1.3s cubic-bezier(0.1, 0.8, 0.3, 1) forwards`; p.style.animationDelay = (Math.random() * 0.4) + 's';
+    document.body.appendChild(p); setTimeout(() => p.remove(), 2000);
+  }
+  fireAudioInjectedNode('JN8Mswri5fc', 6000);
+  setTimeout(() => banner.remove(), 3500);
+}
+function triggerNat1Announce(rollerName) {
+  const overlay = document.createElement('div'); overlay.className = 'sad-overlay';
+  overlay.innerHTML = `<div class="sad-face">😭<div style="font-size:24px; color:#fff; font-weight:bold; margin-top:10px; text-shadow:0 2px 8px #000;">CRITICAL FUMBLE! (${rollerName} rolled a 1)</div></div>`;
+  document.body.appendChild(overlay);
+  fireAudioInjectedNode('IxTiL8GLw-M', 3000, 0);
+  setTimeout(() => overlay.remove(), 3500);
+}
+function quickRoll(sides) {
+  fireAudioInjectedNode('9cWg_SAWv5A', 1500);
+  const roll = Math.ceil(Math.random() * sides);
+  const who = getCurrentRoller();
+  rollLog.unshift({who, label: `1d${sides} (Quick)`, rolls: [roll], total: roll, nat: (sides===20?roll:null), ts: Date.now()});
+  dbSet('rollLog', rollLog); renderDice();
+  if (sides === 20) {
+    if (roll === 20) triggerNat20Announce(who);
+    else if (roll === 1) triggerNat1Announce(who);
+  }
 }
 
-// Override legacy function hooks to support custom workflow integrations
-function endSessionDiceReport() { completeSessionExecution(); }
-const originalInitReactionListener = window.initReactionListener;
-window.initReactionListener = function() {
-  dbListen('reactions/latest', data => {
-    if (data && Date.now() - (data.ts || 0) < 8000) {
-      if (data.gifUrl) showGifReactionLocally(data);
-      else showReactionLocally(data);
-    }
-  });
-};
-
-// ── MAP RENDERING BACKWARDS COMPATIBILITY ────────────────────────────
+// ── MAP CANVAS RENDERING LAYER BACKWARDS HOOKS ───────────────────────
 function uploadMap(e){
   const file=e.target.files[0];if(!file)return;const reader=new FileReader();
   reader.onload=ev=>{
@@ -1511,7 +1454,6 @@ function createTokenEl(tok){
   const pct=tok.maxHp?tok.hp/tok.maxHp:1;fill.style.cssText=`width:${Math.max(0,pct*100)}%;background:${hpColor(pct)}`;
   bar.appendChild(fill);div.appendChild(bar);
   const lbl=document.createElement('div');lbl.className='token-label';lbl.textContent=tok.name;div.appendChild(lbl);makeDraggable(div,tok.id);
-  div.addEventListener('contextmenu',e=>{e.preventDefault();if(isDM&&confirm('Remove '+tok.name+'?'))dbRemove('tokens/'+tok.id);});
   return div;
 }
 function makeDraggable(el,tokId){
@@ -1527,23 +1469,24 @@ function renderAssetRepo(){
 }
 function uploadSceneImage(e){const file=e.target.files[0];if(!file||!isDM)return;fileToDataURL(file,data=>{sceneImageData=data;dbSet('sceneImage',data);applySceneImage(data);e.target.value='';});}
 function applySceneImage(data){const panel=document.getElementById('scene-panel'),img=document.getElementById('scene-img');if(!panel||!img)return;if(data){img.src=data;panel.style.display='block';}else{img.src='';panel.style.display='none';}}
-function clearSceneImage(){if(!isDM)return;sceneImageData=null;dbRemove('sceneImage');applySceneImage(null);}
-function awardXP(){}
-function clearXP(){}
-function showItemBanner(playerName,itemName){const banner=document.createElement('div');banner.className='item-banner';banner.innerHTML=`<div class="item-banner-name">🎁 ${playerName} received</div><div class="item-banner-item">⚔️ ${itemName}</div>`;document.body.appendChild(banner);setTimeout(()=>banner.remove(),3600);}
-function toggleMusic(){}
-function playPreset(name){}
-function playURL(){}
-function stopMusic(){}
-function updateMusicPermissions(){}
-function updateMusicUI(){}
-function applyMusicStateFromDB(){}
-function enablePlayerAudio(){}
-function setVol(v){}
-function ensureInitList(){}
-function sortedInitList(){return [];}
-function renderInit(){}
+function clearSceneImage(){}
+function renderDockedDashboard(){}
+function toggleDockCollapse(){}
+function formatRollTime(ts){return new Date(ts).toLocaleTimeString();}
+function getCurrentRoller(){return isDM?'DM':(loggedInUser||'Player');}
+function renderDice(){}
+function showToast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2000);}
+function showReactionLocally(r){}
 const TAB_IDS=['map','party','dice','init','spells','notes'];
+function buildSpellSlots(){}
+function renderSpellsTab(){}
+function fileToDataURL(file,cb){const r=new FileReader();r.onload=ev=>cb(ev.target.result);r.readAsDataURL(file);}
+function deleteRepoAsset(type,id){}
+function loadRepoMap(id){}
+function placeRepoToken(id){}
+function newSession(){}
+function appendDiceReportToNotes(){}
+function clearDiceHistory(){}
 
 // ── BOOTSTRAP INITIALIZATION ─────────────────────────────────────────
 initLogin();
