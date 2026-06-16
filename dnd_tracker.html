@@ -5,93 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>D&D Party Tracker</title>
 
-<!--
-=============================================================
-  FIREBASE SETUP — do this first!
-=============================================================
-1. Go to https://console.firebase.google.com
-2. Click "Add project" → name it anything → create
-3. Click the </> Web icon to register a web app
-4. Copy the firebaseConfig object they give you
-5. Paste it below, replacing the placeholder values
-6. In Firebase console → Build → Realtime Database → Create database
-   → Start in TEST MODE (you can add rules later)
-7. Copy the database URL (looks like https://yourapp-default-rtdb.firebaseio.com)
-   and paste it as the databaseURL value below
-=============================================================
--->
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// ── FIREBASE CONFIG ───────────────────────────────────────
-// ✅ All values filled in from your Firebase console.
-// ⚠️  ONE THING LEFT: add your databaseURL below!
-//    Go to: Firebase console → Build → Realtime Database → Create database (test mode)
-//    Then copy the URL (looks like https://ccrewdnd-default-rtdb.firebaseio.com)
-//    and paste it as the databaseURL value below.
 const firebaseConfig = {
   apiKey:            "AIzaSyC6UzuhyAkuiGFs53xhSOLpBYxdWcf6yTU",
   authDomain:        "ccrewdnd.firebaseapp.com",
-  databaseURL:       "https://ccrewdnd-default-rtdb.firebaseio.com", // ← PASTE YOUR DB URL HERE if different
+  databaseURL:       "https://ccrewdnd-default-rtdb.firebaseio.com",
   projectId:         "ccrewdnd",
   storageBucket:     "ccrewdnd.firebasestorage.app",
   messagingSenderId: "329684912399",
   appId:             "1:329684912399:web:79941b763242e90b3e967a"
 };
-// ─────────────────────────────────────────────────────────
 
 const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
-
-// expose db helpers to global scope so non-module scripts can use them
-window._db     = db;
-window._ref    = ref;
-window._set    = set;
-window._onValue= onValue;
-window._update = update;
-window._remove = remove;
-window._dbReady= true;
+window._db=db;window._ref=ref;window._set=set;window._onValue=onValue;window._update=update;window._remove=remove;window._dbReady=true;
 window.dispatchEvent(new Event('db-ready'));
 </script>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,sans-serif;background:#1a1a1a;color:#eee;min-height:100vh;display:flex;flex-direction:column}
-
-/* ── NAV ── */
 nav{background:#111;border-bottom:1px solid #333;display:flex;align-items:center;gap:4px;padding:8px 12px;flex-wrap:wrap}
 nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:nowrap}
 .tab{padding:6px 14px;border-radius:8px;border:1px solid #333;font-size:13px;cursor:pointer;background:transparent;color:#aaa;white-space:nowrap}
 .tab.active{background:#2a2a2a;color:#fff;border-color:#555}
 .role-badge{margin-left:auto;font-size:12px;padding:4px 10px;border-radius:6px;border:1px solid #444;color:#aaa;cursor:pointer;white-space:nowrap}
 .role-badge.dm{border-color:#7F77DD;color:#b8b4f8}
-
-/* ── PANELS ── */
 .panel{display:none;flex:1;overflow:hidden}.panel.active{display:flex;flex-direction:column}
-
-/* ── MAP ── */
 #map-panel{position:relative;flex:1;overflow:hidden;background:#0d0d0d}
 .map-toolbar{background:#111;border-bottom:1px solid #333;padding:8px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0}
-.map-toolbar button,.map-toolbar label{padding:5px 12px;border-radius:7px;border:1px solid #333;font-size:12px;cursor:pointer;background:#1e1e1e;color:#ccc;white-space:nowrap}
-.map-toolbar button:hover,.map-toolbar label:hover{background:#2a2a2a}
+.map-toolbar button{padding:5px 12px;border-radius:7px;border:1px solid #333;font-size:12px;cursor:pointer;background:#1e1e1e;color:#ccc;white-space:nowrap}
+.map-toolbar button:hover{background:#2a2a2a}
 .map-toolbar button.active-tool{border-color:#7F77DD;color:#b8b4f8}
-.map-toolbar input[type=file]{display:none}
-.map-toolbar .sep{width:1px;height:20px;background:#333;margin:0 2px}
+.map-toolbar .sep{width:1px;height:20px;background:#333;margin:0 2px;flex-shrink:0}
+.upload-map-label{padding:5px 12px;border-radius:7px;border:1px solid #333;font-size:12px;cursor:pointer;background:#1e1e1e;color:#ccc;white-space:nowrap;display:inline-block}
+.upload-map-label:hover{background:#2a2a2a}
 .map-canvas-wrap{position:relative;width:100%;height:100%;overflow:auto}
 #map-canvas{position:relative;min-width:100%;min-height:100%;background:#0d0d0d}
-#map-img{position:absolute;top:0;left:0;user-select:none;pointer-events:none}
+#map-img{position:absolute;top:0;left:0;user-select:none;pointer-events:none;display:none}
 #grid-overlay{position:absolute;top:0;left:0;pointer-events:none}
-.token{position:absolute;width:48px;height:48px;border-radius:50%;border:3px solid #fff;cursor:grab;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;text-align:center;line-height:1.2;overflow:hidden;user-select:none;box-shadow:0 2px 8px rgba(0,0,0,.6);transition:box-shadow .15s}
-.token:active{cursor:grabbing;box-shadow:0 4px 16px rgba(0,0,0,.8)}
+.token{position:absolute;width:50px;height:50px;border-radius:50%;border:3px solid #fff;cursor:grab;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;text-align:center;overflow:hidden;user-select:none;box-shadow:0 2px 10px rgba(0,0,0,.7)}
+.token:active{cursor:grabbing}
 .token.enemy-token{border-color:#E24B4A}
 .token img{width:100%;height:100%;object-fit:cover;border-radius:50%;pointer-events:none}
-.token-label{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:10px;white-space:nowrap;background:rgba(0,0,0,.7);padding:1px 5px;border-radius:4px;pointer-events:none}
-.token-hp-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:#333;border-radius:0 0 50% 50%}
-.token-hp-fill{height:100%;border-radius:0 0 50% 50%;transition:width .3s}
-
-/* ── PARTY ── */
+.token-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:10px;white-space:nowrap;background:rgba(0,0,0,.8);padding:2px 6px;border-radius:4px;pointer-events:none;color:#fff}
+.token-hp-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:#333}
+.token-hp-fill{height:100%;transition:width .3s}
+#map-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#444;gap:12px;pointer-events:none}
 .party-wrap{flex:1;overflow-y:auto;padding:1rem}
 .player-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 .player-card{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:1rem;position:relative}
@@ -117,27 +80,29 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
 .cond-row{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
 .cond-tag{font-size:10px;padding:2px 7px;border-radius:10px;cursor:pointer;border:1px solid #333;color:#666;background:#1a1a1a}
 .cond-tag.on{background:#3a1a0a;color:#F0997B;border-color:#D85A30}
-
-/* ── DICE ── */
 .dice-wrap{flex:1;overflow-y:auto;padding:1rem;max-width:700px;margin:0 auto;width:100%}
-.dice-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;margin-bottom:1rem}
-.die-btn{border:1px solid #333;border-radius:8px;padding:14px 6px;font-size:20px;font-weight:600;cursor:pointer;background:#1e1e1e;color:#fff;text-align:center;transition:background .15s}
+.dice-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:1.25rem}
+.die-btn{border:1px solid #333;border-radius:10px;padding:10px 4px;cursor:pointer;background:#1e1e1e;text-align:center;transition:background .15s;display:flex;flex-direction:column;align-items:center;gap:4px}
 .die-btn:hover{background:#2a2a2a}
-.die-btn small{display:block;font-size:10px;color:#666;font-weight:400;margin-top:2px}
+.die-btn svg{display:block}
 .roll-controls{display:flex;gap:8px;align-items:center;margin-bottom:1rem;flex-wrap:wrap}
 .roll-controls select,.roll-controls input{border:1px solid #333;border-radius:7px;padding:6px 10px;font-size:13px;background:#1e1e1e;color:#eee}
 .roll-result{background:#111;border:1px solid #333;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
 .roll-big{font-size:52px;font-weight:600;line-height:1;color:#fff}
 .roll-detail{font-size:13px;color:#666;margin-top:4px}
 .roll-log{display:flex;flex-direction:column;gap:5px;max-height:300px;overflow-y:auto}
-.log-entry{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:7px;font-size:13px}
+.log-entry{padding:8px 12px;background:#1e1e1e;border:1px solid #2a2a2a;border-radius:7px;font-size:13px}
+.log-top{display:flex;justify-content:space-between;align-items:center}
 .log-who{color:#666}
-.log-val{font-weight:600;color:#fff}
-.log-nat{font-size:10px;padding:1px 6px;border-radius:6px;margin-left:6px}
+.log-val{font-weight:600;color:#fff;display:flex;align-items:center;gap:6px}
+.log-breakdown{font-size:11px;color:#555;margin-top:3px;letter-spacing:.02em}
+.log-nat{font-size:10px;padding:1px 6px;border-radius:6px}
 .log-nat.nat20{background:#1a3a0a;color:#7fc45a}
 .log-nat.nat1{background:#3a0a0a;color:#f09595}
-
-/* ── INITIATIVE ── */
+@keyframes dieShake{0%{transform:rotate(0) scale(1)}20%{transform:rotate(-18deg) scale(1.25)}40%{transform:rotate(14deg) scale(1.18)}60%{transform:rotate(-9deg) scale(1.1)}80%{transform:rotate(5deg) scale(1.04)}100%{transform:rotate(0) scale(1)}}
+@keyframes resultPop{0%{transform:scale(0.4);opacity:0}65%{transform:scale(1.18)}100%{transform:scale(1);opacity:1}}
+.die-btn.rolling svg{animation:dieShake 0.5s ease-out}
+.roll-big.popping{animation:resultPop 0.38s ease-out}
 .init-wrap{flex:1;overflow-y:auto;padding:1rem;max-width:700px;margin:0 auto;width:100%}
 .init-list{display:flex;flex-direction:column;gap:7px}
 .init-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#1e1e1e;border:1px solid #333;border-radius:9px}
@@ -155,8 +120,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
 .add-enemy-form{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:1rem}
 .add-enemy-form input{border:1px solid #333;border-radius:7px;padding:6px 10px;font-size:13px;background:#1e1e1e;color:#eee}
 .add-enemy-form button{padding:6px 14px;border:1px solid #444;border-radius:7px;font-size:13px;cursor:pointer;background:#1e1e1e;color:#ccc}
-
-/* ── SPELLS ── */
 .spells-wrap{flex:1;overflow-y:auto;padding:1rem}
 .spell-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:1rem}
 .slot-card{background:#1e1e1e;border:1px solid #333;border-radius:8px;padding:8px 10px}
@@ -164,15 +127,9 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
 .slot-dots{display:flex;gap:5px;flex-wrap:wrap}
 .slot-dot{width:15px;height:15px;border-radius:50%;border:1.5px solid #7F77DD;cursor:pointer}
 .slot-dot.used{background:#7F77DD}
-
-/* ── NOTES ── */
 .notes-wrap{flex:1;overflow-y:auto;padding:1rem;max-width:700px;margin:0 auto;width:100%}
 .dm-notes{width:100%;min-height:150px;border:1px solid #333;border-radius:8px;padding:10px;font-size:14px;font-family:system-ui,sans-serif;background:#1e1e1e;color:#eee;resize:vertical}
-
-/* ── SECTION TITLE ── */
 .section-title{font-size:11px;font-weight:600;color:#666;margin:1rem 0 .5rem;text-transform:uppercase;letter-spacing:.07em}
-
-/* ── MODAL ── */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;z-index:200}
 .modal{background:#1e1e1e;border:1px solid #444;border-radius:16px;padding:1.5rem;width:min(500px,95vw);max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
 .modal h2{font-size:16px;font-weight:600;color:#fff}
@@ -189,16 +146,9 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
 .modal-actions button{padding:7px 20px;border-radius:8px;font-size:13px;cursor:pointer;border:1px solid #444}
 .btn-primary{background:#7F77DD;color:#fff;border-color:#7F77DD}
 .btn-ghost{background:transparent;color:#888}
-
-/* ── SYNC STATUS ── */
 .sync-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;background:#666}
 .sync-dot.live{background:#1D9E75}
-.sync-dot.err{background:#E24B4A}
-
-/* scrollbar */
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:#111}
-::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:#111}::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
 </style>
 </head>
 <body>
@@ -217,67 +167,55 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
   </button>
 </nav>
 
-<!-- MAP -->
 <div id="map-panel" class="panel active">
-  <div class="map-toolbar" id="map-toolbar">
-    <label id="upload-map-btn">📁 Upload map <input type="file" id="map-upload" accept="image/*" onchange="uploadMap(event)"></label>
+  <div class="map-toolbar">
+    <label class="upload-map-label" id="upload-map-btn">
+      📁 Upload map
+      <input type="file" id="map-upload" accept="image/*" style="display:none" onchange="uploadMap(event)">
+    </label>
     <div class="sep"></div>
     <button id="tool-move" class="active-tool" onclick="setTool('move')">🖐 Move tokens</button>
-    <button id="tool-pan"  onclick="setTool('pan')">✋ Pan map</button>
+    <button id="tool-pan" onclick="setTool('pan')">✋ Pan map</button>
     <div class="sep"></div>
     <button onclick="toggleGrid()" id="grid-btn">⊞ Grid: OFF</button>
     <button onclick="clearMap()" id="clear-map-btn" style="display:none">🗑 Clear map</button>
     <div class="sep"></div>
-    <span id="dm-token-controls" style="display:none;gap:6px;align-items:center">
-      <button onclick="openAddToken()">+ Add token</button>
-    </span>
+    <button id="add-token-btn" style="display:none" onclick="openAddToken()">＋ Add token</button>
   </div>
-  <div class="map-canvas-wrap" id="map-canvas-wrap">
+  <div class="map-canvas-wrap">
     <div id="map-canvas">
-      <img id="map-img" src="" alt="" draggable="false" style="display:none">
+      <img id="map-img" src="" alt="" draggable="false">
       <canvas id="grid-overlay"></canvas>
       <div id="tokens-layer"></div>
     </div>
-    <div id="map-placeholder" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#444;gap:12px;pointer-events:none">
+    <div id="map-placeholder">
       <div style="font-size:48px">🗺️</div>
-      <div style="font-size:14px">DM: upload a map image to get started</div>
+      <div style="font-size:14px" id="placeholder-text">Switch to DM mode (top right) then upload a map</div>
     </div>
   </div>
 </div>
 
-<!-- PARTY -->
 <div id="party-panel" class="panel">
-  <div class="party-wrap">
-    <div class="player-grid" id="player-grid"></div>
-  </div>
+  <div class="party-wrap"><div class="player-grid" id="player-grid"></div></div>
 </div>
-
-<!-- DICE -->
 <div id="dice-panel" class="panel">
   <div class="dice-wrap" id="dice-wrap"></div>
 </div>
-
-<!-- INITIATIVE -->
 <div id="init-panel" class="panel">
   <div class="init-wrap" id="init-wrap"></div>
 </div>
-
-<!-- SPELLS -->
 <div id="spells-panel" class="panel">
   <div class="spells-wrap" id="spells-wrap"></div>
 </div>
-
-<!-- NOTES -->
 <div id="notes-panel" class="panel">
   <div class="notes-wrap">
-    <p class="section-title">DM Notes <span style="color:#E24B4A;font-size:10px">(DM only — not synced)</span></p>
+    <p class="section-title">DM Notes</p>
     <textarea class="dm-notes" placeholder="Plot hooks, secrets, NPC names, loot..."></textarea>
-    <p class="section-title" style="margin-top:1rem">Session Log <span style="color:#555;font-size:10px">(local)</span></p>
+    <p class="section-title" style="margin-top:1rem">Session Log</p>
     <textarea class="dm-notes" placeholder="What happened this session..."></textarea>
   </div>
 </div>
 
-<!-- Edit Character Modal -->
 <div id="modal-bg" class="modal-bg" style="display:none" onclick="closeModalOnBg(event)">
   <div class="modal">
     <h2>Edit Character</h2>
@@ -287,11 +225,10 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
         <label>Profile picture</label>
         <button onclick="document.getElementById('pfp-file').click()" style="padding:6px 12px;border:1px solid #444;border-radius:7px;font-size:12px;cursor:pointer;background:#2a2a2a;color:#ccc">Upload image</button>
         <input type="file" id="pfp-file" accept="image/*" style="display:none" onchange="handlePfpUpload(event)">
-        <div style="font-size:10px;color:#555;margin-top:4px">JPG, PNG, GIF</div>
       </div>
     </div>
-    <div><label>Character name</label><input type="text" id="modal-name" placeholder="Aria"></div>
-    <div><label>Class &amp; level</label><input type="text" id="modal-class" placeholder="Rogue 5"></div>
+    <div><label>Character name</label><input type="text" id="modal-name"></div>
+    <div><label>Class & level</label><input type="text" id="modal-class"></div>
     <div><label>Card color</label><div class="color-row" id="modal-colors"></div></div>
     <div class="stat-grid">
       <div><label>Max HP</label><input type="number" id="modal-maxhp" min="1"></div>
@@ -310,24 +247,19 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
   </div>
 </div>
 
-<!-- Add Token Modal -->
-<div id="token-modal-bg" class="modal-bg" style="display:none" onclick="closeTokenModalOnBg(event)">
-  <div class="modal">
-    <h2>Add Token</h2>
+<div id="token-modal-bg" class="modal-bg" style="display:none">
+  <div class="modal" style="max-width:360px">
+    <h2>Add Token to Map</h2>
     <div><label>Type</label>
       <select id="token-type" onchange="updateTokenForm()">
         <option value="player">Player character</option>
         <option value="enemy">Enemy / NPC</option>
-        <option value="custom">Custom</option>
       </select>
     </div>
-    <div id="token-player-pick" style="display:block">
-      <label>Select character</label>
-      <select id="token-player-sel"></select>
-    </div>
+    <div id="token-player-pick"><label>Select character</label><select id="token-player-sel"></select></div>
     <div id="token-custom-fields" style="display:none">
       <div style="margin-bottom:8px"><label>Name</label><input type="text" id="token-name" placeholder="Goblin"></div>
-      <div><label>HP</label><input type="number" id="token-hp" placeholder="10" style="width:80px"></div>
+      <div><label>HP</label><input type="number" id="token-hp-val" placeholder="10"></div>
     </div>
     <div class="modal-actions">
       <button class="btn-ghost" onclick="closeTokenModal()">Cancel</button>
@@ -337,7 +269,17 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:12px;white-space:n
 </div>
 
 <script>
-// ── CONSTANTS ────────────────────────────────────────────
+function dieSVG(sides){
+  const s=44,svgs={
+    4:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><polygon points="22,4 40,38 4,38" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="30" text-anchor="middle" fill="#b8b4f8" font-size="13" font-weight="700">d4</text></svg>`,
+    6:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><rect x="6" y="6" width="32" height="32" rx="6" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="28" text-anchor="middle" fill="#b8b4f8" font-size="13" font-weight="700">d6</text></svg>`,
+    8:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><polygon points="22,3 41,22 22,41 3,22" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="27" text-anchor="middle" fill="#b8b4f8" font-size="13" font-weight="700">d8</text></svg>`,
+    10:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><polygon points="22,3 40,16 35,37 9,37 4,16" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="28" text-anchor="middle" fill="#b8b4f8" font-size="11" font-weight="700">d10</text></svg>`,
+    12:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><polygon points="22,2 34,8 42,20 38,34 26,42 18,42 6,34 2,20 10,8" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="28" text-anchor="middle" fill="#b8b4f8" font-size="11" font-weight="700">d12</text></svg>`,
+    20:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><polygon points="22,2 40,14 40,30 22,42 4,30 4,14" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="27" text-anchor="middle" fill="#b8b4f8" font-size="11" font-weight="700">d20</text></svg>`,
+    100:`<svg width="${s}" height="${s}" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="#7F77DD" stroke-width="2"/><text x="22" y="27" text-anchor="middle" fill="#b8b4f8" font-size="10" font-weight="700">d100</text></svg>`,
+  };return svgs[sides]||'';
+}
 const COLORS=[
   {bg:'#1a2a3a',color:'#7ab8f5',border:'#378ADD'},
   {bg:'#0d2a1a',color:'#5dcaa5',border:'#1D9E75'},
@@ -345,72 +287,55 @@ const COLORS=[
   {bg:'#2a1e0a',color:'#f5c87a',border:'#EF9F27'},
   {bg:'#2a0d1a',color:'#f093b0',border:'#D4537E'},
   {bg:'#0d2a0d',color:'#97c459',border:'#639922'},
-  {bg:'#2a2a2a',color:'#aaa',  border:'#555'},
+  {bg:'#2a2a2a',color:'#aaa',border:'#555'},
 ];
 const CONDITIONS=['Poisoned','Stunned','Blinded','Prone','Invisible','Frightened','Restrained','Charmed'];
 const GRID_SIZE=50;
-
-// ── STATE ────────────────────────────────────────────────
 let isDM=false;
 let party=[
-  {id:'p0',name:'Aria',  cls:'Rogue 5',  hp:38,maxHp:38,ac:15,pp:14,speed:35,conds:[],color:0,pfp:null,caster:'none'},
-  {id:'p1',name:'Brom',  cls:'Fighter 5',hp:52,maxHp:52,ac:18,pp:12,speed:30,conds:[],color:1,pfp:null,caster:'none'},
-  {id:'p2',name:'Zyla',  cls:'Wizard 5', hp:28,maxHp:28,ac:13,pp:15,speed:30,conds:[],color:2,pfp:null,caster:'full'},
-  {id:'p3',name:'Theron',cls:'Cleric 5', hp:44,maxHp:44,ac:16,pp:13,speed:25,conds:[],color:3,pfp:null,caster:'full'},
+  {id:'p0',name:'Aria',cls:'Rogue 5',hp:38,maxHp:38,ac:15,pp:14,speed:35,conds:[],color:0,pfp:null,caster:'none'},
+  {id:'p1',name:'Brom',cls:'Fighter 5',hp:52,maxHp:52,ac:18,pp:12,speed:30,conds:[],color:1,pfp:null,caster:'none'},
+  {id:'p2',name:'Zyla',cls:'Wizard 5',hp:28,maxHp:28,ac:13,pp:15,speed:30,conds:[],color:2,pfp:null,caster:'full'},
+  {id:'p3',name:'Theron',cls:'Cleric 5',hp:44,maxHp:44,ac:16,pp:13,speed:25,conds:[],color:3,pfp:null,caster:'full'},
 ];
-let rollLog=[], initiative=[], currentTurn=0, round=1, selectedRoller='DM';
-let spellSlots={};
-let mapImageData=null, showGrid=false, gridTool='move';
-let tokens={};
-let editingIdx=null, pendingPfp=null;
-let dbReady=false;
+let rollLog=[],initiative=[],currentTurn=0,round=1,selectedRoller='DM';
+let spellSlots={},mapImageData=null,showGrid=false,gridTool='move',tokens={};
+let editingIdx=null,pendingPfp=null,dbReady=false,currentPanel='map';
 
-// ── DB HELPERS ───────────────────────────────────────────
-function dbSet(path,val){if(!dbReady)return;window._set(window._ref(window._db,path),val)}
-function dbUpdate(path,val){if(!dbReady)return;window._update(window._ref(window._db,path),val)}
-function dbRemove(path){if(!dbReady)return;window._remove(window._ref(window._db,path))}
-function dbListen(path,cb){if(!dbReady)return;window._onValue(window._ref(window._db,path),snap=>cb(snap.val()))}
+function dbSet(p,v){if(!dbReady)return;window._set(window._ref(window._db,p),v)}
+function dbUpdate(p,v){if(!dbReady)return;window._update(window._ref(window._db,p),v)}
+function dbRemove(p){if(!dbReady)return;window._remove(window._ref(window._db,p))}
+function dbListen(p,cb){if(!dbReady)return;window._onValue(window._ref(window._db,p),s=>cb(s.val()))}
 
 function initDb(){
-  dbListen('party',data=>{if(data){party=Object.values(data);renderCurrentPanel();}});
-  dbListen('tokens',data=>{tokens=data||{};renderTokens();});
-  dbListen('initiative',data=>{if(data){initiative=data.list||[];currentTurn=data.currentTurn||0;round=data.round||1;if(currentPanel==='init')renderInit();}});
-  dbListen('rollLog',data=>{if(data){rollLog=data;if(currentPanel==='dice')renderDice();}});
-  dbListen('map',data=>{
-    if(data&&data.img){
-      mapImageData=data.img;
-      applyMapImage(data.img);
-      document.getElementById('map-placeholder').style.display='none';
-      document.getElementById('clear-map-btn').style.display='';
-    }
-    if(data&&data.grid!=null){showGrid=data.grid;drawGrid();}
+  dbListen('party',d=>{if(d){party=Object.values(d);renderCurrentPanel();}});
+  dbListen('tokens',d=>{tokens=d||{};renderTokens();});
+  dbListen('initiative',d=>{if(d){initiative=d.list||[];currentTurn=d.currentTurn||0;round=d.round||1;if(currentPanel==='init')renderInit();}});
+  dbListen('rollLog',d=>{if(d){rollLog=Array.isArray(d)?d:Object.values(d);if(currentPanel==='dice')renderDice();}});
+  dbListen('map',d=>{
+    if(d&&d.img){mapImageData=d.img;applyMapImage(d.img);}
+    if(d&&d.grid!=null){showGrid=d.grid;document.getElementById('grid-btn').textContent='⊞ Grid: '+(showGrid?'ON':'OFF');drawGrid();}
   });
   setSyncStatus('live');
 }
 
-// ── ROLE ────────────────────────────────────────────────
 function toggleRole(){
   isDM=!isDM;
-  document.getElementById('role-label').textContent=isDM?'DM':'Player';
+  document.getElementById('role-label').textContent=isDM?'DM 👑':'Player';
   document.getElementById('role-btn').className='role-badge'+(isDM?' dm':'');
-  document.getElementById('dm-token-controls').style.display=isDM?'flex':'none';
-  document.getElementById('upload-map-btn').style.display=isDM?'':'none';
-  document.getElementById('clear-map-btn').style.display=(isDM&&mapImageData)?'':'none';
+  document.getElementById('upload-map-btn').style.display=isDM?'inline-block':'none';
+  document.getElementById('add-token-btn').style.display=isDM?'inline-block':'none';
+  document.getElementById('clear-map-btn').style.display=(isDM&&mapImageData)?'inline-block':'none';
+  document.getElementById('placeholder-text').textContent=isDM?'Upload a map using the toolbar above':'Waiting for DM to upload a map';
   renderCurrentPanel();
 }
+function setSyncStatus(s){document.getElementById('sync-dot').className='sync-dot'+(s==='live'?' live':'');}
 
-function setSyncStatus(state){
-  const dot=document.getElementById('sync-dot');
-  dot.className='sync-dot'+(state==='live'?' live':state==='err'?' err':'');
-}
-
-// ── TAB SWITCHING ────────────────────────────────────────
-let currentPanel='map';
-const panelMap={map:'map-panel',party:'party-panel',dice:'dice-panel',init:'init-panel',spells:'spells-panel',notes:'notes-panel'};
+const TAB_IDS=['map','party','dice','init','spells','notes'];
 function switchTab(t){
   currentPanel=t;
-  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['map','party','dice','init','spells','notes'][i]===t));
-  Object.entries(panelMap).forEach(([k,id])=>document.getElementById(id).classList.toggle('active',k===t));
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',TAB_IDS[i]===t));
+  TAB_IDS.forEach(k=>document.getElementById(k+'-panel').classList.toggle('active',k===t));
   renderCurrentPanel();
 }
 function renderCurrentPanel(){
@@ -420,21 +345,16 @@ function renderCurrentPanel(){
   if(currentPanel==='spells'){buildSpellSlots();renderSpells();}
 }
 
-// ── PARTY ────────────────────────────────────────────────
 function hpColor(pct){return pct>.5?'#1D9E75':pct>.25?'#EF9F27':'#E24B4A'}
-
-function renderParty(){
-  document.getElementById('player-grid').innerHTML=party.map((p,i)=>playerCard(p,i)).join('');
-}
-
+function renderParty(){document.getElementById('player-grid').innerHTML=party.map((p,i)=>playerCard(p,i)).join('');}
 function playerCard(p,i){
   const pct=p.hp/p.maxHp,c=COLORS[p.color||0];
-  const avatar=p.pfp?`<img src="${p.pfp}" alt="${p.name}">`:`${p.name.slice(0,2).toUpperCase()}`;
+  const av=p.pfp?`<img src="${p.pfp}" alt="${p.name}">`:`${p.name.slice(0,2).toUpperCase()}`;
   const conds=CONDITIONS.map(cd=>`<span class="cond-tag${(p.conds||[]).includes(cd)?' on':''}" onclick="toggleCond(${i},'${cd}')">${cd}</span>`).join('');
   return `<div class="player-card${p.hp<=0?' downed':''}" style="border-top:3px solid ${c.border}">
     <button class="edit-btn" onclick="openModal(${i})">✏️</button>
     <div class="card-header">
-      <div class="avatar" style="background:${c.bg};color:${c.color};border-color:${c.border}">${avatar}</div>
+      <div class="avatar" style="background:${c.bg};color:${c.color};border-color:${c.border}">${av}</div>
       <div><div class="card-name">${p.name}</div><div class="card-sub">${p.cls}</div></div>
     </div>
     <div class="hp-row">
@@ -455,24 +375,19 @@ function playerCard(p,i){
     <div class="cond-row">${conds}</div>
   </div>`;
 }
-
 function changeHp(i,type){
   const inp=document.getElementById('hpval-'+i);
   const amt=parseInt(inp.value)||0;if(!amt)return;
   party[i].hp=type==='dmg'?Math.max(0,party[i].hp-amt):Math.min(party[i].maxHp,party[i].hp+amt);
-  inp.value='';
-  dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));
-  renderParty();
+  inp.value='';dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
 }
 function toggleCond(i,c){
   if(!party[i].conds)party[i].conds=[];
   const idx=party[i].conds.indexOf(c);
   idx>-1?party[i].conds.splice(idx,1):party[i].conds.push(c);
-  dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));
-  renderParty();
+  dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
 }
 
-// ── MODAL ────────────────────────────────────────────────
 function openModal(i){
   editingIdx=i;pendingPfp=null;
   const p=party[i];
@@ -484,26 +399,15 @@ function openModal(i){
   document.getElementById('modal-pp').value=p.pp;
   document.getElementById('modal-speed').value=p.speed;
   document.getElementById('modal-caster').value=p.caster||'none';
-  const prev=document.getElementById('modal-pfp-preview');
-  prev.innerHTML=p.pfp?`<img src="${p.pfp}">`:'🧙';
+  document.getElementById('modal-pfp-preview').innerHTML=p.pfp?`<img src="${p.pfp}">`:'🧙';
   document.getElementById('modal-colors').innerHTML=COLORS.map((c,ci)=>
-    `<div class="color-swatch${ci===p.color?' selected':''}" style="background:${c.border}" onclick="selectColor(${ci})"></div>`
-  ).join('');
+    `<div class="color-swatch${ci===p.color?' selected':''}" style="background:${c.border}" onclick="selectColor(${ci})"></div>`).join('');
   document.getElementById('modal-bg').style.display='flex';
 }
-function selectColor(ci){
-  if(editingIdx===null)return;
-  party[editingIdx].color=ci;
-  document.querySelectorAll('.color-swatch').forEach((s,i)=>s.classList.toggle('selected',i===ci));
-}
+function selectColor(ci){if(editingIdx===null)return;party[editingIdx].color=ci;document.querySelectorAll('.color-swatch').forEach((s,i)=>s.classList.toggle('selected',i===ci));}
 function handlePfpUpload(e){
   const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    pendingPfp=ev.target.result;
-    document.getElementById('modal-pfp-preview').innerHTML=`<img src="${pendingPfp}">`;
-  };
-  reader.readAsDataURL(file);
+  const r=new FileReader();r.onload=ev=>{pendingPfp=ev.target.result;document.getElementById('modal-pfp-preview').innerHTML=`<img src="${pendingPfp}">`;};r.readAsDataURL(file);
 }
 function saveModal(){
   if(editingIdx===null)return;
@@ -526,7 +430,22 @@ function saveModal(){
 function closeModal(){document.getElementById('modal-bg').style.display='none';document.getElementById('pfp-file').value='';editingIdx=null;pendingPfp=null;}
 function closeModalOnBg(e){if(e.target===document.getElementById('modal-bg'))closeModal();}
 
-// ── DICE ────────────────────────────────────────────────
+function playDiceSound(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const clicks=3+Math.floor(Math.random()*3);
+    for(let i=0;i<clicks;i++){
+      const t=ctx.currentTime+i*0.07;
+      const o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.type='square';
+      o.frequency.setValueAtTime(180+Math.random()*120,t);
+      o.frequency.exponentialRampToValueAtTime(60+Math.random()*40,t+0.06);
+      g.gain.setValueAtTime(0.18,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.07);
+      o.start(t);o.stop(t+0.08);
+    }
+  }catch(e){}
+}
 function rollDie(sides,count,mod,label){
   count=count||1;mod=mod||0;
   const rolls=Array.from({length:count},()=>Math.ceil(Math.random()*sides));
@@ -535,7 +454,9 @@ function rollDie(sides,count,mod,label){
   rollLog.unshift({who:selectedRoller,label,rolls,total,nat,ts:Date.now()});
   if(rollLog.length>50)rollLog.pop();
   dbSet('rollLog',rollLog);
+  playDiceSound();
   renderDice();
+  setTimeout(()=>{const rb=document.querySelector('.roll-big');if(rb){rb.classList.remove('popping');void rb.offsetWidth;rb.classList.add('popping');}},10);
 }
 function renderDice(){
   const mod=parseInt(document.getElementById('roll-mod')?.value)||0;
@@ -548,21 +469,31 @@ function renderDice(){
       <select id="roller-sel" onchange="selectedRoller=this.value">
         ${rollers.map(r=>`<option${r===selectedRoller?' selected':''}>${r}</option>`).join('')}
       </select>
-      <input id="roll-count" type="number" min="1" max="20" value="${count}" style="width:52px" title="Dice count">
+      <input id="roll-count" type="number" min="1" max="20" value="${count}" style="width:52px">
       <span style="font-size:12px;color:#666">dice &nbsp;mod:</span>
       <input id="roll-mod" type="number" value="${mod}" style="width:52px">
     </div>
     <div class="dice-grid">
-      ${[4,6,8,10,12,20,100].map(d=>`<button class="die-btn" onclick="rollFromBtn(${d})">d${d}<small>${{4:'magic',6:'common',8:'weapon',10:'pct',12:'greataxe',20:'★ check',100:'percent'}[d]}</small></button>`).join('')}
+      ${[4,6,8,10,12,20,100].map(d=>`<button class="die-btn" onclick="rollFromBtn(${d})">${dieSVG(d)}</button>`).join('')}
     </div>
     <div class="roll-result">
-      ${latest?`<div class="roll-big">${latest.total}</div>
-      <div class="roll-detail">${latest.who} rolled ${latest.label}: [${latest.rolls.join(', ')}]${mod?' + '+mod+' mod':''}${latest.nat===20?' 🎉 Nat 20!':latest.nat===1?' 💀 Nat 1!':''}</div>`
-      :`<div style="color:#555;font-size:14px">Roll a die to see results here</div>`}
+      ${latest
+        ?`<div class="roll-big">${latest.total}</div>
+          <div class="roll-detail">${latest.who} · ${latest.label}${mod?' + '+mod+' mod':''}${latest.nat===20?' 🎉 Nat 20!':latest.nat===1?' 💀 Nat 1!':''}</div>`
+        :`<div style="color:#555;font-size:14px">Roll a die to see results</div>`}
     </div>
     <p class="section-title">Roll history</p>
     <div class="roll-log">
-      ${rollLog.map(r=>`<div class="log-entry"><span class="log-who">${r.who} · ${r.label}</span><span class="log-val">${r.total}${r.nat===20?'<span class="log-nat nat20">Nat 20</span>':r.nat===1?'<span class="log-nat nat1">Nat 1</span>':''}</span></div>`).join('')}
+      ${rollLog.map(r=>{
+        const breakdown=r.rolls&&r.rolls.length?`[${r.rolls.join(' + ')}]`:'';
+        return `<div class="log-entry">
+          <div class="log-top">
+            <span class="log-who">${r.who} · ${r.label}</span>
+            <span class="log-val">${r.total}${r.nat===20?'<span class="log-nat nat20">Nat 20</span>':r.nat===1?'<span class="log-nat nat1">Nat 1</span>':''}</span>
+          </div>
+          ${breakdown?`<div class="log-breakdown">${breakdown}</div>`:''}
+        </div>`;
+      }).join('')}
       ${!rollLog.length?'<div style="color:#555;font-size:13px;padding:8px">No rolls yet</div>':''}
     </div>`;
 }
@@ -570,47 +501,44 @@ function rollFromBtn(sides){
   selectedRoller=document.getElementById('roller-sel')?.value||selectedRoller;
   const mod=parseInt(document.getElementById('roll-mod')?.value)||0;
   const count=parseInt(document.getElementById('roll-count')?.value)||1;
+  const btn=document.querySelectorAll('.die-btn')[([4,6,8,10,12,20,100]).indexOf(sides)];
+  if(btn){btn.classList.add('rolling');setTimeout(()=>btn.classList.remove('rolling'),500);}
   rollDie(sides,count,mod,count+'d'+sides+(mod?'+'+mod:''));
 }
 
-// ── INITIATIVE ───────────────────────────────────────────
 function pushInit(){dbSet('initiative',{list:initiative,currentTurn,round});}
 function renderInit(){
-  if(!initiative.length)
-    initiative=party.map(p=>({name:p.name,type:'player',init:0,hp:p.hp,maxHp:p.maxHp,color:p.color,pfp:p.pfp}));
+  if(!initiative.length)initiative=party.map(p=>({name:p.name,type:'player',init:0,hp:p.hp,maxHp:p.maxHp,color:p.color,pfp:p.pfp}));
   const sorted=[...initiative].sort((a,b)=>b.init-a.init);
   document.getElementById('init-wrap').innerHTML=`
     <div class="init-controls">
-      ${isDM?`<button onclick="rollAllInit()">🎲 Roll all</button>
-      <button onclick="nextTurn()">Next turn →</button>
-      <button onclick="round=1;currentTurn=0;initiative=[];pushInit();renderInit()">Reset</button>`:''}
+      ${isDM?`<button onclick="rollAllInit()">🎲 Roll all</button><button onclick="nextTurn()">Next turn →</button><button onclick="resetInit()">Reset</button>`:''}
       <span class="round-badge">Round ${round}</span>
     </div>
     <div class="init-list">${sorted.map((c,i)=>initRow(c,i,sorted)).join('')}</div>
     ${isDM?`<p class="section-title" style="margin-top:1rem">Add enemy</p>
     <div class="add-enemy-form">
-      <input id="enemy-name" placeholder="Name" style="width:120px">
-      <input id="enemy-init" type="number" placeholder="Init" style="width:60px">
-      <input id="enemy-hp" type="number" placeholder="HP" style="width:60px">
+      <input id="enemy-name" placeholder="Name" style="width:110px">
+      <input id="enemy-init" type="number" placeholder="Init" style="width:58px">
+      <input id="enemy-hp" type="number" placeholder="HP" style="width:58px">
       <button onclick="addEnemy()">+ Add</button>
     </div>`:''}`;
 }
 function initRow(c,i,sorted){
-  const isActive=i===currentTurn%sorted.length;
-  const isEnemy=c.type==='enemy';
-  const col=COLORS[c.color||0];
+  const isActive=i===currentTurn%sorted.length,col=COLORS[c.color||0];
   const av=c.pfp?`<img src="${c.pfp}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`${(c.name||'?').slice(0,2).toUpperCase()}`;
-  return `<div class="init-row${isActive?' active-turn':''}${isEnemy?' enemy-row':''}">
+  return `<div class="init-row${isActive?' active-turn':''}${c.type==='enemy'?' enemy-row':''}">
     <span class="init-badge">${c.init}</span>
-    ${!isEnemy?`<div class="avatar" style="width:30px;height:30px;font-size:11px;background:${col.bg};color:${col.color};border:1.5px solid ${col.border};overflow:hidden;flex-shrink:0">${av}</div>`:'<span>💀</span>'}
+    ${c.type!=='enemy'?`<div class="avatar" style="width:30px;height:30px;font-size:11px;flex-shrink:0;background:${col.bg};color:${col.color};border:1.5px solid ${col.border};overflow:hidden">${av}</div>`:'<span>💀</span>'}
     <span class="init-name">${c.name}</span>
-    <span class="init-type">${isEnemy?'enemy':'player'}</span>
+    <span class="init-type">${c.type==='enemy'?'enemy':'player'}</span>
     <span class="init-hp-text">${c.hp}/${c.maxHp} hp</span>
-    ${isDM&&isEnemy?`<button onclick="removeEnemy('${c.name}')" style="padding:2px 8px;font-size:11px;border:1px solid #444;border-radius:6px;cursor:pointer;background:transparent;color:#888">✕</button>`:''}
+    ${isDM&&c.type==='enemy'?`<button onclick="removeEnemy('${c.name}')" style="padding:2px 8px;font-size:11px;border:1px solid #444;border-radius:6px;cursor:pointer;background:transparent;color:#888">✕</button>`:''}
   </div>`;
 }
 function rollAllInit(){initiative=initiative.map(c=>({...c,init:Math.ceil(Math.random()*20)}));currentTurn=0;round=1;pushInit();renderInit();}
 function nextTurn(){const s=[...initiative].sort((a,b)=>b.init-a.init);currentTurn=(currentTurn+1)%s.length;if(!currentTurn)round++;pushInit();renderInit();}
+function resetInit(){initiative=[];currentTurn=0;round=1;pushInit();renderInit();}
 function addEnemy(){
   const name=document.getElementById('enemy-name').value||'Enemy';
   const init=parseInt(document.getElementById('enemy-init').value)||Math.ceil(Math.random()*20);
@@ -620,86 +548,75 @@ function addEnemy(){
 }
 function removeEnemy(name){initiative=initiative.filter(c=>c.name!==name);pushInit();renderInit();}
 
-// ── SPELLS ───────────────────────────────────────────────
 function buildSpellSlots(){
   party.forEach(p=>{
-    if(p.caster==='full'&&!spellSlots[p.name])
-      spellSlots[p.name]=[{level:1,total:4,used:0},{level:2,total:3,used:0},{level:3,total:2,used:0}];
-    if(p.caster==='half'&&!spellSlots[p.name])
-      spellSlots[p.name]=[{level:1,total:3,used:0},{level:2,total:2,used:0}];
+    if(p.caster==='full'&&!spellSlots[p.name])spellSlots[p.name]=[{level:1,total:4,used:0},{level:2,total:3,used:0},{level:3,total:2,used:0}];
+    if(p.caster==='half'&&!spellSlots[p.name])spellSlots[p.name]=[{level:1,total:3,used:0},{level:2,total:2,used:0}];
     if(p.caster==='none')delete spellSlots[p.name];
   });
 }
 function renderSpells(){
   const casters=Object.keys(spellSlots);
   document.getElementById('spells-wrap').innerHTML=casters.length
-    ?casters.map(name=>`
-      <p class="section-title">${name}</p>
+    ?casters.map(name=>`<p class="section-title">${name}</p>
       <div class="spell-slots">
-        ${spellSlots[name].map((slot,si)=>`
-          <div class="slot-card">
-            <div class="slot-level">Level ${slot.level} · ${slot.total-slot.used}/${slot.total}</div>
-            <div class="slot-dots">${Array.from({length:slot.total},(_,j)=>`<div class="slot-dot${j<slot.used?' used':''}" onclick="toggleSlot('${name}',${si},${j})"></div>`).join('')}</div>
-          </div>`).join('')}
+        ${spellSlots[name].map((slot,si)=>`<div class="slot-card">
+          <div class="slot-level">Level ${slot.level} · ${slot.total-slot.used}/${slot.total}</div>
+          <div class="slot-dots">${Array.from({length:slot.total},(_,j)=>`<div class="slot-dot${j<slot.used?' used':''}" onclick="toggleSlot('${name}',${si},${j})"></div>`).join('')}</div>
+        </div>`).join('')}
       </div>
-      <button onclick="resetSlots('${name}')" style="margin-top:6px;padding:4px 12px;border:1px solid #333;border-radius:7px;font-size:12px;cursor:pointer;background:transparent;color:#666">Long rest — reset</button>
-    `).join('')
+      <button onclick="resetSlots('${name}')" style="margin-top:6px;padding:4px 12px;border:1px solid #333;border-radius:7px;font-size:12px;cursor:pointer;background:transparent;color:#666">Long rest — reset</button>`).join('')
     :'<p style="color:#555;font-size:14px">No casters yet. Edit a character and set spell slots.</p>';
 }
 function toggleSlot(name,si,j){const s=spellSlots[name][si];s.used=j<s.used?j:Math.min(s.total,j+1);renderSpells();}
 function resetSlots(name){spellSlots[name].forEach(s=>s.used=0);renderSpells();}
 
-// ── MAP ──────────────────────────────────────────────────
 function uploadMap(e){
-  if(!isDM)return;
   const file=e.target.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=ev=>{
     mapImageData=ev.target.result;
     applyMapImage(mapImageData);
     document.getElementById('map-placeholder').style.display='none';
-    document.getElementById('clear-map-btn').style.display='';
+    if(isDM)document.getElementById('clear-map-btn').style.display='inline-block';
     dbUpdate('map',{img:mapImageData});
   };
+  reader.onerror=()=>alert('Error reading file. Try a smaller image.');
   reader.readAsDataURL(file);
+  e.target.value='';
 }
 function applyMapImage(src){
   const img=document.getElementById('map-img');
-  img.src=src;img.style.display='';
+  img.style.display='block';img.src=src;
   img.onload=()=>{
     const canvas=document.getElementById('map-canvas');
-    canvas.style.width=img.naturalWidth+'px';
-    canvas.style.height=img.naturalHeight+'px';
-    drawGrid();
+    canvas.style.width=img.naturalWidth+'px';canvas.style.height=img.naturalHeight+'px';
+    document.getElementById('map-placeholder').style.display='none';
+    drawGrid();renderTokens();
   };
 }
 function clearMap(){
-  if(!isDM)return;
-  mapImageData=null;
+  if(!isDM)return;mapImageData=null;
   const img=document.getElementById('map-img');img.src='';img.style.display='none';
-  document.getElementById('map-placeholder').style.display='';
+  document.getElementById('map-placeholder').style.display='flex';
   document.getElementById('clear-map-btn').style.display='none';
-  const gc=document.getElementById('grid-overlay');
-  gc.getContext('2d').clearRect(0,0,gc.width,gc.height);
+  const gc=document.getElementById('grid-overlay');gc.getContext('2d').clearRect(0,0,gc.width,gc.height);
   dbRemove('map');
 }
 function toggleGrid(){
   showGrid=!showGrid;
   document.getElementById('grid-btn').textContent='⊞ Grid: '+(showGrid?'ON':'OFF');
-  drawGrid();
-  if(isDM)dbUpdate('map',{grid:showGrid});
+  drawGrid();if(isDM)dbUpdate('map',{grid:showGrid});
 }
 function drawGrid(){
-  const img=document.getElementById('map-img');
-  const gc=document.getElementById('grid-overlay');
+  const img=document.getElementById('map-img'),gc=document.getElementById('grid-overlay');
   if(!showGrid||!img.naturalWidth){gc.getContext('2d').clearRect(0,0,gc.width,gc.height);return;}
   gc.width=img.naturalWidth;gc.height=img.naturalHeight;
   gc.style.width=img.naturalWidth+'px';gc.style.height=img.naturalHeight+'px';
-  const ctx=gc.getContext('2d');
-  ctx.clearRect(0,0,gc.width,gc.height);
-  ctx.strokeStyle='rgba(255,255,255,0.18)';ctx.lineWidth=1;
-  for(let x=0;x<gc.width;x+=GRID_SIZE){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,gc.height);ctx.stroke();}
-  for(let y=0;y<gc.height;y+=GRID_SIZE){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(gc.width,y);ctx.stroke();}
+  const ctx=gc.getContext('2d');ctx.clearRect(0,0,gc.width,gc.height);
+  ctx.strokeStyle='rgba(255,255,255,0.2)';ctx.lineWidth=1;
+  for(let x=0;x<=gc.width;x+=GRID_SIZE){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,gc.height);ctx.stroke();}
+  for(let y=0;y<=gc.height;y+=GRID_SIZE){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(gc.width,y);ctx.stroke();}
 }
 function setTool(t){
   gridTool=t;
@@ -707,124 +624,64 @@ function setTool(t){
   document.getElementById('tool-pan').classList.toggle('active-tool',t==='pan');
 }
 
-// ── TOKENS ───────────────────────────────────────────────
 function openAddToken(){
-  const sel=document.getElementById('token-player-sel');
-  sel.innerHTML=party.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('');
-  updateTokenForm();
-  document.getElementById('token-modal-bg').style.display='flex';
+  document.getElementById('token-player-sel').innerHTML=party.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('');
+  updateTokenForm();document.getElementById('token-modal-bg').style.display='flex';
 }
 function closeTokenModal(){document.getElementById('token-modal-bg').style.display='none';}
-function closeTokenModalOnBg(e){if(e.target===document.getElementById('token-modal-bg'))closeTokenModal();}
+document.getElementById('token-modal-bg').addEventListener('click',e=>{if(e.target===document.getElementById('token-modal-bg'))closeTokenModal();});
 function updateTokenForm(){
   const t=document.getElementById('token-type').value;
-  document.getElementById('token-player-pick').style.display=(t==='player')?'block':'none';
-  document.getElementById('token-custom-fields').style.display=(t!=='player')?'block':'none';
+  document.getElementById('token-player-pick').style.display=t==='player'?'block':'none';
+  document.getElementById('token-custom-fields').style.display=t!=='player'?'block':'none';
 }
 function placeToken(){
-  const type=document.getElementById('token-type').value;
-  let token;
+  const type=document.getElementById('token-type').value;let token;
   if(type==='player'){
-    const idx=parseInt(document.getElementById('token-player-sel').value);
-    const p=party[idx];
-    token={id:'tok_'+Date.now(),name:p.name,type:'player',pfp:p.pfp||null,color:p.color,hp:p.hp,maxHp:p.maxHp,x:80,y:80};
+    const idx=parseInt(document.getElementById('token-player-sel').value),p=party[idx];
+    token={id:'tok_'+Date.now(),name:p.name,type:'player',pfp:p.pfp||null,color:p.color,hp:p.hp,maxHp:p.maxHp,x:60,y:60};
   } else {
     const name=document.getElementById('token-name').value||'Enemy';
-    const hp=parseInt(document.getElementById('token-hp').value)||10;
-    token={id:'tok_'+Date.now(),name,type:type==='enemy'?'enemy':'custom',pfp:null,color:type==='enemy'?6:0,hp,maxHp:hp,x:80,y:80};
+    const hp=parseInt(document.getElementById('token-hp-val').value)||10;
+    token={id:'tok_'+Date.now(),name,type:'enemy',pfp:null,color:6,hp,maxHp:hp,x:60,y:60};
   }
-  dbUpdate('tokens/'+token.id,token);
-  closeTokenModal();
+  dbUpdate('tokens/'+token.id,token);closeTokenModal();
 }
 function renderTokens(){
-  const layer=document.getElementById('tokens-layer');
-  layer.innerHTML='';
+  const layer=document.getElementById('tokens-layer');layer.innerHTML='';
   Object.values(tokens).forEach(tok=>layer.appendChild(createTokenEl(tok)));
 }
 function createTokenEl(tok){
-  const col=COLORS[tok.color||0];
-  const div=document.createElement('div');
+  const col=COLORS[tok.color||0],div=document.createElement('div');
   div.className='token'+(tok.type==='enemy'?' enemy-token':'');
   div.id='token-'+tok.id;
-  div.style.left=tok.x+'px';div.style.top=tok.y+'px';
-  div.style.background=col.bg;div.style.borderColor=tok.type==='enemy'?'#E24B4A':col.border;
-  if(tok.pfp)div.innerHTML=`<img src="${tok.pfp}" alt="${tok.name}">`;
-  else div.textContent=tok.name.slice(0,2).toUpperCase();
-  // hp bar
+  div.style.cssText=`left:${tok.x}px;top:${tok.y}px;background:${col.bg};border-color:${tok.type==='enemy'?'#E24B4A':col.border};color:${col.color}`;
+  if(tok.pfp){const img=document.createElement('img');img.src=tok.pfp;img.alt=tok.name;div.appendChild(img);}
+  else div.textContent=(tok.name||'?').slice(0,2).toUpperCase();
   const bar=document.createElement('div');bar.className='token-hp-bar';
   const fill=document.createElement('div');fill.className='token-hp-fill';
   const pct=tok.maxHp?tok.hp/tok.maxHp:1;
-  fill.style.width=Math.max(0,pct*100)+'%';fill.style.background=hpColor(pct);
+  fill.style.cssText=`width:${Math.max(0,pct*100)}%;background:${hpColor(pct)}`;
   bar.appendChild(fill);div.appendChild(bar);
-  // label
-  const lbl=document.createElement('div');lbl.className='token-label';lbl.textContent=tok.name;
-  div.appendChild(lbl);
-  // drag
+  const lbl=document.createElement('div');lbl.className='token-label';lbl.textContent=tok.name;div.appendChild(lbl);
   makeDraggable(div,tok.id);
-  // right-click remove (DM only)
-  div.addEventListener('contextmenu',e=>{
-    e.preventDefault();
-    if(isDM&&confirm('Remove '+tok.name+' from map?'))dbRemove('tokens/'+tok.id);
-  });
+  div.addEventListener('contextmenu',e=>{e.preventDefault();if(isDM&&confirm('Remove '+tok.name+' from map?'))dbRemove('tokens/'+tok.id);});
   return div;
 }
 function makeDraggable(el,tokId){
-  let ox,oy,sx,sy,dragging=false;
-  el.addEventListener('mousedown',e=>{
-    if(gridTool!=='move')return;
-    e.stopPropagation();
-    dragging=true;
-    const rect=el.parentElement.getBoundingClientRect();
-    ox=e.clientX-rect.left-el.offsetLeft;
-    oy=e.clientY-rect.top-el.offsetTop;
-    el.style.zIndex=999;
-    el.style.cursor='grabbing';
-  });
-  document.addEventListener('mousemove',e=>{
-    if(!dragging)return;
-    const wrap=document.getElementById('map-canvas-wrap');
-    const rect=document.getElementById('map-canvas').getBoundingClientRect();
-    let nx=e.clientX-rect.left-ox;
-    let ny=e.clientY-rect.top-oy;
-    if(showGrid){nx=Math.round(nx/GRID_SIZE)*GRID_SIZE;ny=Math.round(ny/GRID_SIZE)*GRID_SIZE;}
-    el.style.left=Math.max(0,nx)+'px';
-    el.style.top=Math.max(0,ny)+'px';
-  });
-  document.addEventListener('mouseup',e=>{
-    if(!dragging)return;
-    dragging=false;el.style.zIndex='';el.style.cursor='grab';
-    const x=parseInt(el.style.left);const y=parseInt(el.style.top);
-    dbUpdate('tokens/'+tokId,{x,y});
-  });
-  // touch support
-  el.addEventListener('touchstart',e=>{
-    if(gridTool!=='move')return;
-    e.stopPropagation();e.preventDefault();
-    dragging=true;
-    const t=e.touches[0];
-    const rect=el.parentElement.getBoundingClientRect();
-    ox=t.clientX-rect.left-el.offsetLeft;oy=t.clientY-rect.top-el.offsetTop;
-  },{passive:false});
-  el.addEventListener('touchmove',e=>{
-    if(!dragging)return;e.preventDefault();
-    const t=e.touches[0];
-    const rect=document.getElementById('map-canvas').getBoundingClientRect();
-    let nx=t.clientX-rect.left-ox;let ny=t.clientY-rect.top-oy;
-    if(showGrid){nx=Math.round(nx/GRID_SIZE)*GRID_SIZE;ny=Math.round(ny/GRID_SIZE)*GRID_SIZE;}
-    el.style.left=Math.max(0,nx)+'px';el.style.top=Math.max(0,ny)+'px';
-  },{passive:false});
-  el.addEventListener('touchend',e=>{
-    dragging=false;
-    const x=parseInt(el.style.left);const y=parseInt(el.style.top);
-    dbUpdate('tokens/'+tokId,{x,y});
-  });
+  let ox,oy,dragging=false;
+  el.addEventListener('mousedown',e=>{if(gridTool!=='move')return;e.stopPropagation();dragging=true;const r=document.getElementById('map-canvas').getBoundingClientRect();ox=e.clientX-r.left-el.offsetLeft;oy=e.clientY-r.top-el.offsetTop;el.style.zIndex=999;});
+  document.addEventListener('mousemove',e=>{if(!dragging)return;const r=document.getElementById('map-canvas').getBoundingClientRect();let nx=e.clientX-r.left-ox,ny=e.clientY-r.top-oy;if(showGrid){nx=Math.round(nx/GRID_SIZE)*GRID_SIZE;ny=Math.round(ny/GRID_SIZE)*GRID_SIZE;}el.style.left=Math.max(0,nx)+'px';el.style.top=Math.max(0,ny)+'px';});
+  document.addEventListener('mouseup',()=>{if(!dragging)return;dragging=false;el.style.zIndex='';dbUpdate('tokens/'+tokId,{x:parseInt(el.style.left),y:parseInt(el.style.top)});});
+  el.addEventListener('touchstart',e=>{if(gridTool!=='move')return;e.stopPropagation();e.preventDefault();dragging=true;const t=e.touches[0],r=document.getElementById('map-canvas').getBoundingClientRect();ox=t.clientX-r.left-el.offsetLeft;oy=t.clientY-r.top-el.offsetTop;},{passive:false});
+  el.addEventListener('touchmove',e=>{if(!dragging)return;e.preventDefault();const t=e.touches[0],r=document.getElementById('map-canvas').getBoundingClientRect();let nx=t.clientX-r.left-ox,ny=t.clientY-r.top-oy;if(showGrid){nx=Math.round(nx/GRID_SIZE)*GRID_SIZE;ny=Math.round(ny/GRID_SIZE)*GRID_SIZE;}el.style.left=Math.max(0,nx)+'px';el.style.top=Math.max(0,ny)+'px';},{passive:false});
+  el.addEventListener('touchend',()=>{dragging=false;dbUpdate('tokens/'+tokId,{x:parseInt(el.style.left),y:parseInt(el.style.top)});});
 }
 
-// ── BOOT ────────────────────────────────────────────────
-buildSpellSlots();
-renderParty();
-renderDice();
-
+buildSpellSlots();renderParty();renderDice();
+document.getElementById('upload-map-btn').style.display='none';
+document.getElementById('add-token-btn').style.display='none';
+document.getElementById('clear-map-btn').style.display='none';
 if(window._dbReady){dbReady=true;initDb();}
 else window.addEventListener('db-ready',()=>{dbReady=true;initDb();});
 </script>
