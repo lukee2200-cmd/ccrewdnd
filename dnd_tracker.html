@@ -598,14 +598,21 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
       <div class="dash-card">
         <h3>Level Up</h3>
         <select id="dash-level-target"></select>
-        <button onclick="levelUpFromDashboard()">🎆 Level Up</button>
+        <button type="button" onclick="levelUpFromDashboard()">🎆 Level Up</button>
         <p style="font-size:11px;color:#777;margin-top:6px">Raises the character level by 1, refreshes auto features, and plays celebration effects for everyone.</p>
       </div>
       <div class="dash-card">
-        <h3>Dice Session</h3>
-        <button onclick="appendDiceReportToNotes()">Send Dice Report to Notes</button>
-        <button onclick="clearDiceHistory()">Clear Dice History</button>
-        <button onclick="endSessionDiceReport()">End Session: Report + Clear</button>
+        <h3>Character Management</h3>
+        <select id="dash-delete-target"></select>
+        <button type="button" onclick="deleteCharacterFromDashboard()" style="border-color:#E24B4A;background:#3a0a0a;color:#f09595">🗑 Delete Character</button>
+        <p style="font-size:11px;color:#777;margin-top:6px">Use this only when a character should be removed from the party tracker.</p>
+      </div>
+      <div class="dash-card">
+        <h3>Session Controls</h3>
+        <button type="button" onclick="newSession()">🌅 New Session</button>
+        <button type="button" onclick="appendDiceReportToNotes()">Send Dice Report to Notes</button>
+        <button type="button" onclick="clearDiceHistory()">Clear Dice History</button>
+        <button type="button" onclick="endSessionDiceReport()">🌙 End Session: Report + Clear</button>
       </div>
     </div>
   </div>
@@ -1408,16 +1415,7 @@ function openAddChar(){
 
 function deleteCurrentCharacter(){
   if(editingIdx===null||!isDM)return;
-  const p=party[editingIdx];
-  if(!confirm(`Delete ${p.name}? This cannot be undone.`))return;
-  party.splice(editingIdx,1);
-  initiative=initiative.filter(c=>!(c.id===p.id||c.name===p.name));
-  dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
-  pushInit();
-  closeModal();
-  if(viewingCharIdx===editingIdx)closeSheet();
-  viewingCharIdx=null;editingIdx=null;activeCharacter='spectator';
-  renderParty();renderCurrentPanel();
+  deleteCharacterAt(editingIdx);
 }
 
 function populateCharacterSelect(){
@@ -1445,8 +1443,9 @@ function dashEl(id){
 
 function populateDMControls(){
   const opts='<option value="all">All players</option>'+party.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('');
-  ['xp-target','dash-xp-target'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
-  ['item-target','dash-item-target'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=party.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('');});
+  const charOpts=party.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('');
+  ['xp-target','dash-xp-target'].forEach(id=>{document.querySelectorAll('#'+id).forEach(el=>el.innerHTML=opts);});
+  ['item-target','dash-item-target','dash-level-target','dash-delete-target'].forEach(id=>{document.querySelectorAll('#'+id).forEach(el=>el.innerHTML=charOpts);});
   renderXPHotButtons();renderAssetRepo();
 }
 function renderXPHotButtons(){
@@ -1477,6 +1476,27 @@ function showItemBanner(playerName,itemName){const banner=document.createElement
 function giveItem(partyIdx,itemName){if(!isDM)return;if(!party[partyIdx].inventory)party[partyIdx].inventory=[];party[partyIdx].inventory.push(itemName);dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));dbSet('inventoryEvents/latest',{partyIdx,itemName,playerName:party[partyIdx].name,ts:Date.now()});renderParty();showItemBanner(party[partyIdx].name,itemName);}
 function giveDMItem(){const name=document.getElementById('item-name').value.trim();const idx=parseInt(document.getElementById('item-target').value);if(!name||isNaN(idx))return;giveItem(idx,name);document.getElementById('item-name').value='';}
 function giveDashboardItem(){const name=(dashEl('dash-item-name')?.value||'').trim();const idx=parseInt(dashEl('dash-item-target')?.value);if(!name||isNaN(idx))return;giveItem(idx,name);const el=dashEl('dash-item-name');if(el)el.value='';}
+function autoCalcCharacterValues(p){
+  if(!p)return p;
+  const clsName=getClass(p)||'Fighter';
+  const lv=getLevel(p);
+  const hitDie={Barbarian:12,Fighter:10,Paladin:10,Ranger:10,Monk:8,Bard:8,Cleric:8,Druid:8,Rogue:8,Warlock:8,Artificer:8,Wizard:6,Sorcerer:6}[clsName]||8;
+  const conMod=mod(statFinal(p,'CON'));
+  const newMax=Math.max(1,(hitDie+conMod)*lv);
+  const oldMax=p.maxHp||newMax;
+  p.maxHp=newMax;
+  p.hp=Math.min(newMax,(p.hp||oldMax)+(newMax-oldMax));
+  const armor=p.armor||'Unarmored';
+  const fDex=statFinal(p,'DEX');
+  const baseAC={Unarmored:10,Leather:11,'Studded Leather':12,Hide:12,'Chain Shirt':13,'Scale Mail':14,Breastplate:14,'Half Plate':15,'Ring Mail':14,'Chain Mail':16,Splint:17,Plate:18,'Mage Armor (spell)':13}[armor]||10;
+  const dexCap={Hide:2,'Chain Shirt':2,'Scale Mail':2,Breastplate:2,'Half Plate':2,'Ring Mail':0,'Chain Mail':0,Splint:0,Plate:0}[armor];
+  const dexBonus=Math.min(mod(fDex),dexCap!==undefined?dexCap:99);
+  p.ac=armor==='Mage Armor (spell)'?13+mod(fDex):baseAC+dexBonus;
+  p.speed=(SPECIES_BONUSES[p.species]||{}).speed||30;
+  p.pp=10+mod(statFinal(p,'WIS'))+profBonus(p);
+  return p;
+}
+
 function autoCalcStats(){
   syncClassString();const cls=document.getElementById('modal-class').value;const species=normalizeSpeciesName(document.getElementById('modal-species').value);const dex=parseInt(document.getElementById('modal-dex').value)||10;const con=parseInt(document.getElementById('modal-con').value)||10;const wis=parseInt(document.getElementById('modal-wis').value)||10;const armor=document.getElementById('modal-armor').value;const sp=speciesBonusFor(species);
   const fDex=dex+(sp.DEX||0),fCon=con+(sp.CON||0),fWis=wis+(sp.WIS||0);const lv=parseInt((cls||'').match(/\d+/)?.[0])||1;const clsName=(cls||'').split('·')[0].trim();
@@ -1570,8 +1590,28 @@ function appendDiceReportToNotes(){
   if(!log)return alert('Session log not found.');
   log.value=(log.value?log.value+'\n\n':'')+buildDiceReport();
 }
-function clearDiceHistory(){if(!isDM)return;if(!confirm('Clear dice history for the new session?'))return;rollLog=[];dbSet('rollLog',rollLog);renderDice();}
-function endSessionDiceReport(){appendDiceReportToNotes();rollLog=[];dbSet('rollLog',rollLog);renderDice();}
+function clearDiceHistory(){
+  if(!isDM)return;
+  if(!confirm('Clear dice history?'))return;
+  rollLog=[];dbSet('rollLog',rollLog);renderDice();
+  showToast('🎲 Dice history cleared.');
+}
+function newSession(){
+  if(!isDM)return;
+  if(!confirm('Start a new session? This clears dice history and resets initiative.'))return;
+  rollLog=[];initiative=[];currentTurn=0;round=1;
+  dbSet('rollLog',rollLog);pushInit();
+  renderDice();if(currentPanel==='init')renderInit();
+  showToast('🌅 New session started. Dice history and initiative cleared.');
+}
+function endSessionDiceReport(){
+  if(!isDM)return;
+  appendDiceReportToNotes();
+  rollLog=[];initiative=[];currentTurn=0;round=1;
+  dbSet('rollLog',rollLog);pushInit();
+  renderDice();if(currentPanel==='init')renderInit();
+  showToast('🌙 Session ended. Dice report added and history cleared.');
+}
 
 
 function playBattleStartSound(){
@@ -1622,7 +1662,7 @@ function renderInit(){
   document.getElementById('init-wrap').innerHTML=`
     <div style="background:#111;border:1px solid #333;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#888;line-height:1.6"><span style="color:#b8b4f8;font-weight:600">How initiative works:</span> Players roll only when they press the button. The DM can roll everyone below. Ties are broken by higher DEX.</div>
     <div class="init-controls">
-      ${isDM?`<button onclick="rollAllInit()" style="background:#1e1a3a;border-color:#7F77DD;color:#b8b4f8;font-weight:600">🎲 Roll Initiative for All</button><button onclick="nextTurn()">Next Turn →</button><button onclick="resetInit()">Reset</button>`:`<button onclick="rollMyInit()" style="background:#0a2a1a;border-color:#1D9E75;color:#5dcaa5;font-weight:600">🎲 Roll My Initiative</button>`}
+      ${isDM?`<button type="button" onclick="rollAllInit(event)" style="background:#1e1a3a;border-color:#7F77DD;color:#b8b4f8;font-weight:600">🎲 Roll Initiative for All</button><button onclick="nextTurn()">Next Turn →</button><button onclick="resetInit()">Reset</button>`:`<button onclick="rollMyInit()" style="background:#0a2a1a;border-color:#1D9E75;color:#5dcaa5;font-weight:600">🎲 Roll My Initiative</button>`}
       <span class="round-badge">Round ${round}</span>
     </div>
     <div class="init-list">${sorted.map((c,i)=>initRow(c,i,sorted)).join('')}</div>
@@ -1654,18 +1694,31 @@ function rollMyInit(){
   else initiative.push({id:p.id,name:p.name,type:'player',init:total,hp:p.hp,maxHp:p.maxHp,color:p.color,cardColor:p.cardColor,pfp:p.pfp,dex:statFinal(p,'DEX')});
   pushInit();renderInit();showToast(`🎲 ${p.name} rolled ${roll} ${dexMod>=0?'+':''}${dexMod} DEX = ${total} initiative!`,'#1D9E75','#5dcaa5');
 }
-let initRolling=false;
-function rollAllInit(){
-  if(!isDM||initRolling)return;initRolling=true;
-  playBattleStartSound();showToast('⚔️ Rolling initiative for everyone!','#E24B4A','#f09595');
-  ensureInitList();
-  initiative=initiative.map(c=>{
-    if(c.type==='player'){
-      const p=party.find(pp=>pp.id===c.id||pp.name===c.name);const dex=p?statFinal(p,'DEX'):(c.dex||10);return {...c,init:Math.ceil(Math.random()*20)+mod(dex),dex};
-    }
-    return {...c,init:Math.ceil(Math.random()*20)+(c.dexMod||0)};
+function rollAllInit(evt){
+  if(evt&&evt.preventDefault)evt.preventDefault();
+  if(!isDM){showToast('Only the DM can roll initiative for everyone.','#E24B4A','#f09595');return;}
+  playBattleStartSound();
+  showToast('⚔️ Rolling initiative for everyone!','#E24B4A','#f09595');
+
+  const previousEnemies=initiative.filter(c=>c.type==='enemy');
+  const playerEntries=party.map(p=>{
+    const dex=statFinal(p,'DEX');
+    const raw=Math.ceil(Math.random()*20);
+    return {
+      id:p.id,name:p.name,type:'player',roll:raw,init:raw+mod(dex),
+      hp:p.hp,maxHp:p.maxHp,color:p.color,cardColor:p.cardColor,pfp:p.pfp,dex
+    };
   });
-  currentTurn=0;round=1;renderInit();pushInit();setTimeout(()=>{initRolling=false;renderInit();},250);
+  const enemyEntries=previousEnemies.map(c=>{
+    const raw=Math.ceil(Math.random()*20);
+    const dexMod=c.dexMod||mod(c.dex||10);
+    return {...c,roll:raw,init:raw+dexMod};
+  });
+  initiative=[...playerEntries,...enemyEntries];
+  currentTurn=0;round=1;
+  pushInit();
+  renderInit();
+  if(currentPanel!=='init')switchTab('init');
 }
 function nextTurn(){const s=sortedInitList();if(!s.length)return;currentTurn=(currentTurn+1)%s.length;if(!currentTurn)round++;pushInit();renderInit();}
 function resetInit(){initiative=[];currentTurn=0;round=1;pushInit();renderInit();}
@@ -1837,15 +1890,49 @@ function renderDockedDashboard(){
     dock.innerHTML=grid?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b style="color:#b8b4f8;font-size:12px">👑 DM Quick Dashboard</b><button onclick="openDMDashboard()" style="margin-left:auto;padding:3px 8px;border:1px solid #444;background:#1e1e1e;color:#ccc;border-radius:6px;cursor:pointer;font-size:11px">Open Full Dashboard</button></div><div class="dashboard-grid">${grid.innerHTML}</div>`:'';
   } else {dock.style.display='none';dock.innerHTML='';map.classList.remove('dm-docked');}
 }
-function levelUpFromDashboard(){const idx=parseInt(dashEl('dash-level-target')?.value);if(isNaN(idx))return;levelUpCharacter(idx);}
+function levelUpFromDashboard(){
+  if(!isDM)return;
+  const idx=parseInt(dashEl('dash-level-target')?.value);
+  if(isNaN(idx)||!party[idx]){showToast('Choose a character to level up.','#E24B4A','#f09595');return;}
+  levelUpCharacter(idx);
+}
 function levelUpCharacter(idx){
   if(!isDM||!party[idx])return;
-  const p=party[idx];const cls=getClass(p);const sub=getSubclass(p);const lvl=Math.min(20,getLevel(p)+1);
+  const p=party[idx];
+  const cls=getClass(p)||'Fighter';
+  const sub=getSubclass(p)||'';
+  const oldLvl=getLevel(p);
+  const lvl=Math.min(20,oldLvl+1);
+  if(lvl===oldLvl){showToast(`${p.name} is already level 20.`,'#EF9F27','#f5c87a');return;}
   p.cls=makeClassString(cls,sub,lvl);
-  const auto=featureLinesFor(p);p.features=auto.join('\n');
+  const auto=featureLinesFor(p);
+  if(auto&&auto.length)p.features=auto.join('\n');
+  autoCalcCharacterValues(p);
   dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
-  dbSet('levelEvents/latest',{name:p.name,level:lvl,ts:Date.now()});
-  showLevelUpCelebration(p.name,lvl);renderParty();populateDMControls();renderDockedDashboard();
+  dbSet('levelEvents/latest',{name:p.name,level:lvl,ts:Date.now(),id:'lvl_'+Date.now()});
+  showLevelUpCelebration(p.name,lvl);
+  showToast(`🎆 ${p.name} is now level ${lvl}!`,'#EF9F27','#f5c87a');
+  renderParty();populateDMControls();renderDockedDashboard();if(viewingCharIdx===idx)renderSheetBody();
+}
+function deleteCharacterFromDashboard(){
+  if(!isDM)return;
+  const idx=parseInt(dashEl('dash-delete-target')?.value);
+  if(isNaN(idx)||!party[idx]){showToast('Choose a character to delete.','#E24B4A','#f09595');return;}
+  deleteCharacterAt(idx);
+}
+function deleteCharacterAt(idx){
+  if(!isDM||!party[idx])return;
+  const p=party[idx];
+  if(!confirm(`Delete ${p.name}? This cannot be undone.`))return;
+  party.splice(idx,1);
+  initiative=initiative.filter(c=>!(c.id===p.id||c.name===p.name));
+  dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
+  pushInit();
+  if(editingIdx===idx)closeModal();
+  if(viewingCharIdx===idx)closeSheet();
+  viewingCharIdx=null;editingIdx=null;activeCharacter='spectator';
+  renderParty();renderCurrentPanel();populateDMControls();renderDockedDashboard();
+  showToast(`🗑 ${p.name} deleted.`,'#E24B4A','#f09595');
 }
 
 // ── MUSIC ─────────────────────────────────────────────────────────────
