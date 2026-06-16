@@ -454,10 +454,17 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
     <textarea class="dm-notes" id="dm-session-log" placeholder="What happened this session..."></textarea>
     <div id="dm-item-section" style="display:none;margin-top:10px;border-top:1px solid #333;padding-top:10px">
       <p style="font-size:10px;color:#666;font-weight:600;text-transform:uppercase;margin-bottom:7px">Give Item</p>
-      <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center">
-        <input type="text" id="item-name" placeholder="Item name..." style="flex:1;min-width:130px;border:1px solid #333;border-radius:7px;padding:4px 8px;font-size:11px;background:#111;color:#eee">
-        <select id="item-target" style="border:1px solid #333;border-radius:7px;padding:4px 8px;font-size:11px;background:#1e1e1e;color:#eee"></select>
-        <button onclick="giveDMItem()" style="padding:4px 12px;border-radius:7px;border:1px solid #7F77DD;font-size:11px;cursor:pointer;background:#1e1a3a;color:#b8b4f8">📦 Give</button>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+          <input type="text" id="item-name" placeholder="Item name..." style="flex:1;min-width:120px;border:1px solid #333;border-radius:7px;padding:4px 8px;font-size:11px;background:#111;color:#eee">
+          <select id="item-target" style="border:1px solid #333;border-radius:7px;padding:4px 8px;font-size:11px;background:#1e1e1e;color:#eee"></select>
+        </div>
+        <input type="text" id="item-desc" placeholder="Description (optional)..." style="width:100%;border:1px solid #333;border-radius:7px;padding:4px 8px;font-size:11px;background:#111;color:#eee">
+        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+          <input type="number" id="item-maxuses" placeholder="Max uses (0=unlimited)" min="0" style="flex:1;border:1px solid #333;border-radius:7px;padding:4px 8px;font-size:11px;background:#111;color:#eee">
+          <input type="number" id="item-qty" placeholder="Qty" min="1" value="1" style="width:55px;border:1px solid #333;border-radius:7px;padding:4px 8px;font-size:11px;background:#111;color:#eee">
+          <button onclick="giveDMItem()" style="padding:5px 14px;border-radius:7px;border:1px solid #7F77DD;font-size:12px;cursor:pointer;background:#1e1a3a;color:#b8b4f8;font-weight:600">📦 Give Item</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1180,7 +1187,7 @@ function toggleCond(i,c){
 
 // ── CHARACTER SHEET ───────────────────────────────────────────────────
 function openSheet(i){
-  if(!canAccessCharacter(i))return;
+  if(!canAccessCharacter(i,false))return;
   viewingCharIdx=i;currentSheetTab='core';
   const p=party[i];const c=getCardColors(p);
   const av=document.getElementById('sheet-avatar');
@@ -1533,7 +1540,7 @@ function autoFillFeatures(){
 
 // ── EDIT MODAL ────────────────────────────────────────────────────────
 function openModal(i){
-  if(!canAccessCharacter(i))return;
+  if(!canAccessCharacter(i,true))return;
   editingIdx=i;pendingPfp=null;const p=party[i];
   document.getElementById('modal-name').value=p.name;
   populateBuildControls();
@@ -1644,8 +1651,17 @@ function populateCharacterSelect(){
   activeCharacter=(old!=='spectator'&&party[parseInt(old)])?old:'spectator';sel.value=activeCharacter;
 }
 function selectCharacter(val){activeCharacter=val;if(currentPanel==='dice')renderDice();}
-function canAccessCharacter(i){
-  const p=party[i]; if(!p||isDM||!p.charPin||String(activeCharacter)===String(i))return true;
+function canAccessCharacter(i,requireEdit=false){
+  const p=party[i];if(!p)return false;
+  // DM can always access everything
+  if(isDM)return true;
+  // No PIN set — anyone can view and edit
+  if(!p.charPin)return true;
+  // Player viewing their own character — always allowed
+  if(String(activeCharacter)===String(i))return true;
+  // View-only (sheet): allow without PIN — players can see each other's sheets
+  if(!requireEdit)return true;
+  // Editing someone else's PIN-protected character — require PIN
   const entered=prompt(`${p.name} is PIN protected. Enter their 4-digit PIN:`);
   if(entered===p.charPin)return true;
   alert('Incorrect character PIN.'); return false;
