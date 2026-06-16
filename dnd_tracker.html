@@ -320,6 +320,27 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 
 ::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
 @media(max-width:600px){.sheet-grid-2,.sheet-grid-3{grid-template-columns:1fr}.stat-block{grid-template-columns:repeat(3,1fr)}.skill-list{grid-template-columns:1fr}}
+
+/* ── V3.2 POLISH: SHINY DICE, SNAP DASHBOARD, LEVEL UP, MUSIC SYNC ── */
+.die-btn{background-size:180% 180%!important;animation:metalShift 3.5s ease-in-out infinite;filter:drop-shadow(0 0 8px rgba(255,255,255,.18))}
+.die-btn:after{content:'✧ ✦ ✧';position:absolute;left:-20%;top:45%;width:140%;font-size:13px;letter-spacing:10px;color:#fff;opacity:.0;transform:rotate(-18deg);animation:glitterSweep 1.9s ease-in-out infinite;pointer-events:none}
+.die-btn:hover{transform:translateY(-1px) scale(1.04);box-shadow:0 0 18px rgba(255,255,255,.35), inset 0 0 18px rgba(255,255,255,.22)}
+@keyframes glitterSweep{0%{opacity:0;left:-35%}25%{opacity:.95}65%{opacity:.5}100%{opacity:0;left:55%}}
+@keyframes metalShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+#dm-bottom-dock{position:fixed;left:0;right:0;bottom:0;z-index:90;background:#0d0d0d;border-top:1px solid #333;box-shadow:0 -10px 30px rgba(0,0,0,.45);padding:8px 12px;display:none;max-height:38vh;overflow:auto}
+#dm-bottom-dock .dashboard-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+#map-panel.dm-docked .map-canvas-wrap{padding-bottom:220px}
+.music-bar.dm-only button.dm-music-control,.music-bar.dm-only input.dm-music-control{display:none}
+.music-status-note{font-size:10px;color:#777}
+.delete-char-btn{background:#3a0a0a!important;color:#f09595!important;border-color:#7a2222!important;margin-right:auto}
+.levelup-burst{position:fixed;inset:0;pointer-events:none;z-index:1000;overflow:hidden}
+.levelup-text{position:fixed;top:42%;left:50%;transform:translate(-50%,-50%);font-size:34px;font-weight:900;color:#fff;text-shadow:0 0 12px #7F77DD,0 0 24px #EF9F27;z-index:1001;animation:levelText 2.6s ease-out forwards;text-align:center}
+.firework{position:absolute;width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff;animation:firework 1.2s ease-out forwards}
+@keyframes levelText{0%{opacity:0;transform:translate(-50%,-50%) scale(.45)}18%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}70%{opacity:1}100%{opacity:0;transform:translate(-50%,-70%) scale(.9)}}
+@keyframes firework{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(.25)}}
+.modal select.multi-select{min-height:90px}
+.autofill-note{font-size:10px;color:#777;margin-top:4px;line-height:1.35}
+
 </style>
 </head>
 <body>
@@ -450,8 +471,16 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
       </div>
     </div>
     <div><label>Character name</label><input type="text" id="modal-name"></div>
-    <div><label>Class, Subclass &amp; Level (e.g. Fighter · Champion · 5)</label><input type="text" id="modal-class"></div>
-    <div><label>Species</label><input type="text" id="modal-species"></div>
+    <div><label>Class, Subclass &amp; Level</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 70px;gap:6px">
+        <select id="modal-class-name" onchange="syncClassString();populateSubclassOptions();autoFillFeatures();autoCalcStats()"></select>
+        <select id="modal-subclass-name" onchange="syncClassString();autoFillFeatures()"></select>
+        <input type="number" id="modal-level" min="1" max="20" value="1" onchange="syncClassString();autoFillFeatures();autoCalcStats()">
+      </div>
+      <input type="text" id="modal-class" style="margin-top:6px" onchange="parseClassStringToControls();autoFillFeatures();autoCalcStats()" placeholder="Fighter · Champion · 5">
+      <div class="autofill-note">Use the dropdowns when possible. The text line is still shown so your existing display format stays the same.</div>
+    </div>
+    <div><label>Species / Subspecies</label><select id="modal-species" onchange="autoFillFeatures();autoCalcStats()"></select></div>
     <div><label>Background</label><input type="text" id="modal-background"></div>
     <div><label>Optional Character PIN (4 digits)</label><input type="text" id="modal-charpin" maxlength="4" placeholder="Leave blank for no PIN"></div>
     <div><label>Card color</label><div class="color-row" id="modal-colors"></div>
@@ -480,17 +509,18 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
       <div><label>Speed (ft)</label><input type="number" id="modal-speed" min="0"></div>
       <div><label>Passive Perc.</label><input type="number" id="modal-pp" min="1"></div>
     </div>
-    <div><label>Armor worn</label><input type="text" id="modal-armor" placeholder="Splint, Chain Mail, Leather..."></div>
+    <div><label>Armor worn</label><select id="modal-armor" onchange="autoCalcStats()"></select></div>
     <div><label>Spell slots</label>
       <select id="modal-caster"><option value="none">None</option><option value="half">Half caster (Paladin/Ranger)</option><option value="full">Full caster (Wizard/Cleric/etc)</option><option value="pact">Pact caster (Warlock)</option></select>
     </div>
-    <div><label>Proficient skills (comma separated)</label><input type="text" id="modal-profskills" placeholder="Acrobatics, Stealth, Perception"></div>
-    <div><label>Expert skills (comma separated)</label><input type="text" id="modal-expertskills" placeholder="Stealth, Perception"></div>
+    <div><label>Proficient skills</label><select id="modal-profskills-select" class="multi-select" multiple onchange="syncSkillSelectsToText()"></select><input type="text" id="modal-profskills" placeholder="Acrobatics, Stealth, Perception" style="margin-top:6px"></div>
+    <div><label>Expert skills</label><select id="modal-expertskills-select" class="multi-select" multiple onchange="syncSkillSelectsToText()"></select><input type="text" id="modal-expertskills" placeholder="Stealth, Perception" style="margin-top:6px"></div>
     <div><label>Features &amp; traits (one per line)</label><textarea id="modal-features" style="width:100%;height:80px;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:12px;background:#111;color:#eee;resize:vertical" placeholder="Sneak Attack: 3d6 extra damage&#10;Cunning Action: Dash/Disengage/Hide as bonus action"></textarea></div>
     <div><label>Equipment (one per line, format: Name | detail)</label><textarea id="modal-equipment" style="width:100%;height:70px;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:12px;background:#111;color:#eee;resize:vertical" placeholder="Shortsword | 1d6 piercing, finesse&#10;Studded Leather | AC 12+DEX"></textarea></div>
     <div><label>Inventory items (one per line)</label><textarea id="modal-inventory" style="width:100%;height:65px;border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:11px;background:#111;color:#eee;resize:vertical" placeholder="Healing Potion&#10;Rope (50ft)&#10;Torch x5"></textarea></div>
     <div><label>Known spells (one per line, format: Level | Name | School)</label><textarea id="modal-spells" style="width:100%;height:70px;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:12px;background:#111;color:#eee;resize:vertical" placeholder="0 | Fire Bolt | Evocation&#10;1 | Mage Armor | Abjuration&#10;2 | Misty Step | Conjuration"></textarea></div>
     <div class="modal-actions">
+      <button class="delete-char-btn" onclick="deleteCurrentCharacter()">Delete Character</button>
       <button class="btn-ghost" onclick="closeModal()">Cancel</button>
       <button class="btn-primary" onclick="saveModal()">Save</button>
     </div>
@@ -566,6 +596,12 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
         <p style="font-size:11px;color:#777;margin-top:6px">Shows a picture on the map for setting the scene, clues, NPC art, or item art.</p>
       </div>
       <div class="dash-card">
+        <h3>Level Up</h3>
+        <select id="dash-level-target"></select>
+        <button onclick="levelUpFromDashboard()">🎆 Level Up</button>
+        <p style="font-size:11px;color:#777;margin-top:6px">Raises the character level by 1, refreshes auto features, and plays celebration effects for everyone.</p>
+      </div>
+      <div class="dash-card">
         <h3>Dice Session</h3>
         <button onclick="appendDiceReportToNotes()">Send Dice Report to Notes</button>
         <button onclick="clearDiceHistory()">Clear Dice History</button>
@@ -574,6 +610,8 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
     </div>
   </div>
 </div>
+
+<div id="dm-bottom-dock"></div>
 
 <!-- PIN Overlay -->
 <div id="pin-overlay" style="display:none">
@@ -594,15 +632,15 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 <div id="yt-container" style="position:fixed;bottom:-200px;left:-200px;width:1px;height:1px;overflow:hidden"><div id="yt-player"></div></div>
 <div class="music-bar">
   <span id="music-label" style="font-size:11px;color:#666">🎵</span>
-  <button id="music-play-btn" onclick="toggleMusic()">▶</button>
-  <button onclick="playPreset('tavern')" id="btn-tavern">🍺 Tavern</button>
-  <button onclick="playPreset('dungeon')" id="btn-dungeon">🕯 Dungeon</button>
-  <button onclick="playPreset('combat')" id="btn-combat">⚔️ Combat</button>
-  <button onclick="playPreset('forest')" id="btn-forest">🌲 Forest</button>
-  <input id="music-url" placeholder="YouTube URL..." onkeydown="if(event.key==='Enter')playURL()">
-  <button onclick="playURL()">Load</button>
-  <input type="range" id="music-vol" min="0" max="100" value="40" oninput="setVol(this.value)" style="width:65px;accent-color:#7F77DD">
-  <button onclick="stopMusic()" style="color:#888">■</button>
+  <button id="music-play-btn" class="dm-music-control" onclick="toggleMusic()">▶</button>
+  <button class="dm-music-control" onclick="playPreset('tavern')" id="btn-tavern">🍺 Tavern</button>
+  <button class="dm-music-control" onclick="playPreset('dungeon')" id="btn-dungeon">🕯 Dungeon</button>
+  <button class="dm-music-control" onclick="playPreset('combat')" id="btn-combat">⚔️ Combat</button>
+  <button class="dm-music-control" onclick="playPreset('forest')" id="btn-forest">🌲 Forest</button>
+  <input id="music-url" class="dm-music-control" placeholder="YouTube URL..." onkeydown="if(event.key==='Enter')playURL()">
+  <button class="dm-music-control" onclick="playURL()">Load</button>
+  <input type="range" id="music-vol" min="0" max="100" value="40" oninput="setVol(this.value)" style="width:65px;accent-color:#7F77DD"><button id="music-enable-btn" onclick="enablePlayerAudio()">🔊 Enable Audio</button><span id="music-status-note" class="music-status-note"></span>
+  <button class="dm-music-control" onclick="stopMusic()" style="color:#888">■</button>
 </div>
 
 <script>
@@ -639,6 +677,65 @@ const CLASS_SAVES = {
   'Paladin':['WIS','CHA'],'Ranger':['STR','DEX'],'Rogue':['DEX','INT'],
   'Sorcerer':['CON','CHA'],'Warlock':['WIS','CHA'],'Wizard':['INT','WIS'],
   'Artificer':['CON','INT'],'Blood Hunter':['DEX','INT'],
+};
+
+
+// ── CHARACTER BUILD OPTIONS / AUTOFILL ───────────────────────────────
+Object.assign(SPECIES_BONUSES, {
+  'Lightfoot Halfling': {STR:0,DEX:2,CON:0,INT:0,WIS:0,CHA:1,speed:25},
+  'Stout Halfling': {STR:0,DEX:2,CON:1,INT:0,WIS:0,CHA:0,speed:25},
+  'Forest Gnome': {STR:0,DEX:1,CON:0,INT:2,WIS:0,CHA:0,speed:25},
+  'Rock Gnome': {STR:0,DEX:0,CON:1,INT:2,WIS:0,CHA:0,speed:25},
+  'Asmodeus Tiefling': {STR:0,DEX:0,CON:0,INT:1,WIS:0,CHA:2,speed:30},
+  'Variant Human': {STR:1,DEX:1,CON:0,INT:0,WIS:0,CHA:0,speed:30},
+  'Sea Elf': {STR:0,DEX:2,CON:1,INT:0,WIS:0,CHA:0,speed:30},
+  'Shadar-kai': {STR:0,DEX:2,CON:1,INT:0,WIS:0,CHA:0,speed:30},
+  'Eladrin': {STR:0,DEX:2,CON:0,INT:0,WIS:0,CHA:1,speed:30},
+  'Duergar': {STR:1,DEX:0,CON:2,INT:0,WIS:0,CHA:0,speed:25},
+  'Deep Gnome': {STR:0,DEX:1,CON:0,INT:2,WIS:0,CHA:0,speed:25},
+  'Bugbear': {STR:2,DEX:1,CON:0,INT:0,WIS:0,CHA:0,speed:30},
+  'Goblin': {STR:0,DEX:2,CON:1,INT:0,WIS:0,CHA:0,speed:30},
+  'Hobgoblin': {STR:0,DEX:0,CON:2,INT:1,WIS:0,CHA:0,speed:30},
+  'Kobold': {STR:0,DEX:2,CON:0,INT:0,WIS:0,CHA:0,speed:30},
+  'Kenku': {STR:0,DEX:2,CON:0,INT:0,WIS:1,CHA:0,speed:30},
+  'Lizardfolk': {STR:0,DEX:0,CON:2,INT:0,WIS:1,CHA:0,speed:30},
+  'Triton': {STR:1,DEX:0,CON:1,INT:0,WIS:0,CHA:1,speed:30},
+  'Yuan-ti Pureblood': {STR:0,DEX:0,CON:0,INT:1,WIS:0,CHA:2,speed:30},
+  'Genasi - Air': {STR:0,DEX:1,CON:2,INT:0,WIS:0,CHA:0,speed:30},
+  'Genasi - Earth': {STR:1,DEX:0,CON:2,INT:0,WIS:0,CHA:0,speed:30},
+  'Genasi - Fire': {STR:0,DEX:0,CON:2,INT:1,WIS:0,CHA:0,speed:30},
+  'Genasi - Water': {STR:0,DEX:0,CON:2,INT:0,WIS:1,CHA:0,speed:30},
+});
+const SPECIES_ALIASES = {'Drow':'Dark Elf','Dark Elf (Drow)':'Dark Elf','Half Elf':'Half-Elf','Half Orc':'Half-Orc','Mountain Dwarf (Shield Dwarf)':'Mountain Dwarf','Hill Dwarf (Gold Dwarf)':'Hill Dwarf'};
+const CLASS_OPTIONS = ['Artificer','Barbarian','Bard','Cleric','Druid','Fighter','Monk','Paladin','Ranger','Rogue','Sorcerer','Warlock','Wizard','Blood Hunter'];
+const SUBCLASS_OPTIONS = {
+  Artificer:['Alchemist','Armorer','Artillerist','Battle Smith'], Barbarian:['Berserker','Totem Warrior','Ancestral Guardian','Storm Herald','Zealot'],
+  Bard:['College of Lore','College of Valor','College of Glamour','College of Swords','College of Whispers'], Cleric:['Life Domain','Light Domain','Knowledge Domain','Nature Domain','Tempest Domain','Trickery Domain','War Domain','Grave Domain','Forge Domain'],
+  Druid:['Circle of the Land','Circle of the Moon','Circle of Dreams','Circle of Spores','Circle of Stars','Circle of Wildfire'], Fighter:['Champion','Battle Master','Eldritch Knight','Arcane Archer','Cavalier','Samurai'],
+  Monk:['Way of the Open Hand','Way of Shadow','Way of the Four Elements','Way of Mercy','Way of the Astral Self'], Paladin:['Oath of Devotion','Oath of the Ancients','Oath of Vengeance','Oath of Conquest','Oath of Redemption'],
+  Ranger:['Hunter','Beast Master','Gloom Stalker','Horizon Walker','Monster Slayer'], Rogue:['Thief','Assassin','Arcane Trickster','Swashbuckler','Inquisitive','Scout'],
+  Sorcerer:['Draconic Bloodline','Wild Magic','Divine Soul','Shadow Magic','Storm Sorcery'], Warlock:['The Fiend','The Archfey','The Great Old One','The Hexblade','The Celestial'], Wizard:['School of Abjuration','School of Conjuration','School of Divination','School of Enchantment','School of Evocation','School of Illusion','School of Necromancy','School of Transmutation','War Magic'],
+  'Blood Hunter':['Order of the Ghostslayer','Order of the Lycan','Order of the Mutant','Order of the Profane Soul']
+};
+const ARMOR_OPTIONS=['Unarmored','Padded','Leather','Studded Leather','Hide','Chain Shirt','Scale Mail','Breastplate','Half Plate','Ring Mail','Chain Mail','Splint','Plate','Mage Armor (spell)'];
+const CLASS_AUTO_FEATURES={
+  Barbarian:[[1,'Rage: Bonus damage and resistance while raging'],[1,'Unarmored Defense: AC equals 10 + DEX + CON when unarmored'],[2,'Reckless Attack: Advantage on STR melee attacks; attacks against you have advantage'],[2,'Danger Sense: Advantage on DEX saves against visible effects'],[5,'Extra Attack: Attack twice'],[5,'Fast Movement: +10 ft speed while unarmored']],
+  Bard:[[1,'Bardic Inspiration: Give an inspiration die to an ally'],[2,'Jack of All Trades: Add half proficiency to non-proficient checks'],[2,'Song of Rest: Extra healing on short rests'],[3,'Expertise: Double proficiency in selected skills'],[5,'Font of Inspiration: Regain Bardic Inspiration on short rest']],
+  Cleric:[[1,'Spellcasting: WIS-based divine casting'],[1,'Divine Domain: Gain domain spells and features'],[2,'Channel Divinity: Use divine power'],[5,'Destroy Undead: Destroy weaker undead after Turn Undead']],
+  Druid:[[1,'Druidic: Secret druid language'],[1,'Spellcasting: WIS-based nature casting'],[2,'Wild Shape: Transform into beasts'],[2,'Druid Circle: Gain circle features']],
+  Fighter:[[1,'Fighting Style: Specialized combat training'],[1,'Second Wind: Heal 1d10 + fighter level'],[2,'Action Surge: Take one additional action'],[3,'Martial Archetype: Gain subclass features'],[5,'Extra Attack: Attack twice']],
+  Monk:[[1,'Martial Arts: Use DEX and bonus unarmed strike'],[1,'Unarmored Defense: AC equals 10 + DEX + WIS'],[2,'Ki: Spend ki for Flurry, Patient Defense, Step of the Wind'],[2,'Unarmored Movement: Increased speed'],[5,'Extra Attack: Attack twice'],[5,'Stunning Strike: Spend ki to stun']],
+  Paladin:[[1,'Divine Sense: Sense celestial, fiend, undead'],[1,'Lay on Hands: Healing pool'],[2,'Fighting Style: Specialized combat training'],[2,'Divine Smite: Spend spell slot for radiant damage'],[3,'Sacred Oath: Gain oath features'],[5,'Extra Attack: Attack twice']],
+  Ranger:[[1,'Favored Enemy: Track and recall lore about enemies'],[1,'Natural Explorer: Benefits in favored terrain'],[2,'Fighting Style: Specialized combat training'],[2,'Spellcasting: WIS-based ranger magic'],[3,'Ranger Archetype: Gain subclass features'],[5,'Extra Attack: Attack twice']],
+  Rogue:[[1,'Expertise: Double proficiency in selected skills/tools'],[1,'Sneak Attack: Extra damage once per turn'],[1,"Thieves' Cant: Secret rogue code"],[2,'Cunning Action: Dash, Disengage, or Hide as bonus action'],[3,'Roguish Archetype: Gain subclass features'],[5,'Uncanny Dodge: Halve damage from one attack']],
+  Sorcerer:[[1,'Spellcasting: CHA-based arcane casting'],[1,'Sorcerous Origin: Gain origin features'],[2,'Font of Magic: Sorcery points'],[3,'Metamagic: Modify spells with sorcery points']],
+  Warlock:[[1,'Otherworldly Patron: Gain patron features'],[1,'Pact Magic: CHA-based pact casting'],[2,'Eldritch Invocations: Gain occult upgrades'],[3,'Pact Boon: Gain pact gift']],
+  Wizard:[[1,'Spellcasting: INT-based arcane casting'],[1,'Arcane Recovery: Recover spell slots on short rest'],[2,'Arcane Tradition: Gain school features'],[5,'3rd-Level Spells: Access major magic such as Fireball or Counterspell']],
+  Artificer:[[1,'Magical Tinkering: Imbue tiny magical effects'],[1,'Spellcasting: INT-based artificer magic'],[2,'Infuse Item: Create magical infusions'],[3,'Artificer Specialist: Gain specialist features']],
+  'Blood Hunter':[[1,"Hunter's Bane: Supernatural tracking and lore"],[1,'Blood Maledict: Use blood curses'],[2,'Fighting Style: Specialized combat training'],[3,'Blood Hunter Order: Gain order features']]
+};
+const SPECIES_AUTO_FEATURES={
+  Human:['Versatile: Broad ability increases and adaptable background'], 'Variant Human':['Feat: Start with one feat and one skill proficiency'], Elf:['Darkvision: See in dim light','Fey Ancestry: Advantage against being charmed; magic cannot put you to sleep','Trance: Meditate instead of sleep'], 'High Elf':['Elf Weapon Training: Proficiency with classic elven weapons','Cantrip: Know one wizard cantrip'], 'Wood Elf':['Mask of the Wild: Hide when lightly obscured by natural phenomena','Fleet of Foot: Increased walking speed'], 'Dark Elf':['Superior Darkvision: Extended darkvision','Drow Magic: Gain drow spells as you level'], Dwarf:['Darkvision: See in dim light','Dwarven Resilience: Advantage against poison; resistance to poison damage'], 'Hill Dwarf':['Dwarven Toughness: Extra hit points'], 'Mountain Dwarf':['Dwarven Armor Training: Armor proficiency'], Halfling:['Lucky: Reroll natural 1s','Brave: Advantage against frightened'], 'Lightfoot Halfling':['Naturally Stealthy: Hide behind larger creatures'], 'Stout Halfling':['Stout Resilience: Advantage against poison'], 'Half-Elf':['Fey Ancestry: Advantage against charm; magic cannot put you to sleep','Skill Versatility: Gain two skill proficiencies'], 'Half-Orc':['Relentless Endurance: Drop to 1 HP instead of 0 once per long rest','Savage Attacks: Extra die on melee critical hits'], Dragonborn:['Draconic Ancestry: Breath weapon and damage resistance'], Gnome:['Gnome Cunning: Advantage on mental saves against magic'], Tiefling:['Darkvision: See in dim light','Hellish Resistance: Resistance to fire damage'], Aasimar:['Celestial Resistance: Resistance to necrotic and radiant damage','Healing Hands: Touch to heal'], Tabaxi:['Feline Agility: Burst of speed',"Cat\'s Claws: Climb speed and natural weapons"], Goliath:["Stone\'s Endurance: Reduce damage once per rest",'Powerful Build: Count as one size larger for carrying'], Orc:['Aggressive: Move toward enemies as bonus action','Powerful Build: Count as one size larger for carrying'], Firbolg:['Hidden Step: Brief invisibility','Firbolg Magic: Detect Magic and Disguise Self'], Githyanki:['Githyanki Psionics: Innate psionic magic']
 };
 
 // ── SKILLS ────────────────────────────────────────────────────────────
@@ -725,17 +822,33 @@ let party=[
 ];
 let rollLog=[],initiative=[],currentTurn=0,round=1,selectedRoller='DM';
 let spellSlots={},spellSlotsUsed={};
-let mapImageData=null,showGrid=false,gridTool='move',tokens={},assetRepo={maps:{},tokens:{}},sceneImageData=null,lastXPEventTs=0,lastInventoryEventTs=0;
+let mapImageData=null,showGrid=false,gridTool='move',tokens={},assetRepo={maps:{},tokens:{}},sceneImageData=null;
 let editingIdx=null,pendingPfp=null,dbReady=false;
 
 // ── HELPER FUNS ───────────────────────────────────────────────────────
 function mod(score){return Math.floor((score-10)/2);}
 function modStr(score){const m=mod(score);return (m>=0?'+':'')+m;}
 function profBonus(p){const lvl=parseInt((p.cls||'').match(/\d+/)?.[0])||1;return PROF_BY_LEVEL[Math.min(lvl,20)-1]||2;}
+function normalizeSpeciesName(name){
+  const raw=(name||'').trim();
+  if(SPECIES_ALIASES[raw])return SPECIES_ALIASES[raw];
+  const found=Object.keys(SPECIES_BONUSES).find(k=>k.toLowerCase()===raw.toLowerCase());
+  return found||raw;
+}
+function speciesBonusFor(name){return SPECIES_BONUSES[normalizeSpeciesName(name)]||{};}
 function statFinal(p,ab){
   const base=p[ab.toLowerCase()]||10;
-  const sp=SPECIES_BONUSES[p.species]||{};
+  const sp=speciesBonusFor(p.species);
   return base+(sp[ab]||0);
+}
+function getBaseClassFromString(cls){return (cls||'').split('·')[0].trim();}
+function makeClassString(cls,sub,lvl){return `${cls||'Fighter'}${sub?' · '+sub:''} · ${Math.max(1,Math.min(20,parseInt(lvl)||1))}`;}
+function featureLinesFor(p){
+  const cls=getClass(p), lvl=getLevel(p), species=normalizeSpeciesName(p.species);
+  const lines=[];
+  (SPECIES_AUTO_FEATURES[species]||SPECIES_AUTO_FEATURES[(species||'').split(' ')[0]]||[]).forEach(f=>lines.push(f));
+  (CLASS_AUTO_FEATURES[cls]||[]).forEach(([lv,f])=>{if(lvl>=lv)lines.push(f);});
+  return lines;
 }
 function skillBonus(p,skill){
   const ab=skill.ab;
@@ -789,8 +902,9 @@ function initDb(){
   dbListen('spellSlotsUsed',data=>{spellSlotsUsed=data||{};if(currentPanel==='spells')renderSpellsTab();if(viewingCharIdx!==null&&currentSheetTab==='spells')renderSheetBody();});
   dbListen('assetRepo',data=>{assetRepo=data||{maps:{},tokens:{}};renderAssetRepo();populateDMControls();});
   dbListen('sceneImage',data=>{sceneImageData=data||null;applySceneImage(sceneImageData);});
-  dbListen('xpEvents/latest',ev=>{if(ev&&ev.ts&&ev.ts!==lastXPEventTs&&Date.now()-ev.ts<10000){lastXPEventTs=ev.ts;(ev.indices||[]).forEach(i=>{spawnSparkles(i);showXPToast(i,ev.amt||0);});playXPSound();}});
-  dbListen('inventoryEvents/latest',ev=>{if(ev&&ev.ts&&ev.ts!==lastInventoryEventTs&&Date.now()-ev.ts<10000){lastInventoryEventTs=ev.ts;showItemBanner(ev.playerName||'Player',ev.itemName||'Item');}});
+  dbListen('musicState',data=>{musicState=data||{playing:false,videoId:null,label:null,ts:0};applyMusicStateFromDB();});
+  dbListen('inventoryEvents/latest',ev=>{if(ev&&Date.now()-(ev.ts||0)<10000)showItemBanner(ev.playerName||'Player',ev.itemName||'Item');});
+  dbListen('levelEvents/latest',ev=>{if(ev&&Date.now()-(ev.ts||0)<10000)showLevelUpCelebration(ev.name||'Player',ev.level||'');});
   setSyncStatus('live');
 }
 
@@ -806,7 +920,7 @@ function applyRole(){
   document.getElementById('xp-section').style.display=isDM?'block':'none';
   const itemSec=document.getElementById('dm-item-section'); if(itemSec)itemSec.style.display=isDM?'block':'none';
   document.getElementById('placeholder-text').textContent=isDM?'Upload a map using the toolbar above':'Waiting for DM to upload a map';
-  populateCharacterSelect();populateDMControls();renderCurrentPanel();
+  populateCharacterSelect();populateDMControls();updateMusicPermissions();renderDockedDashboard();renderCurrentPanel();
 }
 function handleRoleClick(){
   if(isDM){isDM=false;applyRole();return;}
@@ -838,6 +952,7 @@ function renderCurrentPanel(){
   if(currentPanel==='dice')renderDice();
   if(currentPanel==='init')renderInit();
   if(currentPanel==='spells'){buildSpellSlots();renderSpellsTab();}
+  renderDockedDashboard();
 }
 
 // ── PARTY CARDS ───────────────────────────────────────────────────────
@@ -1151,13 +1266,67 @@ function saveSheetNotes(){
   dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));
 }
 
+
+function populateBuildControls(){
+  const clsSel=document.getElementById('modal-class-name');
+  if(clsSel&&!clsSel.options.length)clsSel.innerHTML=CLASS_OPTIONS.map(c=>`<option value="${c}">${c}</option>`).join('');
+  const speciesSel=document.getElementById('modal-species');
+  if(speciesSel&&!speciesSel.options.length)speciesSel.innerHTML=Object.keys(SPECIES_BONUSES).sort().map(s=>`<option value="${s}">${s}</option>`).join('');
+  const armorSel=document.getElementById('modal-armor');
+  if(armorSel&&!armorSel.options.length)armorSel.innerHTML=ARMOR_OPTIONS.map(a=>`<option value="${a}">${a}</option>`).join('');
+  ['modal-profskills-select','modal-expertskills-select'].forEach(id=>{const sel=document.getElementById(id);if(sel&&!sel.options.length)sel.innerHTML=SKILLS.map(sk=>`<option value="${sk.name}">${sk.name} (${sk.ab})</option>`).join('');});
+}
+function parseClassStringToControls(){
+  const raw=document.getElementById('modal-class')?.value||'';
+  const parts=raw.split('·').map(x=>x.trim()).filter(Boolean);
+  const cls=parts[0]||'Fighter';const lvl=parseInt(parts.find(x=>/^\d+$/.test(x))||raw.match(/\d+/)?.[0]||1);
+  const sub=parts.length>2?parts[1]:(parts.length===2&&!/^\d+$/.test(parts[1])?parts[1]:'');
+  const clsSel=document.getElementById('modal-class-name'),lvlInp=document.getElementById('modal-level');
+  if(clsSel)clsSel.value=CLASS_OPTIONS.includes(cls)?cls:'Fighter';
+  populateSubclassOptions();
+  const subSel=document.getElementById('modal-subclass-name');if(subSel)subSel.value=[...subSel.options].some(o=>o.value===sub)?sub:'';
+  if(lvlInp)lvlInp.value=Math.max(1,Math.min(20,lvl||1));
+}
+function populateSubclassOptions(){
+  const cls=document.getElementById('modal-class-name')?.value||'Fighter';
+  const sel=document.getElementById('modal-subclass-name');if(!sel)return;
+  sel.innerHTML='<option value="">No subclass yet</option>'+(SUBCLASS_OPTIONS[cls]||[]).map(s=>`<option value="${s}">${s}</option>`).join('');
+}
+function syncClassString(){
+  const cls=document.getElementById('modal-class-name')?.value||'Fighter';
+  const sub=document.getElementById('modal-subclass-name')?.value||'';
+  const lvl=document.getElementById('modal-level')?.value||1;
+  const field=document.getElementById('modal-class');if(field)field.value=makeClassString(cls,sub,lvl);
+}
+function selectedOptionsText(sel){return [...(sel?.selectedOptions||[])].map(o=>o.value).join(',');}
+function syncSkillSelectsToText(){
+  const p=document.getElementById('modal-profskills-select'),e=document.getElementById('modal-expertskills-select');
+  if(p)document.getElementById('modal-profskills').value=selectedOptionsText(p);
+  if(e)document.getElementById('modal-expertskills').value=selectedOptionsText(e);
+}
+function applySkillTextToSelects(){
+  [['modal-profskills','modal-profskills-select'],['modal-expertskills','modal-expertskills-select']].forEach(([txt,selId])=>{const values=(document.getElementById(txt)?.value||'').split(',').map(s=>s.trim());const sel=document.getElementById(selId);if(sel)[...sel.options].forEach(o=>o.selected=values.includes(o.value));});
+}
+function autoFillFeatures(){
+  const cls=document.getElementById('modal-class-name')?.value||'Fighter';
+  const sub=document.getElementById('modal-subclass-name')?.value||'';
+  const lvl=parseInt(document.getElementById('modal-level')?.value)||1;
+  const species=normalizeSpeciesName(document.getElementById('modal-species')?.value||'Human');
+  const temp={cls:makeClassString(cls,sub,lvl),species};
+  const lines=featureLinesFor(temp);
+  const box=document.getElementById('modal-features');
+  if(box)box.value=lines.join('\n');
+}
+
 // ── EDIT MODAL ────────────────────────────────────────────────────────
 function openModal(i){
   if(!canAccessCharacter(i))return;
   editingIdx=i;pendingPfp=null;const p=party[i];
   document.getElementById('modal-name').value=p.name;
+  populateBuildControls();
   document.getElementById('modal-class').value=p.cls;
-  document.getElementById('modal-species').value=p.species||'';
+  parseClassStringToControls();
+  document.getElementById('modal-species').value=normalizeSpeciesName(p.species)||'Human';
   document.getElementById('modal-background').value=p.background||'';
   document.getElementById('modal-charpin').value=p.charPin||'';
   document.getElementById('modal-maxhp').value=p.maxHp;
@@ -1166,7 +1335,7 @@ function openModal(i){
   document.getElementById('modal-ac').value=p.ac;
   document.getElementById('modal-pp').value=p.pp;
   document.getElementById('modal-speed').value=p.speed;
-  document.getElementById('modal-armor').value=p.armor||'';
+  document.getElementById('modal-armor').value=p.armor||'Unarmored';
   document.getElementById('modal-caster').value=p.caster||'none';
   document.getElementById('modal-str').value=p.str||10;
   document.getElementById('modal-dex').value=p.dex||10;
@@ -1176,6 +1345,7 @@ function openModal(i){
   document.getElementById('modal-cha').value=p.cha||10;
   document.getElementById('modal-profskills').value=p.profSkills||'';
   document.getElementById('modal-expertskills').value=p.expertSkills||'';
+  applySkillTextToSelects();
   document.getElementById('modal-features').value=p.features||'';
   document.getElementById('modal-equipment').value=p.equipment||'';
   document.getElementById('modal-inventory').value=(p.inventory||[]).join('\n');
@@ -1198,8 +1368,9 @@ function saveModal(){
   if(editingIdx===null)return;
   const p=party[editingIdx];
   p.name=document.getElementById('modal-name').value||p.name;
+  syncClassString();
   p.cls=document.getElementById('modal-class').value||p.cls;
-  p.species=document.getElementById('modal-species').value;
+  p.species=normalizeSpeciesName(document.getElementById('modal-species').value);
   p.background=document.getElementById('modal-background').value;
   p.charPin=(document.getElementById('modal-charpin').value||'').replace(/\D/g,'').slice(0,4);
   p.maxHp=parseInt(document.getElementById('modal-maxhp').value)||p.maxHp;
@@ -1234,6 +1405,21 @@ function openAddChar(){
   const p=normalizeCharacter({id:'p'+Date.now(),name:'New Hero '+n,cls:'Fighter · Champion · 1',species:'Human',background:'Adventurer',hp:10,maxHp:10,tempHp:0,ac:10,pp:10,speed:30,conds:[],color:n%COLORS.length,pfp:null,caster:'none',str:10,dex:10,con:10,int:10,wis:10,cha:10,profSkills:'',expertSkills:'',features:'',equipment:'',inventory:[],spells:'',armor:'Unarmored',deathSaves:{s:[false,false,false],f:[false,false,false]},notes:'',xp:0});
   party.push(p);dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));renderParty();openModal(party.length-1);
 }
+
+function deleteCurrentCharacter(){
+  if(editingIdx===null||!isDM)return;
+  const p=party[editingIdx];
+  if(!confirm(`Delete ${p.name}? This cannot be undone.`))return;
+  party.splice(editingIdx,1);
+  initiative=initiative.filter(c=>!(c.id===p.id||c.name===p.name));
+  dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
+  pushInit();
+  closeModal();
+  if(viewingCharIdx===editingIdx)closeSheet();
+  viewingCharIdx=null;editingIdx=null;activeCharacter='spectator';
+  renderParty();renderCurrentPanel();
+}
+
 function populateCharacterSelect(){
   const sel=document.getElementById('active-character');if(!sel)return;
   const old=activeCharacter;
@@ -1247,6 +1433,16 @@ function canAccessCharacter(i){
   if(entered===p.charPin)return true;
   alert('Incorrect character PIN.'); return false;
 }
+
+function dashEl(id){
+  const dock=document.getElementById('dm-bottom-dock');
+  if(dock&&dock.style.display!=='none'){
+    const found=dock.querySelector('#'+id);
+    if(found)return found;
+  }
+  return document.getElementById(id);
+}
+
 function populateDMControls(){
   const opts='<option value="all">All players</option>'+party.map((p,i)=>`<option value="${i}">${p.name}</option>`).join('');
   ['xp-target','dash-xp-target'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
@@ -1254,20 +1450,19 @@ function populateDMControls(){
   renderXPHotButtons();renderAssetRepo();
 }
 function renderXPHotButtons(){
-  const mk=target=>[5,10,15,20,25,30,35,40,45,50].map(n=>`<button onclick="awardXPAmount(${n},'${target}')" style="padding:4px 7px;border-radius:6px;border:1px solid #EF9F27;background:#2a1e0a;color:#f5c87a;font-size:11px;cursor:pointer">+${n}</button>`).join('');
-  const xp=document.getElementById('xp-hot-buttons');if(xp)xp.innerHTML=mk('xp-target');
-  const dash=document.getElementById('dash-xp-hot-buttons');if(dash)dash.innerHTML=mk('dash-xp-target');
+  const html=[5,10,15,20,25,30,35,40,45,50].map(n=>`<button onclick="awardXPAmount(${n})" style="padding:4px 7px;border-radius:6px;border:1px solid #EF9F27;background:#2a1e0a;color:#f5c87a;font-size:11px;cursor:pointer">+${n}</button>`).join('');
+  ['xp-hot-buttons','dash-xp-hot-buttons'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html;});
 }
 function getXPTarget(id='xp-target'){const el=document.getElementById(id);return el?el.value:'all';}
 function applyXP(amt,target='all'){
   if(!amt||!isDM)return;
   const indices=target==='all'?party.map((_,i)=>i):[parseInt(target)].filter(i=>!isNaN(i));
   indices.forEach(i=>{party[i].xp=(party[i].xp||0)+amt;spawnSparkles(i);showXPToast(i,amt);});
-  playXPSound();dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));dbSet('xpEvents/latest',{indices,amt,ts:Date.now()});renderParty();
+  playXPSound();dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
 }
 function awardXP(){const amt=parseInt(document.getElementById('xp-amount').value)||0;applyXP(amt,getXPTarget('xp-target'));document.getElementById('xp-amount').value='';}
-function awardXPAmount(amt,targetId='xp-target'){applyXP(amt,getXPTarget(targetId));}
-function awardXPFromDashboard(){const amt=parseInt(document.getElementById('dash-xp-amount').value)||0;applyXP(amt,getXPTarget('dash-xp-target'));document.getElementById('dash-xp-amount').value='';}
+function awardXPAmount(amt){applyXP(amt,getXPTarget(document.getElementById('dash-xp-target')?'dash-xp-target':'xp-target'));}
+function awardXPFromDashboard(){const amt=parseInt(dashEl('dash-xp-amount')?.value)||0;applyXP(amt,getXPTarget('dash-xp-target'));const el=dashEl('dash-xp-amount');if(el)el.value='';}
 function clearXP(){if(!isDM)return;if(!confirm('Clear XP for all characters?'))return;party.forEach(p=>p.xp=0);dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();}
 function showXPToast(i,amt){const t=document.createElement('div');t.className='toast';t.textContent=`✨ ${party[i].name} gained ${amt} XP!`;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
 function spawnSparkles(partyIdx){
@@ -1279,11 +1474,11 @@ function spawnSparkles(partyIdx){
 function playXPSound(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();[523,659,784,1047].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.setValueAtTime(f,ctx.currentTime+i*.12);g.gain.setValueAtTime(.15,ctx.currentTime+i*.12);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.12+.25);o.start(ctx.currentTime+i*.12);o.stop(ctx.currentTime+i*.12+.26);});}catch(e){}}
 function playFanfare(){try{const audio=new Audio('./Final_Fantasy_VII_Victory_Fanfare.mp3');audio.volume=.7;audio.play();}catch(e){}}
 function showItemBanner(playerName,itemName){const banner=document.createElement('div');banner.className='item-banner';banner.innerHTML=`<div class="item-banner-name">🎁 ${playerName} received</div><div class="item-banner-item">⚔️ ${itemName}</div>`;document.body.appendChild(banner);setTimeout(()=>banner.remove(),3600);playFanfare();}
-function giveItem(partyIdx,itemName){if(!isDM)return;if(!party[partyIdx].inventory)party[partyIdx].inventory=[];party[partyIdx].inventory.push(itemName);dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));dbSet('inventoryEvents/latest',{partyIdx,itemName,playerName:party[partyIdx].name,ts:Date.now()});renderParty();}
+function giveItem(partyIdx,itemName){if(!isDM)return;if(!party[partyIdx].inventory)party[partyIdx].inventory=[];party[partyIdx].inventory.push(itemName);dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));dbSet('inventoryEvents/latest',{partyIdx,itemName,playerName:party[partyIdx].name,ts:Date.now()});renderParty();showItemBanner(party[partyIdx].name,itemName);}
 function giveDMItem(){const name=document.getElementById('item-name').value.trim();const idx=parseInt(document.getElementById('item-target').value);if(!name||isNaN(idx))return;giveItem(idx,name);document.getElementById('item-name').value='';}
-function giveDashboardItem(){const name=document.getElementById('dash-item-name').value.trim();const idx=parseInt(document.getElementById('dash-item-target').value);if(!name||isNaN(idx))return;giveItem(idx,name);document.getElementById('dash-item-name').value='';}
+function giveDashboardItem(){const name=(dashEl('dash-item-name')?.value||'').trim();const idx=parseInt(dashEl('dash-item-target')?.value);if(!name||isNaN(idx))return;giveItem(idx,name);const el=dashEl('dash-item-name');if(el)el.value='';}
 function autoCalcStats(){
-  const cls=document.getElementById('modal-class').value;const species=document.getElementById('modal-species').value;const dex=parseInt(document.getElementById('modal-dex').value)||10;const con=parseInt(document.getElementById('modal-con').value)||10;const wis=parseInt(document.getElementById('modal-wis').value)||10;const armor=document.getElementById('modal-armor').value;const sp=SPECIES_BONUSES[species]||{};
+  syncClassString();const cls=document.getElementById('modal-class').value;const species=normalizeSpeciesName(document.getElementById('modal-species').value);const dex=parseInt(document.getElementById('modal-dex').value)||10;const con=parseInt(document.getElementById('modal-con').value)||10;const wis=parseInt(document.getElementById('modal-wis').value)||10;const armor=document.getElementById('modal-armor').value;const sp=speciesBonusFor(species);
   const fDex=dex+(sp.DEX||0),fCon=con+(sp.CON||0),fWis=wis+(sp.WIS||0);const lv=parseInt((cls||'').match(/\d+/)?.[0])||1;const clsName=(cls||'').split('·')[0].trim();
   const hitDie={Barbarian:12,Fighter:10,Paladin:10,Ranger:10,Monk:8,Bard:8,Cleric:8,Druid:8,Rogue:8,Warlock:8,Artificer:8,Wizard:6,Sorcerer:6}[clsName]||8;const pb=PROF_BY_LEVEL[Math.min(lv,20)-1]||2;
   document.getElementById('modal-maxhp').value=Math.max(1,(hitDie+Math.floor((fCon-10)/2))*lv);
@@ -1297,9 +1492,21 @@ function closeModalOnBg(e){if(e.target===document.getElementById('modal-bg'))clo
 
 // ── DICE ─────────────────────────────────────────────────────────────
 function playDiceSound(){
-  try{const ctx=new(window.AudioContext||window.webkitAudioContext)();
-  const clicks=3+Math.floor(Math.random()*3);
-  for(let i=0;i<clicks;i++){const t=ctx.currentTime+i*0.07;const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='square';o.frequency.setValueAtTime(180+Math.random()*120,t);o.frequency.exponentialRampToValueAtTime(60+Math.random()*40,t+0.06);g.gain.setValueAtTime(0.18,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.07);o.start(t);o.stop(t+0.08);}}catch(e){}
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const now=ctx.currentTime;
+    for(let i=0;i<8;i++){
+      const t=now+i*0.035;
+      const o=ctx.createOscillator(),g=ctx.createGain(),f=ctx.createBiquadFilter();
+      o.connect(f);f.connect(g);g.connect(ctx.destination);
+      o.type=i%2?'triangle':'square';
+      f.type='bandpass';f.frequency.setValueAtTime(700+Math.random()*1800,t);
+      o.frequency.setValueAtTime(120+Math.random()*260,t);
+      o.frequency.exponentialRampToValueAtTime(45+Math.random()*80,t+0.08);
+      g.gain.setValueAtTime(0.11,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.1);
+      o.start(t);o.stop(t+0.11);
+    }
+  }catch(e){}
 }
 function getCurrentRoller(){
   if(activeCharacter!=='spectator'&&party[parseInt(activeCharacter)])return party[parseInt(activeCharacter)].name;
@@ -1366,6 +1573,36 @@ function appendDiceReportToNotes(){
 function clearDiceHistory(){if(!isDM)return;if(!confirm('Clear dice history for the new session?'))return;rollLog=[];dbSet('rollLog',rollLog);renderDice();}
 function endSessionDiceReport(){appendDiceReportToNotes();rollLog=[];dbSet('rollLog',rollLog);renderDice();}
 
+
+function playBattleStartSound(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const now=ctx.currentTime;
+    [110,82,146,196].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sawtooth';o.frequency.setValueAtTime(f,now+i*.16);g.gain.setValueAtTime(.18,now+i*.16);g.gain.exponentialRampToValueAtTime(.001,now+i*.16+.28);o.start(now+i*.16);o.stop(now+i*.16+.3);});
+  }catch(e){}
+}
+function playLevelUpSound(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const now=ctx.currentTime;
+    [392,523,659,784,1047,1319].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.setValueAtTime(f,now+i*.09);g.gain.setValueAtTime(.16,now+i*.09);g.gain.exponentialRampToValueAtTime(.001,now+i*.09+.35);o.start(now+i*.09);o.stop(now+i*.09+.36);});
+  }catch(e){}
+}
+function showLevelUpCelebration(name,level){
+  const burst=document.createElement('div');burst.className='levelup-burst';
+  const text=document.createElement('div');text.className='levelup-text';text.innerHTML=`🎆 LEVEL UP! 🎆<br><span style="font-size:20px">${name} is now Level ${level}</span>`;
+  document.body.appendChild(burst);document.body.appendChild(text);
+  const colors=['#EF9F27','#7F77DD','#1D9E75','#D4537E','#fff','#7ab8f5'];
+  for(let i=0;i<80;i++){
+    const dot=document.createElement('div');dot.className='firework';
+    dot.style.left=(15+Math.random()*70)+'vw';dot.style.top=(18+Math.random()*55)+'vh';
+    dot.style.background=colors[Math.floor(Math.random()*colors.length)];
+    dot.style.setProperty('--x',(Math.random()*240-120)+'px');dot.style.setProperty('--y',(Math.random()*240-120)+'px');
+    dot.style.animationDelay=(Math.random()*.55)+'s';burst.appendChild(dot);
+  }
+  playLevelUpSound();setTimeout(()=>{burst.remove();text.remove();},3100);
+}
+
 // ── INITIATIVE ────────────────────────────────────────────────────────
 function pushInit(){dbSet('initiative',{list:initiative,currentTurn,round});}
 function ensureInitList(){
@@ -1420,6 +1657,7 @@ function rollMyInit(){
 let initRolling=false;
 function rollAllInit(){
   if(!isDM||initRolling)return;initRolling=true;
+  playBattleStartSound();showToast('⚔️ Rolling initiative for everyone!','#E24B4A','#f09595');
   ensureInitList();
   initiative=initiative.map(c=>{
     if(c.type==='player'){
@@ -1427,7 +1665,7 @@ function rollAllInit(){
     }
     return {...c,init:Math.ceil(Math.random()*20)+(c.dexMod||0)};
   });
-  currentTurn=0;round=1;pushInit();renderInit();setTimeout(()=>initRolling=false,500);
+  currentTurn=0;round=1;renderInit();pushInit();setTimeout(()=>{initRolling=false;renderInit();},250);
 }
 function nextTurn(){const s=sortedInitList();if(!s.length)return;currentTurn=(currentTurn+1)%s.length;if(!currentTurn)round++;pushInit();renderInit();}
 function resetInit(){initiative=[];currentTurn=0;round=1;pushInit();renderInit();}
@@ -1588,28 +1826,64 @@ function uploadSceneImage(e){const file=e.target.files[0];if(!file||!isDM)return
 function applySceneImage(data){const panel=document.getElementById('scene-panel'),img=document.getElementById('scene-img');if(!panel||!img)return;if(data){img.src=data;panel.style.display='block';}else{img.src='';panel.style.display='none';}}
 function clearSceneImage(){if(!isDM)return;sceneImageData=null;dbRemove('sceneImage');applySceneImage(null);}
 
+
+function renderDockedDashboard(){
+  const dock=document.getElementById('dm-bottom-dock');const map=document.getElementById('map-panel');
+  if(!dock||!map)return;
+  if(isDM&&currentPanel==='map'){
+    populateDMControls();renderAssetRepo();
+    dock.style.display='block';map.classList.add('dm-docked');
+    const grid=document.querySelector('#dm-dashboard-bg .dashboard-grid');
+    dock.innerHTML=grid?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><b style="color:#b8b4f8;font-size:12px">👑 DM Quick Dashboard</b><button onclick="openDMDashboard()" style="margin-left:auto;padding:3px 8px;border:1px solid #444;background:#1e1e1e;color:#ccc;border-radius:6px;cursor:pointer;font-size:11px">Open Full Dashboard</button></div><div class="dashboard-grid">${grid.innerHTML}</div>`:'';
+  } else {dock.style.display='none';dock.innerHTML='';map.classList.remove('dm-docked');}
+}
+function levelUpFromDashboard(){const idx=parseInt(dashEl('dash-level-target')?.value);if(isNaN(idx))return;levelUpCharacter(idx);}
+function levelUpCharacter(idx){
+  if(!isDM||!party[idx])return;
+  const p=party[idx];const cls=getClass(p);const sub=getSubclass(p);const lvl=Math.min(20,getLevel(p)+1);
+  p.cls=makeClassString(cls,sub,lvl);
+  const auto=featureLinesFor(p);p.features=auto.join('\n');
+  dbSet('party',Object.fromEntries(party.map((pm,k)=>[k,pm])));
+  dbSet('levelEvents/latest',{name:p.name,level:lvl,ts:Date.now()});
+  showLevelUpCelebration(p.name,lvl);renderParty();populateDMControls();renderDockedDashboard();
+}
+
 // ── MUSIC ─────────────────────────────────────────────────────────────
 const PRESETS={tavern:'nTjVHCBqFxE',dungeon:'HbNEFgOjQHM',combat:'2SPiqKPR_J4',forest:'Y4UMNqMaVbk'};
-let ytPlayer=null,ytApiReady=false,currentPreset=null,musicPlaying=false,lastMusicVideoId=null;
+let ytPlayer=null,ytApiReady=false,currentPreset=null,musicPlaying=false,lastMusicVideoId=null,musicState={playing:false,videoId:null,label:null,ts:0};
 (function(){const tag=document.createElement('script');tag.src='https://www.youtube.com/iframe_api';document.head.appendChild(tag);})();
-window.onYouTubeIframeAPIReady=function(){try{ytApiReady=true;ytPlayer=new YT.Player('yt-player',{height:'1',width:'1',playerVars:{autoplay:0,controls:0,enablejsapi:1},events:{onReady:()=>setVol(document.getElementById('music-vol').value),onStateChange:e=>{musicPlaying=e.data===YT.PlayerState.PLAYING;updateMusicUI();}}});}catch(e){ytApiReady=false;}};
-function updateMusicUI(){const btn=document.getElementById('music-play-btn'),lab=document.getElementById('music-label');if(btn)btn.textContent=musicPlaying?'⏸':'▶';if(lab)lab.textContent=musicPlaying?`🎵 ${currentPreset||'Custom'}...`:'🎵';}
-function loadMusicVideo(videoId,label){lastMusicVideoId=videoId;currentPreset=label;['tavern','dungeon','combat','forest'].forEach(n=>{const b=document.getElementById('btn-'+n);if(b)b.style.borderColor=n===label?'#7F77DD':'#333';});
-  if(ytApiReady&&ytPlayer&&ytPlayer.loadVideoById){try{ytPlayer.loadVideoById({videoId});ytPlayer.playVideo();musicPlaying=true;updateMusicUI();return;}catch(e){}}
-  const frame=document.getElementById('yt-player');if(frame){frame.innerHTML=`<iframe width="1" height="1" src="https://www.youtube.com/embed/${videoId}?autoplay=1&loop=1&playlist=${videoId}" allow="autoplay; encrypted-media"></iframe>`;musicPlaying=true;updateMusicUI();}
+window.onYouTubeIframeAPIReady=function(){try{ytApiReady=true;ytPlayer=new YT.Player('yt-player',{height:'1',width:'1',playerVars:{autoplay:0,controls:0,enablejsapi:1},events:{onReady:()=>{setVol(document.getElementById('music-vol')?.value||40);applyMusicStateFromDB();},onStateChange:e=>{musicPlaying=e.data===YT.PlayerState.PLAYING;updateMusicUI();}}});}catch(e){ytApiReady=false;}};
+function updateMusicPermissions(){
+  const bar=document.querySelector('.music-bar');if(bar)bar.classList.toggle('dm-only',!isDM);
+  document.querySelectorAll('.dm-music-control').forEach(el=>{el.disabled=!isDM;el.style.opacity=isDM?'1':'.35';});
+  const note=document.getElementById('music-status-note');if(note)note.textContent=isDM?'DM music controls':'Players hear the DM music. Use Enable Audio if your browser blocks it.';
 }
-function playPreset(name){loadMusicVideo(PRESETS[name],name);}
-function playURL(){const url=document.getElementById('music-url').value.trim();const match=url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);if(!match){alert('Enter a valid YouTube URL');return;}['tavern','dungeon','combat','forest'].forEach(n=>{const b=document.getElementById('btn-'+n);if(b)b.style.borderColor='#333';});loadMusicVideo(match[1],'Custom');}
-function toggleMusic(){if(ytApiReady&&ytPlayer&&ytPlayer.pauseVideo){musicPlaying?ytPlayer.pauseVideo():(lastMusicVideoId?ytPlayer.playVideo():playPreset('tavern'));musicPlaying=!musicPlaying;updateMusicUI();return;} if(musicPlaying)stopMusic();else if(lastMusicVideoId)loadMusicVideo(lastMusicVideoId,currentPreset||'Custom');else playPreset('tavern');}
-function stopMusic(){if(ytApiReady&&ytPlayer&&ytPlayer.stopVideo){try{ytPlayer.stopVideo();}catch(e){}}const frame=document.getElementById('yt-player');if(frame)frame.innerHTML='';musicPlaying=false;currentPreset=null;['tavern','dungeon','combat','forest'].forEach(n=>{const b=document.getElementById('btn-'+n);if(b)b.style.borderColor='#333';});updateMusicUI();}
+function updateMusicUI(){const btn=document.getElementById('music-play-btn'),lab=document.getElementById('music-label');if(btn)btn.textContent=musicPlaying?'⏸':'▶';if(lab)lab.textContent=musicState?.playing?`🎵 ${musicState.label||'Custom'} playing`:'🎵 Music stopped';updateMusicPermissions();}
+function localLoadMusic(videoId,label,shouldPlay=true){
+  lastMusicVideoId=videoId;currentPreset=label;
+  ['tavern','dungeon','combat','forest'].forEach(n=>{const b=document.getElementById('btn-'+n);if(b)b.style.borderColor=n===label?'#7F77DD':'#333';});
+  if(ytApiReady&&ytPlayer&&ytPlayer.loadVideoById){try{ytPlayer.loadVideoById({videoId}); if(shouldPlay)ytPlayer.playVideo(); musicPlaying=!!shouldPlay; updateMusicUI(); return;}catch(e){}}
+  const frame=document.getElementById('yt-player');if(frame){frame.innerHTML=`<iframe width="1" height="1" src="https://www.youtube.com/embed/${videoId}?autoplay=${shouldPlay?1:0}&loop=1&playlist=${videoId}" allow="autoplay; encrypted-media"></iframe>`;musicPlaying=!!shouldPlay;updateMusicUI();}
+}
+function publishMusicState(state){musicState={...musicState,...state,ts:Date.now()};dbSet('musicState',musicState);applyMusicStateFromDB();}
+function applyMusicStateFromDB(){
+  if(!musicState){updateMusicUI();return;}
+  if(musicState.playing&&musicState.videoId){localLoadMusic(musicState.videoId,musicState.label||'Custom',true);}
+  else{if(ytApiReady&&ytPlayer&&ytPlayer.pauseVideo){try{ytPlayer.pauseVideo();}catch(e){}} musicPlaying=false;updateMusicUI();}
+}
+function playPreset(name){if(!isDM)return;publishMusicState({playing:true,videoId:PRESETS[name],label:name});}
+function playURL(){if(!isDM)return;const url=document.getElementById('music-url').value.trim();const match=url.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);if(!match){alert('Enter a valid YouTube URL');return;}publishMusicState({playing:true,videoId:match[1],label:'Custom'});}
+function toggleMusic(){if(!isDM)return;if(musicState.playing)publishMusicState({playing:false});else if(musicState.videoId)publishMusicState({playing:true});else playPreset('tavern');}
+function stopMusic(){if(!isDM)return;publishMusicState({playing:false});}
+function enablePlayerAudio(){if(musicState?.videoId)localLoadMusic(musicState.videoId,musicState.label||'Custom',!!musicState.playing);}
 function setVol(v){if(ytPlayer&&ytPlayer.setVolume)ytPlayer.setVolume(parseInt(v));}
-function wireAutoCalc(){['modal-class','modal-species','modal-dex','modal-con','modal-wis','modal-armor'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',autoCalcStats);});}
+function wireAutoCalc(){['modal-class','modal-species','modal-dex','modal-con','modal-wis','modal-armor','modal-class-name','modal-subclass-name','modal-level'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('change',autoCalcStats);});}
 
 // ── BOOT ─────────────────────────────────────────────────────────────
 document.getElementById('upload-map-btn').style.display='none';
 document.getElementById('add-token-btn').style.display='none';
 document.getElementById('clear-map-btn').style.display='none';
-party=party.map(normalizeCharacter);renderParty();renderDice();wireAutoCalc();renderXPHotButtons();applyRole();applySceneImage(sceneImageData);
+party=party.map(normalizeCharacter);renderParty();renderDice();wireAutoCalc();renderXPHotButtons();applyRole();applySceneImage(sceneImageData);updateMusicPermissions();renderDockedDashboard();
 
 if(window._dbReady){dbReady=true;initDb();}
 else window.addEventListener('db-ready',()=>{dbReady=true;initDb();});
