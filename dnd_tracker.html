@@ -1975,10 +1975,14 @@ function ensureInitList(){
 function sortedInitList(){return [...initiative].sort((a,b)=>(b.init-a.init)||((b.dex||10)-(a.dex||10)));}
 function renderInit(){
   ensureInitList();const sorted=sortedInitList();
+  const dmBtns=`<button type="button" onclick="window.rollAllInit()" style="background:#1e1a3a;border:1px solid #7F77DD;color:#b8b4f8;font-weight:600;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:12px">🎲 Roll Initiative for All</button>
+    <button type="button" onclick="window.nextTurn()" style="padding:5px 10px;border-radius:7px;border:1px solid #444;background:#1e1e1e;color:#ccc;cursor:pointer;font-size:12px">Next Turn →</button>
+    <button type="button" onclick="window.resetInit()" style="padding:5px 10px;border-radius:7px;border:1px solid #444;background:#1e1e1e;color:#888;cursor:pointer;font-size:12px">Reset</button>`;
+  const playerBtn=`<button type="button" onclick="window.rollMyInit()" style="background:#0a2a1a;border:1px solid #1D9E75;color:#5dcaa5;font-weight:600;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:12px">🎲 Roll My Initiative</button>`;
   document.getElementById('init-wrap').innerHTML=`
     <div style="background:#111;border:1px solid #333;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#888;line-height:1.6"><span style="color:#b8b4f8;font-weight:600">How initiative works:</span> Players roll only when they press the button. The DM can roll everyone below. Ties are broken by higher DEX.</div>
     <div class="init-controls">
-      ${isDM?`<button type="button" onclick="rollAllInit()" style="background:#1e1a3a;border-color:#7F77DD;color:#b8b4f8;font-weight:600">🎲 Roll Initiative for All</button><button onclick="nextTurn()">Next Turn →</button><button onclick="resetInit()">Reset</button>`:`<button onclick="rollMyInit()" style="background:#0a2a1a;border-color:#1D9E75;color:#5dcaa5;font-weight:600">🎲 Roll My Initiative</button>`}
+      ${isDM?dmBtns:playerBtn}
       <span class="round-badge">Round ${round}</span>
     </div>
     <div class="init-list">${sorted.map((c,i)=>initRow(c,i,sorted)).join('')}</div>
@@ -2026,8 +2030,19 @@ function rollAllInit(){
   initiative=[...playerEntries,...enemyEntries];currentTurn=0;round=1;pushInit();renderInit();
   if(currentPanel!=='init')switchTab('init');
 }
+function wireInitButtons(){
+  const rollAll=document.getElementById('roll-all-init-btn');
+  const nextTurnBtn=document.getElementById('next-turn-btn');
+  const resetBtn=document.getElementById('reset-init-btn');
+  const rollMine=document.getElementById('roll-my-init-btn');
+  if(rollAll){rollAll.style.display=isDM?'inline-block':'none';rollAll.onclick=rollAllInit;}
+  if(nextTurnBtn)nextTurnBtn.style.display=isDM?'inline-block':'none';
+  if(resetBtn)resetBtn.style.display=isDM?'inline-block':'none';
+  if(rollMine)rollMine.style.display=isDM?'none':'inline-block';
+}
 function nextTurn(){const s=sortedInitList();if(!s.length)return;currentTurn=(currentTurn+1)%s.length;if(!currentTurn)round++;pushInit();renderInit();}
 function resetInit(){initiative=[];currentTurn=0;round=1;pushInit();renderInit();}
+window.rollAllInit=rollAllInit;window.nextTurn=nextTurn;window.resetInit=resetInit;window.rollMyInit=rollMyInit;
 function addEnemy(){
   const name=document.getElementById('enemy-name').value||'Enemy';const init=parseInt(document.getElementById('enemy-init').value)||0;const hp=parseInt(document.getElementById('enemy-hp').value)||10;
   initiative.push({id:'enemy_'+Date.now(),name,type:'enemy',init,hp,maxHp:hp,color:6,dex:10});pushInit();renderInit();
