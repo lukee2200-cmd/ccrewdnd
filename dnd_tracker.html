@@ -806,7 +806,7 @@ function showNat1FX(who){
   document.body.appendChild(banner);setTimeout(()=>banner.remove(),4000);
 }
 // triggerNat20 / triggerNat1: show FX locally + broadcast to all connected clients
-let _lastNatTs=0;
+let _lastNatTs=0,_lastInventoryTs=0,_lastXPTs=0;
 function triggerNat20(who){const ts=Date.now();_lastNatTs=ts;showNat20FX(who);dbSet('diceEvents/latest',{type:'nat20',who,ts});}
 function triggerNat1(who){const ts=Date.now();_lastNatTs=ts;showNat1FX(who);dbSet('diceEvents/latest',{type:'nat1',who,ts});}
 
@@ -1107,7 +1107,7 @@ function initDb(){
   dbListen('assetRepo',data=>{assetRepo=data||{maps:{},tokens:{}};renderAssetRepo();populateDMControls();});
   dbListen('sceneImage',data=>{sceneImageData=data||null;applySceneImage(sceneImageData);});
   dbListen('musicState',data=>{musicState=data||{playing:false,videoId:null,label:null,ts:0};applyMusicStateFromDB();});
-   dbListen('inventoryEvents/latest',ev=>{
+  dbListen('inventoryEvents/latest',ev=>{
     if(!ev||Date.now()-(ev.ts||0)>10000)return;
     if(ev.ts===_lastInventoryTs)return;
     showItemBanner(ev.playerName||'Player',ev.itemName||'Item');
@@ -1125,7 +1125,7 @@ function initDb(){
   });
   initReactionListener();
   setSyncStatus('live');
-  
+
   dbListen('diceEvents/latest',data=>{
     if(!data||Date.now()-(data.ts||0)>8000)return;
     if(data.ts===_lastNatTs)return;
@@ -1791,7 +1791,7 @@ function applyXP(amt,target='all'){
   if(!amt||!isDM)return;
   const indices=target==='all'?party.map((_,i)=>i):[parseInt(target)].filter(i=>!isNaN(i));
   indices.forEach(i=>{party[i].xp=(party[i].xp||0)+amt;spawnSparkles(i);showXPToast(i,amt);});
-    const _xTs=Date.now();_lastXPTs=_xTs;
+  const _xTs=Date.now();_lastXPTs=_xTs;
   playXPSound();playFanfare();
   dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
   dbSet('xpEvents/latest',{names:indices.map(i=>party[i].name),amt,ts:_xTs});
@@ -1800,7 +1800,7 @@ function awardXP(){const amt=parseInt(document.getElementById('xp-amount').value
 function awardXPAmount(amt){applyXP(amt,getXPTarget(document.getElementById('dash-xp-target')?'dash-xp-target':'xp-target'));}
 function awardXPFromDashboard(){const amt=parseInt(dashEl('dash-xp-amount')?.value)||0;applyXP(amt,getXPTarget('dash-xp-target'));const el=dashEl('dash-xp-amount');if(el)el.value='';}
 function clearXP(){if(!isDM)return;if(!confirm('Clear XP for all characters?'))return;party.forEach(p=>p.xp=0);dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();}
-function showXPToast(i,amt){const t=document.createElement('div');t.className='toast';t.textContent=`✨ ${party[i].name} gained ${amt} XP!`;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
+function showXPToast(i,amt){showToast(`✨ ${party[i].name} gained ${amt} XP!`,'#EF9F27','#f5c87a');}
 function spawnSparkles(partyIdx){
   const cards=document.querySelectorAll('.player-card');if(!cards[partyIdx])return;const rect=cards[partyIdx].getBoundingClientRect();const emojis=['✨','⭐','🌟','💫','🎉','⚡'];const container=document.createElement('div');
   container.style.cssText=`position:fixed;left:${rect.left}px;top:${rect.top}px;pointer-events:none;z-index:999`;document.body.appendChild(container);
@@ -1825,7 +1825,7 @@ function giveItem(partyIdx,itemName,desc,maxUses,qty){
   if(!party[partyIdx].inventory)party[partyIdx].inventory=[];
   const item=maxUses?{name:itemName,desc:desc||'',maxUses:parseInt(maxUses)||0,usesLeft:parseInt(maxUses)||0,qty:parseInt(qty)||1}:{name:itemName,desc:desc||''};
   party[partyIdx].inventory.push(item);
-   const _iTs=Date.now();_lastInventoryTs=_iTs;
+  const _iTs=Date.now();_lastInventoryTs=_iTs;
   dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));
   dbSet('inventoryEvents/latest',{partyIdx,itemName,playerName:party[partyIdx].name,ts:_iTs});
   renderParty();showItemBanner(party[partyIdx].name,itemName);
@@ -2023,7 +2023,7 @@ function delayTurn(id){
   if(!c||c.delayed)return;
   if(c.origInit===undefined)c.origInit=c.init;
   c.delayed=true;
-    pushInit();renderInit();
+  pushInit();renderInit();
   showToast(`⏸ ${c.name} delays their turn.`,'#555','#aaa');
   dbSet('notifyEvents/latest',{text:`⏸ ${c.name} delays their turn.`,border:'#555',color:'#aaa',ts:Date.now()});
 }
@@ -2035,7 +2035,7 @@ function actNow(id){
   const active=nonDelayed.length?nonDelayed[currentTurn%Math.max(nonDelayed.length,1)]:null;
   if(active)c.init=active.init-0.001;
   c.delayed=false;
-   pushInit();renderInit();
+  pushInit();renderInit();
   showToast(`▶ ${c.name} acts now!`,'#1D9E75','#5dcaa5');
   dbSet('notifyEvents/latest',{text:`▶ ${c.name} acts now!`,border:'#1D9E75',color:'#5dcaa5',ts:Date.now()});
 }
@@ -2062,7 +2062,7 @@ function toggleConcentration(id){
   if(!isDM)return;
   const c=initiative.find(e=>(e.id||e.name)===id);if(!c)return;
   if(c.concentrating){
-        c.concentrating=false;c.concSpell='';pushInit();renderInit();
+    c.concentrating=false;c.concSpell='';pushInit();renderInit();
     showToast(`${c.name} ends concentration.`,'#444','#888');
     dbSet('notifyEvents/latest',{text:`${c.name} ends concentration.`,border:'#444',color:'#888',ts:Date.now()});
   } else {
@@ -2091,8 +2091,10 @@ function toggleDowned(id){
   if(!isDM)return;
   const c=initiative.find(e=>(e.id||e.name)===id);if(!c)return;
   c.downed=!c.downed;
-    if(c.downed){c.dsSucc=0;c.dsFail=0;showToast(`💀 ${c.name} is down — making death saves!`,'#E24B4A','#f09595');dbSet('notifyEvents/latest',{text:`💀 ${c.name} is down — making death saves!`,border:'#E24B4A',color:'#f09595',ts:Date.now()});}
+  if(c.downed){c.dsSucc=0;c.dsFail=0;showToast(`💀 ${c.name} is down — making death saves!`,'#E24B4A','#f09595');dbSet('notifyEvents/latest',{text:`💀 ${c.name} is down — making death saves!`,border:'#E24B4A',color:'#f09595',ts:Date.now()});}
   else{c.dsSucc=0;c.dsFail=0;showToast(`💚 ${c.name} is back up!`,'#1D9E75','#5dcaa5');dbSet('notifyEvents/latest',{text:`💚 ${c.name} is back up!`,border:'#1D9E75',color:'#5dcaa5',ts:Date.now()});}
+  pushInit();renderInit();
+}
 function addDeathSave(id,type){
   if(!isDM)return;
   const c=initiative.find(e=>(e.id||e.name)===id);if(!c||!c.downed)return;
@@ -2316,7 +2318,7 @@ function rollAllInit(){
     const raw=Math.floor(Math.random()*20)+1;const dexMod=c.dexMod||mod(c.dex||10);
     return {...c,roll:raw,init:raw+dexMod,tbRoll:undefined,delayed:false,origInit:undefined};
   });
-    initiative=[...playerEntries,...enemyEntries];currentTurn=0;round=1;pushInit();renderInit();
+  initiative=[...playerEntries,...enemyEntries];currentTurn=0;round=1;pushInit();renderInit();
   if(currentPanel!=='init')switchTab('init');
   dbSet('diceEvents/latest',{type:'rollAllInit',ts:Date.now()});
 }
@@ -2338,7 +2340,12 @@ function addEnemy(){
   initiative.push({id:'enemy_'+Date.now(),name,type:'enemy',init,hp,maxHp:hp,color:6,dex:10});pushInit();renderInit();
 }
 function removeEnemy(name){initiative=initiative.filter(c=>!(c.type==='enemy'&&c.name===name));pushInit();renderInit();}
-function showToast(text,border='#7F77DD',color='#b8b4f8'){const toast=document.createElement('div');toast.className='toast';toast.style.borderColor=border;toast.style.color=color;toast.textContent=text;document.body.appendChild(toast);setTimeout(()=>toast.remove(),2500);}
+function showToast(text,border='#7F77DD',color='#b8b4f8'){
+  const offset=document.querySelectorAll('.toast').length*46;
+  const toast=document.createElement('div');toast.className='toast';
+  toast.style.top=(55+offset)+'px';toast.style.borderColor=border;toast.style.color=color;toast.textContent=text;
+  document.body.appendChild(toast);setTimeout(()=>toast.remove(),2500);
+}
 
 // ── SPELLS TAB (party-wide) ───────────────────────────────────────────
 function buildSpellSlots(){}
@@ -2655,12 +2662,12 @@ function renderQuickDiceButtons(){
 }
 function renderGifButtons(){
   const PRESET_GIFS=[
-    {label:'🎉 Hype',url:'https://tenor.com/view/dancing-cat-dancing-kitten-60fps-boogie-cat-gif-24303276'},
-    {label:'💀 RIP',url:'https://klipy.com/gifs/felipearaujokaraoke-staaaar'},
-    {label:'🔥 Fire',url:'https://tenor.com/view/cat-with-fire-reflected-on-the-glass-on-his-head-gif-6450860921322291023'},
-    {label:'🎲 Roll',url:'https://tenor.com/view/yu-gi-oh-time-to-duel-card-gif-12403495'},
-    {label:'😂 LOL',url:'https://tenor.com/view/cat-grin-smile-smirk-awkward-gif-22382508'},
-    {label:'⚔️ Fight',url:'https://tenor.com/view/cat-gif-7808278230826900604'},
+    {label:'🎉 Hype',url:'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif'},
+    {label:'💀 RIP',url:'https://media.giphy.com/media/3ohzdIuqJoo8QdKlnW/giphy.gif'},
+    {label:'🔥 Fire',url:'https://media.giphy.com/media/ujUdrdpX7Ok5W/giphy.gif'},
+    {label:'🎲 Roll',url:'https://media.giphy.com/media/3o7buirYcmV5nSwIRW/giphy.gif'},
+    {label:'😂 LOL',url:'https://media.giphy.com/media/ZqlvCTNHpqrio/giphy.gif'},
+    {label:'⚔️ Fight',url:'https://media.giphy.com/media/l3vRbFSTTlQIfe6Vy/giphy.gif'},
   ];
   const btns=document.getElementById('gif-reaction-btns');
   if(!btns)return;
