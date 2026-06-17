@@ -292,7 +292,8 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 #map-panel.dm-docked .map-canvas-wrap{padding-bottom:220px}
 .music-bar.dm-only button.dm-music-control,.music-bar.dm-only input.dm-music-control{display:none}
 
-#media-collapse-tab{display:none!important}
+#reaction-dock{display:none!important}
+.music-bar{display:none!important}
 #media-slide-panel{position:fixed;right:0;top:0;bottom:0;width:260px;background:#0d0d0d;border-left:1px solid #333;padding:14px;z-index:96;overflow-y:auto;box-shadow:-4px 0 20px rgba(0,0,0,.6)}
 #media-slide-panel h4{font-size:11px;color:#b8b4f8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
 .music-status-note{font-size:10px;color:#777}
@@ -1977,7 +1978,7 @@ function renderInit(){
   document.getElementById('init-wrap').innerHTML=`
     <div style="background:#111;border:1px solid #333;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#888;line-height:1.6"><span style="color:#b8b4f8;font-weight:600">How initiative works:</span> Players roll only when they press the button. The DM can roll everyone below. Ties are broken by higher DEX.</div>
     <div class="init-controls">
-      ${isDM?`<button type="button" onclick="rollAllInit(event)" style="background:#1e1a3a;border-color:#7F77DD;color:#b8b4f8;font-weight:600">🎲 Roll Initiative for All</button><button onclick="nextTurn()">Next Turn →</button><button onclick="resetInit()">Reset</button>`:`<button onclick="rollMyInit()" style="background:#0a2a1a;border-color:#1D9E75;color:#5dcaa5;font-weight:600">🎲 Roll My Initiative</button>`}
+      ${isDM?`<button type="button" onclick="rollAllInit()" style="background:#1e1a3a;border-color:#7F77DD;color:#b8b4f8;font-weight:600">🎲 Roll Initiative for All</button><button onclick="nextTurn()">Next Turn →</button><button onclick="resetInit()">Reset</button>`:`<button onclick="rollMyInit()" style="background:#0a2a1a;border-color:#1D9E75;color:#5dcaa5;font-weight:600">🎲 Roll My Initiative</button>`}
       <span class="round-badge">Round ${round}</span>
     </div>
     <div class="init-list">${sorted.map((c,i)=>initRow(c,i,sorted)).join('')}</div>
@@ -2010,8 +2011,7 @@ function rollMyInit(){
   else initiative.push({id:p.id,name:p.name,type:'player',init:total,hp:p.hp,maxHp:p.maxHp,color:p.color,cardColor:p.cardColor,pfp:p.pfp,dex:statFinal(p,'DEX')});
   pushInit();renderInit();showToast(`🎲 ${p.name} rolled ${roll} ${dexMod>=0?'+':''}${dexMod} DEX = ${total} initiative!`,'#1D9E75','#5dcaa5');
 }
-function rollAllInit(evt){
-  if(evt&&evt.preventDefault)evt.preventDefault();
+function rollAllInit(){
   if(!isDM){showToast('Only the DM can roll initiative for everyone.','#E24B4A','#f09595');return;}
   playInitiativeMusic();showToast('⚔️ Rolling initiative for everyone!','#E24B4A','#f09595');
   const previousEnemies=initiative.filter(c=>c.type==='enemy');
