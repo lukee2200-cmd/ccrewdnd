@@ -1107,16 +1107,34 @@ function initDb(){
   dbListen('assetRepo',data=>{assetRepo=data||{maps:{},tokens:{}};renderAssetRepo();populateDMControls();});
   dbListen('sceneImage',data=>{sceneImageData=data||null;applySceneImage(sceneImageData);});
   dbListen('musicState',data=>{musicState=data||{playing:false,videoId:null,label:null,ts:0};applyMusicStateFromDB();});
-  dbListen('inventoryEvents/latest',ev=>{if(ev&&Date.now()-(ev.ts||0)<10000)showItemBanner(ev.playerName||'Player',ev.itemName||'Item');});
+   dbListen('inventoryEvents/latest',ev=>{
+    if(!ev||Date.now()-(ev.ts||0)>10000)return;
+    if(ev.ts===_lastInventoryTs)return;
+    showItemBanner(ev.playerName||'Player',ev.itemName||'Item');
+    showToast(`🎁 ${ev.itemName} given to ${ev.playerName}!`,'#EF9F27','#f5c87a');
+  });
   dbListen('levelEvents/latest',ev=>{if(ev&&Date.now()-(ev.ts||0)<10000)showLevelUpCelebration(ev.name||'Player',ev.level||'');});
+  dbListen('xpEvents/latest',ev=>{
+    if(!ev||Date.now()-(ev.ts||0)>8000||ev.ts===_lastXPTs)return;
+    (ev.names||[]).forEach(name=>showToast(`✨ ${name} gained ${ev.amt} XP!`,'#EF9F27','#f5c87a'));
+    playXPSound();playFanfare();
+  });
+  dbListen('notifyEvents/latest',ev=>{
+    if(!ev||Date.now()-(ev.ts||0)>8000||isDM)return;
+    showToast(ev.text,ev.border||'#7F77DD',ev.color||'#b8b4f8');
+  });
   initReactionListener();
   setSyncStatus('live');
   
   dbListen('diceEvents/latest',data=>{
     if(!data||Date.now()-(data.ts||0)>8000)return;
-    if(data.ts===_lastNatTs)return; // We fired this ourselves — skip to avoid double effects
+    if(data.ts===_lastNatTs)return;
     if(data.type==='nat20')showNat20FX(data.who);
     if(data.type==='nat1')showNat1FX(data.who);
+    if(data.type==='rollAllInit'&&!isDM){showToast('⚔️ Rolling initiative for everyone!','#E24B4A','#f09595');playInitiativeMusic();}
+    if(data.type==='stable'&&!isDM)showToast(`💚 ${data.who} is stable! (3 successes)`,'#1D9E75','#5dcaa5');
+    if(data.type==='dead'&&!isDM)showToast(`💀 ${data.who} has died... (3 failures)`,'#E24B4A','#f09595');
+    if(data.type==='conSave'&&!isDM)showToast(`🔮 ${data.who}: Con save DC ${data.dc}!`,'#7F77DD','#b8b4f8');
   });
 
 }
@@ -1773,7 +1791,10 @@ function applyXP(amt,target='all'){
   if(!amt||!isDM)return;
   const indices=target==='all'?party.map((_,i)=>i):[parseInt(target)].filter(i=>!isNaN(i));
   indices.forEach(i=>{party[i].xp=(party[i].xp||0)+amt;spawnSparkles(i);showXPToast(i,amt);});
-  playXPSound();dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
+    const _xTs=Date.now();_lastXPTs=_xTs;
+  playXPSound();playFanfare();
+  dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
+  dbSet('xpEvents/latest',{names:indices.map(i=>party[i].name),amt,ts:_xTs});
 }
 function awardXP(){const amt=parseInt(document.getElementById('xp-amount').value)||0;applyXP(amt,getXPTarget('xp-target'));document.getElementById('xp-amount').value='';}
 function awardXPAmount(amt){applyXP(amt,getXPTarget(document.getElementById('dash-xp-target')?'dash-xp-target':'xp-target'));}
@@ -1804,9 +1825,11 @@ function giveItem(partyIdx,itemName,desc,maxUses,qty){
   if(!party[partyIdx].inventory)party[partyIdx].inventory=[];
   const item=maxUses?{name:itemName,desc:desc||'',maxUses:parseInt(maxUses)||0,usesLeft:parseInt(maxUses)||0,qty:parseInt(qty)||1}:{name:itemName,desc:desc||''};
   party[partyIdx].inventory.push(item);
+   const _iTs=Date.now();_lastInventoryTs=_iTs;
   dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));
-  dbSet('inventoryEvents/latest',{partyIdx,itemName,playerName:party[partyIdx].name,ts:Date.now()});
+  dbSet('inventoryEvents/latest',{partyIdx,itemName,playerName:party[partyIdx].name,ts:_iTs});
   renderParty();showItemBanner(party[partyIdx].name,itemName);
+  showToast(`🎁 ${itemName} given to ${party[partyIdx].name}!`,'#EF9F27','#f5c87a');
 }
 function giveDMItem(){
   const name=document.getElementById('item-name')?.value.trim();
@@ -1861,9 +1884,6 @@ function closeModalOnBg(e){if(e.target===document.getElementById('modal-bg'))clo
 
 // ── DICE ─────────────────────────────────────────────────────────────
 function playDiceSound(){
-  // https://www.youtube.com/watch?v=9cWg_SAWv5A — dice rolling SFX
-  if(ytApiReady&&ytPlayer){playYouTubeClip('9cWg_SAWv5A',0,2);return;}
-  // Web Audio fallback when YouTube player not yet ready
   try{
     const ctx=new(window.AudioContext||window.webkitAudioContext)();const now=ctx.currentTime;
     for(let i=0;i<8;i++){
@@ -2003,8 +2023,9 @@ function delayTurn(id){
   if(!c||c.delayed)return;
   if(c.origInit===undefined)c.origInit=c.init;
   c.delayed=true;
-  pushInit();renderInit();
+    pushInit();renderInit();
   showToast(`⏸ ${c.name} delays their turn.`,'#555','#aaa');
+  dbSet('notifyEvents/latest',{text:`⏸ ${c.name} delays their turn.`,border:'#555',color:'#aaa',ts:Date.now()});
 }
 function actNow(id){
   if(!isDM){showToast('Only the DM can resume turns.','#E24B4A','#f09595');return;}
@@ -2014,8 +2035,9 @@ function actNow(id){
   const active=nonDelayed.length?nonDelayed[currentTurn%Math.max(nonDelayed.length,1)]:null;
   if(active)c.init=active.init-0.001;
   c.delayed=false;
-  pushInit();renderInit();
+   pushInit();renderInit();
   showToast(`▶ ${c.name} acts now!`,'#1D9E75','#5dcaa5');
+  dbSet('notifyEvents/latest',{text:`▶ ${c.name} acts now!`,border:'#1D9E75',color:'#5dcaa5',ts:Date.now()});
 }
 window.delayTurn=delayTurn;window.actNow=actNow;
 function quickPrompt(title,placeholder,callback,isNumber){
@@ -2040,12 +2062,15 @@ function toggleConcentration(id){
   if(!isDM)return;
   const c=initiative.find(e=>(e.id||e.name)===id);if(!c)return;
   if(c.concentrating){
-    c.concentrating=false;c.concSpell='';pushInit();renderInit();
+        c.concentrating=false;c.concSpell='';pushInit();renderInit();
     showToast(`${c.name} ends concentration.`,'#444','#888');
+    dbSet('notifyEvents/latest',{text:`${c.name} ends concentration.`,border:'#444',color:'#888',ts:Date.now()});
   } else {
     quickPrompt('🔮 Concentrating on what spell?','Spell name (optional)',spellName=>{
       c.concentrating=true;c.concSpell=spellName.trim();pushInit();renderInit();
-      showToast(`🔮 ${c.name} is concentrating${c.concSpell?' on '+c.concSpell:''}!`,'#7F77DD','#b8b4f8');
+      const _ct=`🔮 ${c.name} is concentrating${c.concSpell?' on '+c.concSpell:''}!`;
+      showToast(_ct,'#7F77DD','#b8b4f8');
+      dbSet('notifyEvents/latest',{text:_ct,border:'#7F77DD',color:'#b8b4f8',ts:Date.now()});
     });
   }
 }
@@ -2066,10 +2091,8 @@ function toggleDowned(id){
   if(!isDM)return;
   const c=initiative.find(e=>(e.id||e.name)===id);if(!c)return;
   c.downed=!c.downed;
-  if(c.downed){c.dsSucc=0;c.dsFail=0;showToast(`💀 ${c.name} is down — making death saves!`,'#E24B4A','#f09595');}
-  else{c.dsSucc=0;c.dsFail=0;showToast(`💚 ${c.name} is back up!`,'#1D9E75','#5dcaa5');}
-  pushInit();renderInit();
-}
+    if(c.downed){c.dsSucc=0;c.dsFail=0;showToast(`💀 ${c.name} is down — making death saves!`,'#E24B4A','#f09595');dbSet('notifyEvents/latest',{text:`💀 ${c.name} is down — making death saves!`,border:'#E24B4A',color:'#f09595',ts:Date.now()});}
+  else{c.dsSucc=0;c.dsFail=0;showToast(`💚 ${c.name} is back up!`,'#1D9E75','#5dcaa5');dbSet('notifyEvents/latest',{text:`💚 ${c.name} is back up!`,border:'#1D9E75',color:'#5dcaa5',ts:Date.now()});}
 function addDeathSave(id,type){
   if(!isDM)return;
   const c=initiative.find(e=>(e.id||e.name)===id);if(!c||!c.downed)return;
@@ -2293,8 +2316,9 @@ function rollAllInit(){
     const raw=Math.floor(Math.random()*20)+1;const dexMod=c.dexMod||mod(c.dex||10);
     return {...c,roll:raw,init:raw+dexMod,tbRoll:undefined,delayed:false,origInit:undefined};
   });
-  initiative=[...playerEntries,...enemyEntries];currentTurn=0;round=1;pushInit();renderInit();
+    initiative=[...playerEntries,...enemyEntries];currentTurn=0;round=1;pushInit();renderInit();
   if(currentPanel!=='init')switchTab('init');
+  dbSet('diceEvents/latest',{type:'rollAllInit',ts:Date.now()});
 }
 function wireInitButtons(){
   const rollAll=document.getElementById('roll-all-init-btn');
@@ -2631,12 +2655,12 @@ function renderQuickDiceButtons(){
 }
 function renderGifButtons(){
   const PRESET_GIFS=[
-    {label:'🎉 Hype',url:'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif'},
-    {label:'💀 RIP',url:'https://media.giphy.com/media/3ohzdIuqJoo8QdKlnW/giphy.gif'},
-    {label:'🔥 Fire',url:'https://media.giphy.com/media/ujUdrdpX7Ok5W/giphy.gif'},
-    {label:'🎲 Roll',url:'https://media.giphy.com/media/3o7buirYcmV5nSwIRW/giphy.gif'},
-    {label:'😂 LOL',url:'https://media.giphy.com/media/ZqlvCTNHpqrio/giphy.gif'},
-    {label:'⚔️ Fight',url:'https://media.giphy.com/media/l3vRbFSTTlQIfe6Vy/giphy.gif'},
+    {label:'🎉 Hype',url:'https://tenor.com/view/dancing-cat-dancing-kitten-60fps-boogie-cat-gif-24303276'},
+    {label:'💀 RIP',url:'https://klipy.com/gifs/felipearaujokaraoke-staaaar'},
+    {label:'🔥 Fire',url:'https://tenor.com/view/cat-with-fire-reflected-on-the-glass-on-his-head-gif-6450860921322291023'},
+    {label:'🎲 Roll',url:'https://tenor.com/view/yu-gi-oh-time-to-duel-card-gif-12403495'},
+    {label:'😂 LOL',url:'https://tenor.com/view/cat-grin-smile-smirk-awkward-gif-22382508'},
+    {label:'⚔️ Fight',url:'https://tenor.com/view/cat-gif-7808278230826900604'},
   ];
   const btns=document.getElementById('gif-reaction-btns');
   if(!btns)return;
