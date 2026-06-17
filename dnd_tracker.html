@@ -287,7 +287,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .die-btn:hover{transform:translateY(-1px) scale(1.04);box-shadow:0 0 18px rgba(255,255,255,.35), inset 0 0 18px rgba(255,255,255,.22)}
 @keyframes glitterSweep{0%{opacity:0;left:-35%}25%{opacity:.95}65%{opacity:.5}100%{opacity:0;left:55%}}
 @keyframes metalShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-#dm-bottom-dock{position:fixed;left:0;right:0;bottom:0;z-index:90;background:#0d0d0d;border-top:1px solid #333;box-shadow:0 -10px 30px rgba(0,0,0,.45);padding:8px 12px;display:none;max-height:38vh;overflow:auto}
+#dm-bottom-dock{position:fixed;left:0;right:260px;bottom:0;z-index:90;background:#0d0d0d;border-top:1px solid #333;box-shadow:0 -10px 30px rgba(0,0,0,.45);padding:8px 12px;display:none;max-height:38vh;overflow:auto}
 #dm-bottom-dock .dashboard-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 #map-panel.dm-docked .map-canvas-wrap{padding-bottom:220px}
 .music-bar.dm-only button.dm-music-control,.music-bar.dm-only input.dm-music-control{display:none}
@@ -458,7 +458,21 @@ function triggerNat1(who){
 <!-- Media slide panel for when controls are hidden -->
 <div id="media-collapse-tab" onclick="openMediaPanel()" title="Open media controls">🎵 Media</div>
 <div id="media-slide-panel">
-  <h4>🎵 Media & Reactions</h4>
+  <!-- Role / Login controls -->
+  <div style="border-bottom:1px solid #222;padding-bottom:10px;margin-bottom:10px">
+    <div style="font-size:10px;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Session</div>
+    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+      <select id="sidebar-character" onchange="selectCharacter(this.value)" style="flex:1;font-size:11px;padding:4px 6px;border-radius:6px;border:1px solid #444;color:#aaa;background:#111;cursor:pointer">
+        <option value="spectator">👁 Spectator</option>
+      </select>
+      <button id="sidebar-role-btn" onclick="handleRoleClick()" style="padding:4px 10px;border-radius:6px;border:1px solid #444;font-size:11px;cursor:pointer;background:transparent;color:#aaa;white-space:nowrap">
+        <span id="sidebar-role-label">Player</span>
+      </button>
+    </div>
+    <button onclick="enablePlayerAudio()" style="margin-top:6px;width:100%;padding:4px;border:1px solid #333;border-radius:6px;font-size:11px;cursor:pointer;background:#1e1e1e;color:#aaa">🔊 Enable Audio</button>
+    <div id="sidebar-music-label" style="font-size:10px;color:#555;margin-top:4px">🎵 Music stopped</div>
+  </div>
+  <h4 style="font-size:11px;color:#b8b4f8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">🎵 Media & Reactions</h4>
   <div style="display:flex;flex-direction:column;gap:8px">
     <div style="display:flex;gap:5px;flex-wrap:wrap">
       <button onclick="playPreset('tavern')" id="sp-btn-tavern" style="padding:4px 8px;border:1px solid #333;border-radius:6px;font-size:11px;cursor:pointer;background:#1e1e1e;color:#aaa">🍺 Tavern</button>
@@ -1112,6 +1126,8 @@ function initDb(){
 function applyRole(){
   document.getElementById('role-label').textContent=isDM?'DM 👑':'Player';
   document.getElementById('role-btn').className='role-badge'+(isDM?' dm':'');
+  const sidebarLabel=document.getElementById('sidebar-role-label');if(sidebarLabel)sidebarLabel.textContent=isDM?'DM 👑':'Player';
+  const sidebarBtn=document.getElementById('sidebar-role-btn');if(sidebarBtn){sidebarBtn.style.borderColor=isDM?'#7F77DD':'#444';sidebarBtn.style.color=isDM?'#b8b4f8':'#aaa';}
   document.getElementById('upload-map-btn').style.display=isDM?'inline-block':'none';
   document.getElementById('add-token-btn').style.display=isDM?'inline-block':'none';
   const dashBtn=document.getElementById('dm-dashboard-btn'); if(dashBtn)dashBtn.style.display=isDM?'inline-block':'none';
@@ -1716,10 +1732,10 @@ function deleteCurrentCharacter(){
 }
 
 function populateCharacterSelect(){
-  const sel=document.getElementById('active-character');if(!sel)return;
-  const old=activeCharacter;
-  sel.innerHTML='<option value="spectator">👁 Spectator</option>'+party.map((p,i)=>`<option value="${i}">🧙 ${p.name}</option>`).join('');
-  activeCharacter=(old!=='spectator'&&party[parseInt(old)])?old:'spectator';sel.value=activeCharacter;
+  const opts='<option value="spectator">👁 Spectator</option>'+party.map((p,i)=>`<option value="${i}">🧙 ${p.name}</option>`).join('');
+  ['active-character','sidebar-character'].forEach(id=>{const sel=document.getElementById(id);if(sel){sel.innerHTML=opts;}});
+  activeCharacter=(activeCharacter!=='spectator'&&party[parseInt(activeCharacter)])?activeCharacter:'spectator';
+  ['active-character','sidebar-character'].forEach(id=>{const sel=document.getElementById(id);if(sel)sel.value=activeCharacter;});
 }
 function selectCharacter(val){activeCharacter=val;if(currentPanel==='dice')renderDice();}
 function canAccessCharacter(i,requireEdit=false){
@@ -2221,7 +2237,7 @@ function updateMusicPermissions(){
   document.querySelectorAll('.dm-music-control').forEach(el=>{el.disabled=!isDM;el.style.opacity=isDM?'1':'.35';});
   const note=document.getElementById('music-status-note');if(note)note.textContent=isDM?'DM music controls':'Players hear the DM music. Use Enable Audio if your browser blocks it.';
 }
-function updateMusicUI(){const btn=document.getElementById('music-play-btn'),lab=document.getElementById('music-label');if(btn)btn.textContent=musicPlaying?'⏸':'▶';if(lab)lab.textContent=musicState?.playing?`🎵 ${musicState.label||'Custom'} playing`:'🎵 Music stopped';updateMusicPermissions();}
+function updateMusicUI(){const btn=document.getElementById('music-play-btn'),lab=document.getElementById('music-label');if(btn)btn.textContent=musicPlaying?'⏸':'▶';const labelText=musicState?.playing?`🎵 ${musicState.label||'Custom'} playing`:'🎵 Music stopped';if(lab)lab.textContent=labelText;const slab=document.getElementById('sidebar-music-label');if(slab)slab.textContent=labelText;updateMusicPermissions();}
 function localLoadMusic(videoId,label,shouldPlay=true){
   lastMusicVideoId=videoId;currentPreset=label;['tavern','dungeon','combat','forest'].forEach(n=>{const b=document.getElementById('btn-'+n);if(b)b.style.borderColor=n===label?'#7F77DD':'#333';});
   if(ytApiReady&&ytPlayer&&ytPlayer.loadVideoById){try{ytPlayer.loadVideoById({videoId}); if(shouldPlay)ytPlayer.playVideo(); musicPlaying=!!shouldPlay; updateMusicUI(); return;}catch(e){}}
