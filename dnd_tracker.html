@@ -204,6 +204,17 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .init-controls button:hover{background:#2a2a2a}
 .enemy-row{background:#2a0a0a;border-color:#5a2222}
 .enemy-row .init-name{color:#f09595}
+.init-delayed-row{border-style:dashed!important;border-color:#333!important;background:#141414!important}
+.init-conc-row{border-color:#7F77DD55!important;box-shadow:inset 0 0 0 1px #7F77DD22}
+.init-downed-row{border-color:#E24B4A88!important;background:#1a0808!important}
+.init-hp-click{cursor:pointer;border-radius:5px;padding:1px 4px;transition:background .15s}
+.init-hp-click:hover{background:#2a1010;color:#f09595!important}
+.tt-bar{background:#111;border:1px solid #2a2a2a;border-radius:10px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+@keyframes tt-pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.tt-urgent{animation:tt-pulse 0.7s ease-in-out infinite}
+.ds-row{width:100%;margin-top:5px;padding-top:5px;border-top:1px solid #3a1010;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ds-circle{font-size:15px;cursor:pointer;line-height:1;transition:transform .1s}
+.ds-circle:hover{transform:scale(1.25)}
 .round-badge{font-size:13px;color:#666;margin-left:auto}
 .add-enemy-form{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:1rem}
 .add-enemy-form input{border:1px solid #333;border-radius:7px;padding:5px 8px;font-size:12px;background:#1e1e1e;color:#eee}
@@ -343,65 +354,6 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .nat-banner h2{font-size:28px;font-weight:900;color:#fff;margin-bottom:6px;text-shadow:0 0 12px currentColor}
 .nat-banner p{font-size:14px;color:rgba(255,255,255,.8)}
 
-// ── YOUTUBE CLIP PLAYER ───────────────────────────────────────────────
-// Plays a YouTube video for a set number of seconds then stops/resumes
-function playYouTubeClip(videoId,startSeconds,durationSeconds){
-  try{
-    if(!ytApiReady||!ytPlayer)return;
-    const saved={...musicState};
-    ytPlayer.loadVideoById({videoId,startSeconds:startSeconds||0});
-    ytPlayer.playVideo();
-    setTimeout(()=>{
-      try{ytPlayer.stopVideo();}catch(e){}
-      // Resume previous music
-      if(saved.playing&&saved.videoId&&saved.videoId!==videoId){
-        setTimeout(()=>localLoadMusic(saved.videoId,saved.label||'Music',true),400);
-      }
-    },(durationSeconds||5)*1000);
-  }catch(e){}
-}
-
-// ── NAT 20 ────────────────────────────────────────────────────────────
-function triggerNat20(who){
-  // Fanfare: https://www.youtube.com/watch?v=JN8Mswri5fc
-  playYouTubeClip('JN8Mswri5fc',0,8);
-  // Fireworks
-  const emojis=['🎆','✨','🌟','💥','🎉','⭐','🔥','💫'];
-  for(let i=0;i<18;i++){
-    const fw=document.createElement('div');
-    fw.className='firework';
-    fw.textContent=emojis[Math.floor(Math.random()*emojis.length)];
-    fw.style.left=(10+Math.random()*80)+'vw';
-    fw.style.top=(10+Math.random()*70)+'vh';
-    fw.style.setProperty('--fx',(Math.random()*200-100)+'px');
-    fw.style.setProperty('--fy',(Math.random()*200-100)+'px');
-    fw.style.animationDelay=(Math.random()*0.8)+'s';
-    document.body.appendChild(fw);
-    setTimeout(()=>fw.remove(),2400);
-  }
-  // Banner
-  const banner=document.createElement('div');
-  banner.className='nat-banner';
-  banner.innerHTML=`<h2 style="color:#7fc45a">🎉 NATURAL 20! 🎉</h2><p>${who} is blessed by the dice gods!</p>`;
-  document.body.appendChild(banner);
-  setTimeout(()=>banner.remove(),4000);
-  // Broadcast to all players
-  dbSet('diceEvents/latest',{type:'nat20',who,ts:Date.now()});
-}
-
-// ── NAT 1 ─────────────────────────────────────────────────────────────
-function triggerNat1(who){
-  // Sad trombone: https://www.youtube.com/watch?v=IxTiL8GVw-M — first 3 seconds
-  playYouTubeClip('IxTiL8GVw-M',0,3);
-  // Sad face banner
-  const banner=document.createElement('div');
-  banner.className='nat-banner nat1-banner';
-  banner.innerHTML=`<h2 style="color:#f09595;font-size:36px">😢</h2><h2 style="color:#f09595">NATURAL 1</h2><p style="color:rgba(255,255,255,.7)">${who} has displeased the dice gods...</p>`;
-  document.body.appendChild(banner);
-  setTimeout(()=>banner.remove(),4000);
-  // Broadcast to all players
-  dbSet('diceEvents/latest',{type:'nat1',who,ts:Date.now()});
-}
 
 </style>
 </head>
@@ -813,6 +765,51 @@ function triggerNat1(who){
 <div id="yt-container" style="position:fixed;bottom:-200px;left:-200px;width:1px;height:1px;overflow:hidden"><div id="yt-player"></div></div>
 
 <script>
+// ── YOUTUBE CLIP PLAYER ───────────────────────────────────────────────
+// Plays a YouTube video for a set number of seconds then stops/resumes
+function playYouTubeClip(videoId,startSeconds,durationSeconds){
+  try{
+    if(!ytApiReady||!ytPlayer)return;
+    const saved={...musicState};
+    ytPlayer.loadVideoById({videoId,startSeconds:startSeconds||0});
+    ytPlayer.playVideo();
+    setTimeout(()=>{
+      try{ytPlayer.stopVideo();}catch(e){}
+      // Resume previous music
+      if(saved.playing&&saved.videoId&&saved.videoId!==videoId){
+        setTimeout(()=>localLoadMusic(saved.videoId,saved.label||'Music',true),400);
+      }
+    },(durationSeconds||5)*1000);
+  }catch(e){}
+}
+
+// ── NAT 20 / NAT 1 — local visual + audio effects ─────────────────────
+// showNat20FX / showNat1FX: purely local — no Firebase broadcast
+function showNat20FX(who){
+  playYouTubeClip('JN8Mswri5fc',0,8);
+  const emojis=['🎆','✨','🌟','💥','🎉','⭐','🔥','💫'];
+  for(let i=0;i<18;i++){
+    const fw=document.createElement('div');fw.className='firework';
+    fw.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+    fw.style.left=(10+Math.random()*80)+'vw';fw.style.top=(10+Math.random()*70)+'vh';
+    fw.style.setProperty('--fx',(Math.random()*200-100)+'px');fw.style.setProperty('--fy',(Math.random()*200-100)+'px');
+    fw.style.animationDelay=(Math.random()*0.8)+'s';document.body.appendChild(fw);setTimeout(()=>fw.remove(),2400);
+  }
+  const banner=document.createElement('div');banner.className='nat-banner';
+  banner.innerHTML=`<h2 style="color:#7fc45a">🎉 NATURAL 20! 🎉</h2><p>${who} is blessed by the dice gods!</p>`;
+  document.body.appendChild(banner);setTimeout(()=>banner.remove(),4000);
+}
+function showNat1FX(who){
+  playYouTubeClip('IxTiL8GVw-M',0,3);
+  const banner=document.createElement('div');banner.className='nat-banner nat1-banner';
+  banner.innerHTML=`<h2 style="color:#f09595;font-size:36px">😢</h2><h2 style="color:#f09595">NATURAL 1</h2><p style="color:rgba(255,255,255,.7)">${who} has displeased the dice gods...</p>`;
+  document.body.appendChild(banner);setTimeout(()=>banner.remove(),4000);
+}
+// triggerNat20 / triggerNat1: show FX locally + broadcast to all connected clients
+let _lastNatTs=0;
+function triggerNat20(who){const ts=Date.now();_lastNatTs=ts;showNat20FX(who);dbSet('diceEvents/latest',{type:'nat20',who,ts});}
+function triggerNat1(who){const ts=Date.now();_lastNatTs=ts;showNat1FX(who);dbSet('diceEvents/latest',{type:'nat1',who,ts});}
+
 const PROF_BY_LEVEL = [2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6];
 const CLASS_SAVES = {
   Artificer:['CON','INT'], Barbarian:['STR','CON'], Bard:['DEX','CHA'], Cleric:['WIS','CHA'], Druid:['INT','WIS'], Fighter:['STR','CON'], Monk:['STR','DEX'], Paladin:['WIS','CHA'], Ranger:['STR','DEX'], Rogue:['DEX','INT'], Sorcerer:['CON','CHA'], Warlock:['WIS','CHA'], Wizard:['INT','WIS'], 'Blood Hunter':['STR','INT']
@@ -1116,10 +1113,11 @@ function initDb(){
   setSyncStatus('live');
   
   dbListen('diceEvents/latest',data=>{
-  if(!data||Date.now()-(data.ts||0)>8000)return;
-  if(data.type==='nat20')triggerNat20(data.who);
-  if(data.type==='nat1')triggerNat1(data.who);
-});
+    if(!data||Date.now()-(data.ts||0)>8000)return;
+    if(data.ts===_lastNatTs)return; // We fired this ourselves — skip to avoid double effects
+    if(data.type==='nat20')showNat20FX(data.who);
+    if(data.type==='nat1')showNat1FX(data.who);
+  });
 
 }
 
@@ -1863,6 +1861,9 @@ function closeModalOnBg(e){if(e.target===document.getElementById('modal-bg'))clo
 
 // ── DICE ─────────────────────────────────────────────────────────────
 function playDiceSound(){
+  // https://www.youtube.com/watch?v=9cWg_SAWv5A — dice rolling SFX
+  if(ytApiReady&&ytPlayer){playYouTubeClip('9cWg_SAWv5A',0,2);return;}
+  // Web Audio fallback when YouTube player not yet ready
   try{
     const ctx=new(window.AudioContext||window.webkitAudioContext)();const now=ctx.currentTime;
     for(let i=0;i<8;i++){
@@ -1878,7 +1879,9 @@ function getCurrentRoller(){
 function rollDie(sides,count,rollMod,label){
   count=count||1;rollMod=rollMod||0;const rolls=Array.from({length:count},()=>Math.ceil(Math.random()*sides));const total=rolls.reduce((a,b)=>a+b,0)+rollMod;const nat=count===1?rolls[0]:null;const who=getCurrentRoller();
   rollLog.unshift({who,label,rolls,total,nat,mod:rollMod,ts:Date.now()});if(rollLog.length>100)rollLog.pop();
-  dbSet('rollLog',rollLog);playDiceSound();renderDice();
+  dbSet('rollLog',rollLog);
+  if(sides===20&&count===1){if(nat===20)triggerNat20(who);else if(nat===1)triggerNat1(who);else playDiceSound();}else{playDiceSound();}
+  renderDice();
   setTimeout(()=>{const rb=document.querySelector('.roll-big');if(rb){rb.classList.remove('popping');void rb.offsetWidth;rb.classList.add('popping');}},10);
 }
 function formatRollTime(ts){try{return new Date(ts).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});}catch(e){return '';}}
@@ -1972,19 +1975,250 @@ function ensureInitList(){
     return c;
   });
 }
-function sortedInitList(){return [...initiative].sort((a,b)=>(b.init-a.init)||((b.dex||10)-(a.dex||10)));}
+function sortedInitList(){
+  const active=initiative.filter(c=>!c.delayed).sort((a,b)=>(b.init-a.init)||((b.dex||10)-(a.dex||10))||((b.tbRoll||0)-(a.tbRoll||0)));
+  const delayed=initiative.filter(c=>c.delayed);
+  return [...active,...delayed];
+}
+function hasTies(){const s=sortedInitList();for(let i=0;i<s.length-1;i++){if(s[i].init===s[i+1].init&&(s[i].dex||10)===(s[i+1].dex||10))return true;}return false;}
+function rollTiebreakers(){
+  if(!isDM){showToast('Only the DM can roll tiebreakers.','#E24B4A','#f09595');return;}
+  const sorted=sortedInitList();
+  const groups={};
+  sorted.forEach(c=>{const key=`${c.init}_${c.dex||10}`;if(!groups[key])groups[key]=[];groups[key].push(c.id||c.name);});
+  const tiedIds=new Set();
+  Object.values(groups).forEach(ids=>{if(ids.length>1)ids.forEach(id=>tiedIds.add(id));});
+  if(!tiedIds.size){showToast('No ties to break!','#EF9F27','#f5c87a');return;}
+  let count=0;
+  initiative=initiative.map(c=>{
+    if(tiedIds.has(c.id||c.name)){count++;return {...c,tbRoll:Math.floor(Math.random()*20)+1};}
+    return c;
+  });
+  pushInit();renderInit();showToast(`🎲 Rolled tiebreakers for ${count} combatants!`,'#EF9F27','#f5c87a');
+}
+window.rollTiebreakers=rollTiebreakers;
+function delayTurn(id){
+  if(!isDM){showToast('Only the DM can delay turns.','#E24B4A','#f09595');return;}
+  const c=initiative.find(e=>(e.id||e.name)===id);
+  if(!c||c.delayed)return;
+  if(c.origInit===undefined)c.origInit=c.init;
+  c.delayed=true;
+  pushInit();renderInit();
+  showToast(`⏸ ${c.name} delays their turn.`,'#555','#aaa');
+}
+function actNow(id){
+  if(!isDM){showToast('Only the DM can resume turns.','#E24B4A','#f09595');return;}
+  const c=initiative.find(e=>(e.id||e.name)===id);
+  if(!c||!c.delayed)return;
+  const nonDelayed=initiative.filter(x=>!x.delayed).sort((a,b)=>(b.init-a.init)||((b.dex||10)-(a.dex||10))||((b.tbRoll||0)-(a.tbRoll||0)));
+  const active=nonDelayed.length?nonDelayed[currentTurn%Math.max(nonDelayed.length,1)]:null;
+  if(active)c.init=active.init-0.001;
+  c.delayed=false;
+  pushInit();renderInit();
+  showToast(`▶ ${c.name} acts now!`,'#1D9E75','#5dcaa5');
+}
+window.delayTurn=delayTurn;window.actNow=actNow;
+function quickPrompt(title,placeholder,callback,isNumber){
+  const old=document.getElementById('qp-modal');if(old)old.remove();
+  const bg=document.createElement('div');bg.id='qp-modal';bg.className='modal-bg';bg.style.zIndex='350';
+  bg.innerHTML=`<div class="modal" style="gap:10px;max-width:280px">
+    <h2 style="font-size:14px">${title}</h2>
+    <input id="qp-inp" type="${isNumber?'number':'text'}" min="0" placeholder="${placeholder}" style="width:100%;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:13px;background:#111;color:#eee">
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="document.getElementById('qp-modal').remove()">Cancel</button>
+      <button class="btn-primary" id="qp-ok">Confirm</button>
+    </div>
+  </div>`;
+  document.body.appendChild(bg);
+  const inp=bg.querySelector('#qp-inp'),ok=bg.querySelector('#qp-ok');
+  const go=()=>{const v=inp.value;bg.remove();callback(v);};
+  ok.onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go();if(e.key==='Escape')bg.remove();};
+  bg.onclick=e=>{if(e.target===bg)bg.remove();};
+  setTimeout(()=>inp.focus(),30);
+}
+function toggleConcentration(id){
+  if(!isDM)return;
+  const c=initiative.find(e=>(e.id||e.name)===id);if(!c)return;
+  if(c.concentrating){
+    c.concentrating=false;c.concSpell='';pushInit();renderInit();
+    showToast(`${c.name} ends concentration.`,'#444','#888');
+  } else {
+    quickPrompt('🔮 Concentrating on what spell?','Spell name (optional)',spellName=>{
+      c.concentrating=true;c.concSpell=spellName.trim();pushInit();renderInit();
+      showToast(`🔮 ${c.name} is concentrating${c.concSpell?' on '+c.concSpell:''}!`,'#7F77DD','#b8b4f8');
+    });
+  }
+}
+function calcConSave(id){
+  if(!isDM)return;
+  const c=initiative.find(e=>(e.id||e.name)===id);if(!c||!c.concentrating)return;
+  quickPrompt(`💥 How much damage did ${c.name} take?`,'e.g. 14',dmgStr=>{
+    const dmg=parseInt(dmgStr)||0;
+    if(dmg<=0){showToast('Enter a valid damage amount.','#E24B4A','#f09595');return;}
+    const dc=Math.max(10,Math.floor(dmg/2));
+    const spellNote=c.concSpell?' ('+c.concSpell+')':'';
+    showToast(`🔮 ${c.name}${spellNote}: Con save DC ${dc}!`,'#7F77DD','#b8b4f8');
+    dbSet('diceEvents/latest',{type:'conSave',who:c.name,dc,dmg,spell:c.concSpell||'',ts:Date.now()});
+  },true);
+}
+window.toggleConcentration=toggleConcentration;window.calcConSave=calcConSave;
+function toggleDowned(id){
+  if(!isDM)return;
+  const c=initiative.find(e=>(e.id||e.name)===id);if(!c)return;
+  c.downed=!c.downed;
+  if(c.downed){c.dsSucc=0;c.dsFail=0;showToast(`💀 ${c.name} is down — making death saves!`,'#E24B4A','#f09595');}
+  else{c.dsSucc=0;c.dsFail=0;showToast(`💚 ${c.name} is back up!`,'#1D9E75','#5dcaa5');}
+  pushInit();renderInit();
+}
+function addDeathSave(id,type){
+  if(!isDM)return;
+  const c=initiative.find(e=>(e.id||e.name)===id);if(!c||!c.downed)return;
+  if(type==='succ'){
+    c.dsSucc=(c.dsSucc||0)+1;
+    if(c.dsSucc>3){c.dsSucc=0;}
+    else if(c.dsSucc===3){showToast(`💚 ${c.name} is stable! (3 successes)`,'#1D9E75','#5dcaa5');dbSet('diceEvents/latest',{type:'stable',who:c.name,ts:Date.now()});}
+  } else {
+    c.dsFail=(c.dsFail||0)+1;
+    if(c.dsFail>3){c.dsFail=0;}
+    else if(c.dsFail===3){showToast(`💀 ${c.name} has died... (3 failures)`,'#E24B4A','#f09595');dbSet('diceEvents/latest',{type:'dead',who:c.name,ts:Date.now()});}
+  }
+  pushInit();renderInit();
+}
+function resetDeathSaves(id){
+  if(!isDM)return;
+  const c=initiative.find(e=>(e.id||e.name)===id);if(!c)return;
+  c.dsSucc=0;c.dsFail=0;pushInit();renderInit();
+  showToast(`🔄 ${c.name} death saves reset.`,'#444','#888');
+}
+window.toggleDowned=toggleDowned;window.addDeathSave=addDeathSave;window.resetDeathSaves=resetDeathSaves;
+function changeHP(id,delta){
+  const c=initiative.find(e=>(e.id||e.name)===id);if(!c)return;
+  const oldHp=c.hp||0;const newHp=Math.max(0,Math.min(c.maxHp||oldHp,oldHp+delta));
+  c.hp=newHp;
+  // Sync to party data if this is a player character
+  const pidx=party.findIndex(p=>p.id===c.id||(p.name===c.name&&!c.id));
+  if(pidx>=0){party[pidx].hp=newHp;dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));if(currentPanel==='party')renderParty();}
+  pushInit();renderInit();
+  const word=delta<0?`takes ${-delta} damage`:`heals ${delta} HP`;
+  showToast(`${delta<0?'💔':'💚'} ${c.name} ${word} → ${newHp}/${c.maxHp} HP`,delta<0?'#E24B4A':'#1D9E75',delta<0?'#f09595':'#5dcaa5');
+  // Auto-down at 0 HP
+  if(newHp===0&&!c.downed){setTimeout(()=>{const cc=initiative.find(e=>(e.id||e.name)===id);if(cc&&!cc.downed){cc.downed=true;cc.dsSucc=0;cc.dsFail=0;pushInit();renderInit();showToast(`💀 ${cc.name} is down — making death saves!`,'#E24B4A','#f09595');}},400);}
+}
+function promptChangeHP(id){
+  if(!isDM)return;
+  const c=initiative.find(e=>(e.id||e.name)===id);if(!c)return;
+  const old=document.getElementById('qp-modal');if(old)old.remove();
+  const bg=document.createElement('div');bg.id='qp-modal';bg.className='modal-bg';bg.style.zIndex='350';
+  bg.innerHTML=`<div class="modal" style="gap:10px;max-width:280px">
+    <h2 style="font-size:14px">⚔️ ${c.name}</h2>
+    <div style="text-align:center;font-size:22px;font-weight:700;color:#eee">${c.hp} <span style="color:#555;font-size:14px">/ ${c.maxHp} HP</span></div>
+    <input id="qp-inp" type="number" min="0" placeholder="Amount..." style="width:100%;border:1px solid #333;border-radius:7px;padding:7px 10px;font-size:15px;background:#111;color:#eee;text-align:center">
+    <div class="modal-actions" style="gap:6px">
+      <button class="btn-ghost" onclick="document.getElementById('qp-modal').remove()">Cancel</button>
+      <button id="qp-dmg" style="background:#2a0a0a;color:#f09595;border:1px solid #E24B4A;border-radius:7px;padding:6px 14px;cursor:pointer;font-size:12px;font-weight:600">💔 Damage</button>
+      <button id="qp-heal" style="background:#0a2a1a;color:#5dcaa5;border:1px solid #1D9E75;border-radius:7px;padding:6px 14px;cursor:pointer;font-size:12px;font-weight:600">💚 Heal</button>
+    </div>
+  </div>`;
+  document.body.appendChild(bg);
+  const inp=bg.querySelector('#qp-inp');
+  const apply=(sign)=>{const v=parseInt(inp.value)||0;if(v>0){bg.remove();changeHP(id,sign*v);}};
+  bg.querySelector('#qp-dmg').onclick=()=>apply(-1);
+  bg.querySelector('#qp-heal').onclick=()=>apply(1);
+  inp.onkeydown=e=>{if(e.key==='Enter')apply(-1);if(e.key==='Escape')bg.remove();};
+  bg.onclick=e=>{if(e.target===bg)bg.remove();};
+  setTimeout(()=>inp.focus(),30);
+}
+window.changeHP=changeHP;window.promptChangeHP=promptChangeHP;
+// ── TURN TIMER ────────────────────────────────────────────────────────
+let ttTotal=60,ttRemaining=60,ttActive=false,ttInterval=null,ttVisible=false;
+function formatTT(){const m=Math.floor(ttRemaining/60),s=ttRemaining%60;return `${m}:${s.toString().padStart(2,'0')}`;}
+function timerColor(){const p=ttRemaining/Math.max(ttTotal,1);return p>0.5?'#1D9E75':p>0.25?'#EF9F27':'#E24B4A';}
+function updateTimerDOM(){
+  const disp=document.getElementById('tt-display'),bar=document.getElementById('tt-progress');if(!disp||!bar)return;
+  const col=timerColor(),pct=(ttRemaining/ttTotal*100).toFixed(1);
+  disp.textContent=formatTT();disp.style.color=col;
+  disp.classList.toggle('tt-urgent',ttRemaining<=15&&ttActive&&ttRemaining>0);
+  bar.style.width=pct+'%';bar.style.background=col;
+  const btn=document.getElementById('tt-toggle');if(btn)btn.textContent=ttActive?'⏸ Pause':'▶ Start';
+}
+function timerExpiredAlert(){
+  showToast("⏱ Time's up!",'#E24B4A','#f09595');
+  try{const ctx=new(window.AudioContext||window.webkitAudioContext)();const now=ctx.currentTime;
+    [880,1100,880].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.setValueAtTime(f,now+i*0.22);g.gain.setValueAtTime(0.18,now+i*0.22);g.gain.exponentialRampToValueAtTime(0.001,now+i*0.22+0.28);o.start(now+i*0.22);o.stop(now+i*0.22+0.3);});}catch(e){}
+}
+function tickTurnTimer(){
+  if(!ttActive)return;
+  ttRemaining=Math.max(0,ttRemaining-1);
+  if(ttRemaining<=0){ttActive=false;clearInterval(ttInterval);ttInterval=null;updateTimerDOM();timerExpiredAlert();}
+  else{updateTimerDOM();}
+}
+function startTurnTimer(){
+  if(ttActive)return;if(ttRemaining<=0)ttRemaining=ttTotal;
+  ttActive=true;if(!ttInterval)ttInterval=setInterval(tickTurnTimer,1000);updateTimerDOM();
+}
+function stopTurnTimer(){ttActive=false;updateTimerDOM();}
+function toggleTurnTimer(){if(ttActive)stopTurnTimer();else startTurnTimer();}
+function resetTurnTimer(){ttActive=false;ttRemaining=ttTotal;updateTimerDOM();}
+function setTimerDuration(secs){ttTotal=secs;ttRemaining=secs;ttActive=false;updateTimerDOM();}
+function toggleTimerVisible(){ttVisible=!ttVisible;if(!ttVisible){ttActive=false;}renderInit();}
+window.toggleTurnTimer=toggleTurnTimer;window.resetTurnTimer=resetTurnTimer;window.setTimerDuration=setTimerDuration;window.toggleTimerVisible=toggleTimerVisible;
+// ── LEGENDARY ACTIONS ─────────────────────────────────────────────────
+function setLegendaryActions(id){
+  if(!isDM)return;
+  const c=initiative.find(e=>(e.id||e.name)===id);if(!c)return;
+  quickPrompt(`👑 ${c.name} — how many legendary actions? (0 to remove)`, c.laMax||'3', val=>{
+    const n=parseInt(val);if(isNaN(n)||n<0)return;
+    c.laMax=n;c.laCurrent=n;pushInit();renderInit();
+    if(n>0)showToast(`👑 ${c.name} has ${n} legendary actions per round!`,'#EF9F27','#f5c87a');
+    else showToast(`${c.name} legendary actions removed.`,'#444','#888');
+  },true);
+}
+function useLegendaryAction(id){
+  if(!isDM)return;
+  const c=initiative.find(e=>(e.id||e.name)===id);if(!c||(c.laMax||0)===0)return;
+  if((c.laCurrent||0)<=0){showToast(`👑 ${c.name} has no legendary actions left this round!`,'#E24B4A','#f09595');return;}
+  c.laCurrent=(c.laCurrent||1)-1;pushInit();renderInit();
+  showToast(`👑 ${c.name} uses a legendary action — ${c.laCurrent}/${c.laMax} remaining`,'#EF9F27','#f5c87a');
+}
+function rechargeLegendaryActions(id){
+  if(!isDM)return;
+  const c=initiative.find(e=>(e.id||e.name)===id);if(!c||(c.laMax||0)===0)return;
+  c.laCurrent=c.laMax;pushInit();renderInit();
+  showToast(`👑 ${c.name} legendary actions recharged (${c.laMax}/${c.laMax})`,'#EF9F27','#f5c87a');
+}
+window.setLegendaryActions=setLegendaryActions;window.useLegendaryAction=useLegendaryAction;window.rechargeLegendaryActions=rechargeLegendaryActions;
 function renderInit(){
   ensureInitList();const sorted=sortedInitList();
+  const tieBtn=hasTies()?`<button type="button" onclick="window.rollTiebreakers()" style="background:#2a1e0a;border:1px solid #EF9F27;color:#f5c87a;font-weight:600;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:12px" title="Re-roll d20 for each group of combatants that share the same initiative and DEX score">🎯 Break Ties</button>`:'';
+  const timerToggleBtn=`<button type="button" onclick="window.toggleTimerVisible()" style="padding:5px 10px;border-radius:7px;border:1px solid ${ttVisible?'#EF9F27':'#333'};background:${ttVisible?'#2a1e0a':'transparent'};color:${ttVisible?'#f5c87a':'#666'};cursor:pointer;font-size:12px" title="Show/hide turn timer">⏱ Timer</button>`;
+  const timerBarHTML=ttVisible?`<div class="tt-bar">
+    <span id="tt-display" class="${ttRemaining<=15&&ttActive?'tt-urgent':''}" style="font-size:22px;font-weight:700;min-width:52px;color:${timerColor()};font-variant-numeric:tabular-nums">${formatTT()}</span>
+    <div style="flex:1;background:#222;border-radius:4px;height:8px;overflow:hidden;min-width:80px">
+      <div id="tt-progress" style="height:100%;width:${(ttRemaining/ttTotal*100).toFixed(1)}%;background:${timerColor()};border-radius:4px;transition:width .9s,background .9s"></div>
+    </div>
+    <select onchange="window.setTimerDuration(parseInt(this.value))" style="border:1px solid #333;background:#1e1e1e;color:#ccc;border-radius:6px;padding:3px 6px;font-size:11px">
+      <option value="30" ${ttTotal===30?'selected':''}>30s</option>
+      <option value="45" ${ttTotal===45?'selected':''}>45s</option>
+      <option value="60" ${ttTotal===60?'selected':''}>60s</option>
+      <option value="90" ${ttTotal===90?'selected':''}>90s</option>
+      <option value="120" ${ttTotal===120?'selected':''}>2 min</option>
+    </select>
+    <button id="tt-toggle" onclick="window.toggleTurnTimer()" style="padding:4px 12px;border-radius:7px;border:1px solid ${ttActive?'#EF9F27':'#1D9E75'};background:${ttActive?'#2a1e0a':'#0a2a1a'};color:${ttActive?'#f5c87a':'#5dcaa5'};cursor:pointer;font-size:12px;font-weight:600">${ttActive?'⏸ Pause':'▶ Start'}</button>
+    <button onclick="window.resetTurnTimer()" style="padding:4px 8px;border-radius:7px;border:1px solid #333;background:transparent;color:#666;cursor:pointer;font-size:14px" title="Reset timer">↺</button>
+  </div>`:''  ;
   const dmBtns=`<button type="button" onclick="window.rollAllInit()" style="background:#1e1a3a;border:1px solid #7F77DD;color:#b8b4f8;font-weight:600;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:12px">🎲 Roll Initiative for All</button>
+    ${tieBtn}
     <button type="button" onclick="window.nextTurn()" style="padding:5px 10px;border-radius:7px;border:1px solid #444;background:#1e1e1e;color:#ccc;cursor:pointer;font-size:12px">Next Turn →</button>
-    <button type="button" onclick="window.resetInit()" style="padding:5px 10px;border-radius:7px;border:1px solid #444;background:#1e1e1e;color:#888;cursor:pointer;font-size:12px">Reset</button>`;
+    <button type="button" onclick="window.resetInit()" style="padding:5px 10px;border-radius:7px;border:1px solid #444;background:#1e1e1e;color:#888;cursor:pointer;font-size:12px">Reset</button>
+    ${timerToggleBtn}`;
   const playerBtn=`<button type="button" onclick="window.rollMyInit()" style="background:#0a2a1a;border:1px solid #1D9E75;color:#5dcaa5;font-weight:600;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:12px">🎲 Roll My Initiative</button>`;
   document.getElementById('init-wrap').innerHTML=`
-    <div style="background:#111;border:1px solid #333;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#888;line-height:1.6"><span style="color:#b8b4f8;font-weight:600">How initiative works:</span> Players roll only when they press the button. The DM can roll everyone below. Ties are broken by higher DEX.</div>
+    <div style="background:#111;border:1px solid #333;border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:#888;line-height:1.6"><span style="color:#b8b4f8;font-weight:600">How initiative works:</span> Players roll only when they press the button. The DM rolls everyone. Ties break by DEX — if still tied, use <span style="color:#EF9F27;font-weight:600">🎯 Break Ties</span>. On the active combatant's turn the DM can press <span style="color:#aaa;font-weight:600">⏸ Delay</span> to step them out of rotation; they reappear at the bottom and can <span style="color:#5dcaa5;font-weight:600">▶ Act Now</span> at any point after.</div>
     <div class="init-controls">
       ${isDM?dmBtns:playerBtn}
       <span class="round-badge">Round ${round}</span>
     </div>
+    ${timerBarHTML}
     <div class="init-list">${sorted.map((c,i)=>initRow(c,i,sorted)).join('')}</div>
     ${isDM?`<p class="section-title" style="margin-top:1rem">Add enemy</p>
     <div class="add-enemy-form">
@@ -1996,21 +2230,53 @@ function renderInit(){
     </div>`:''}`;
 }
 function initRow(c,i,sorted){
-  const isActive=sorted.length&&i===currentTurn%sorted.length,col=getCardColors(c);
+  const nonDelayed=sorted.filter(x=>!x.delayed);
+  const ndIdx=nonDelayed.indexOf(c);
+  const isActive=!c.delayed&&nonDelayed.length&&ndIdx===currentTurn%Math.max(nonDelayed.length,1);
+  const col=getCardColors(c);
   const av=c.pfp?`<img src="${c.pfp}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:`${(c.name||'?').slice(0,2).toUpperCase()}`;
-  return `<div class="init-row${isActive?' active-turn':''}${c.type==='enemy'?' enemy-row':''}">
-    <span class="init-badge">${c.init||0}</span>
-    ${c.type!=='enemy'?`<div class="avatar" style="width:28px;height:28px;font-size:10px;flex-shrink:0;background:${col.bg};color:${col.color};border:1.5px solid ${col.border};overflow:hidden">${av}</div>`:'<span>💀</span>'}
-    <span class="init-name">${c.name}</span>
-    <span class="init-type">${c.type==='enemy'?'enemy':'player'}</span>
-    <span class="init-hp-text">${c.hp}/${c.maxHp} hp</span>
-    ${isDM&&c.type==='enemy'?`<button onclick="removeEnemy('${c.name.replace(/'/g,"\'")}')" style="padding:1px 7px;font-size:10px;border:1px solid #444;border-radius:6px;cursor:pointer;background:transparent;color:#888">✕</button>`:''}
+  const tbBadge=c.tbRoll?`<span title="Tiebreaker roll" style="font-size:9px;padding:1px 5px;border-radius:6px;background:#2a1e0a;color:#EF9F27;border:1px solid #EF9F2755;margin-left:2px;white-space:nowrap">🎯${c.tbRoll}</span>`:'';
+  const delayedBadge=c.delayed?`<span style="font-size:9px;padding:1px 6px;border-radius:6px;background:#222;color:#666;border:1px solid #333;margin-left:4px;white-space:nowrap">⏸ Delayed</span>`:'';
+  const concBadge=c.concentrating?`<span onclick="window.calcConSave('${(c.id||c.name).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')" style="font-size:9px;padding:1px 6px;border-radius:6px;background:#1e1a3a;color:#b8b4f8;border:1px solid #7F77DD88;margin-left:4px;white-space:nowrap;cursor:pointer" title="Click to calculate Con save DC after damage">🔮${c.concSpell?' '+c.concSpell:''} 💥?</span>`:'';
+  const downedBadge=c.downed?`<span style="font-size:9px;padding:1px 6px;border-radius:6px;background:#3a0808;color:#f09595;border:1px solid #E24B4A88;margin-left:4px;white-space:nowrap">💀 Down</span>`:'';
+  const laMax=c.laMax||0,laCurrent=c.laCurrent||0;
+  const laColor=laCurrent===laMax&&laMax>0?'#EF9F27':laCurrent>0?'#a07800':'#E24B4A';
+  const displayInit=Math.round(c.origInit!=null?c.origInit:c.init)||0;
+  const safeId=(c.id||c.name).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+  const laBadge=laMax>0?`<span onclick="window.useLegendaryAction('${safeId}')" style="font-size:9px;padding:1px 6px;border-radius:6px;background:#1a1200;color:${laColor};border:1px solid ${laColor}88;margin-left:4px;white-space:nowrap;cursor:pointer" title="Click to use 1 legendary action (${laCurrent}/${laMax} remaining)">👑 ${laCurrent}/${laMax}</span>`:'';
+  const laSetBtn=isDM&&c.type==='enemy'?`<button onclick="window.setLegendaryActions('${safeId}')" style="padding:1px 5px;font-size:11px;border:1px solid ${laMax>0?'#EF9F27':'#2a2a2a'};border-radius:6px;cursor:pointer;background:${laMax>0?'#1a1200':'transparent'};color:${laMax>0?'#f5c87a':'#444'}" title="${laMax>0?'Edit legendary actions':'Give legendary actions'}">👑</button>`:'';
+  const laRechargeBtn=isDM&&laMax>0&&laCurrent<laMax?`<button onclick="window.rechargeLegendaryActions('${safeId}')" style="padding:1px 6px;font-size:10px;border:1px solid #EF9F2766;border-radius:6px;cursor:pointer;background:#1a1200;color:#f5c87a;white-space:nowrap" title="Recharge all legendary actions">👑 ↺</button>`:'';
+
+  const delayBtn=isDM&&isActive&&!c.downed?`<button onclick="window.delayTurn('${safeId}')" style="padding:1px 7px;font-size:10px;border:1px solid #555;border-radius:6px;cursor:pointer;background:#2a2a2a;color:#aaa;white-space:nowrap" title="Step out of initiative order and re-enter later">⏸ Delay</button>`:'';
+  const actBtn=isDM&&c.delayed?`<button onclick="window.actNow('${safeId}')" style="padding:1px 8px;font-size:10px;border:1px solid #1D9E75;border-radius:6px;cursor:pointer;background:#0a2a1a;color:#5dcaa5;white-space:nowrap;font-weight:600">▶ Act Now</button>`:'';
+  const concBtn=isDM?`<button onclick="window.toggleConcentration('${safeId}')" style="padding:1px 5px;font-size:11px;border:1px solid ${c.concentrating?'#7F77DD':'#2a2a2a'};border-radius:6px;cursor:pointer;background:${c.concentrating?'#1e1a3a':'transparent'};color:${c.concentrating?'#b8b4f8':'#444'}" title="${c.concentrating?'End concentration':'Mark as concentrating on a spell'}">🔮</button>`:'';
+  const downedBtn=isDM?`<button onclick="window.toggleDowned('${safeId}')" style="padding:1px 5px;font-size:11px;border:1px solid ${c.downed?'#E24B4A':'#2a2a2a'};border-radius:6px;cursor:pointer;background:${c.downed?'#2a0808':'transparent'};color:${c.downed?'#f09595':'#444'}" title="${c.downed?'Mark as up (clear death saves)':'Mark as downed — start death saves'}">💀</button>`:'';
+  const succ=c.dsSucc||0,fail=c.dsFail||0;
+  const dsSuccCircles=[0,1,2].map(i=>`<span class="ds-circle" onclick="window.addDeathSave('${safeId}','succ')" title="Click to add a death save success">${i<succ?'❤️':'🤍'}</span>`).join('');
+  const dsFailCircles=[0,1,2].map(i=>`<span class="ds-circle" onclick="window.addDeathSave('${safeId}','fail')" title="Click to add a death save failure">${i<fail?'💔':'🖤'}</span>`).join('');
+  const dsRow=c.downed?`<div class="ds-row">
+    <span style="font-size:10px;color:#888;white-space:nowrap">Death Saves:</span>
+    <span title="Successes (3 = stable)">${dsSuccCircles}</span>
+    <span style="font-size:10px;color:#555">|</span>
+    <span title="Failures (3 = dead)">${dsFailCircles}</span>
+    <button onclick="window.resetDeathSaves('${safeId}')" style="padding:0px 5px;font-size:9px;border:1px solid #333;border-radius:5px;cursor:pointer;background:transparent;color:#555;margin-left:2px" title="Reset all death save marks">↺</button>
+  </div>`:'';
+  const dimStyle=c.delayed?'opacity:0.45;':'' ;
+  return `<div class="init-row${isActive?' active-turn':''}${c.type==='enemy'?' enemy-row':''}${c.delayed?' init-delayed-row':''}${c.concentrating?' init-conc-row':''}${c.downed?' init-downed-row':''}" style="flex-wrap:wrap">
+    <span class="init-badge" style="${dimStyle}">${displayInit}</span>
+    ${c.type!=='enemy'?`<div class="avatar" style="width:28px;height:28px;font-size:10px;flex-shrink:0;background:${col.bg};color:${col.color};border:1.5px solid ${col.border};overflow:hidden;${dimStyle}">${av}</div>`:`<span style="${dimStyle}">💀</span>`}
+    <span class="init-name" style="${c.delayed?'color:#555;':''}">${c.name}</span>${tbBadge}${delayedBadge}${concBadge}${downedBadge}${laBadge}
+    <span class="init-type" style="${c.delayed?'color:#333;':''}">${c.type==='enemy'?'enemy':'player'}</span>
+    ${isDM?`<span class="init-hp-text init-hp-click" onclick="window.promptChangeHP('${safeId}')" style="${c.delayed?'color:#444;':''}" title="Click to deal damage or heal">${c.hp}/${c.maxHp} hp ✎</span>`:`<span class="init-hp-text" style="${c.delayed?'color:#444;':''}">${c.hp}/${c.maxHp} hp</span>`}
+    ${laSetBtn}${laRechargeBtn}${downedBtn}${concBtn}${delayBtn}${actBtn}
+    ${isDM&&c.type==='enemy'&&!c.delayed?`<button onclick="removeEnemy('${c.name.replace(/'/g,"\'")}')" style="padding:1px 7px;font-size:10px;border:1px solid #444;border-radius:6px;cursor:pointer;background:transparent;color:#888">✕</button>`:''}
+    ${dsRow}
   </div>`;
 }
 function rollMyInit(){
   if(activeCharacter==='spectator'){alert('Select your character first (top right)');return;}
   const p=party[parseInt(activeCharacter)];if(!p)return;
-  ensureInitList();const dexMod=mod(statFinal(p,'DEX'));const roll=Math.ceil(Math.random()*20);const total=roll+dexMod;
+  ensureInitList();const dexMod=mod(statFinal(p,'DEX'));const roll=Math.floor(Math.random()*20)+1;const total=roll+dexMod;
   const existing=initiative.find(c=>c.id===p.id||c.name===p.name);if(existing){Object.assign(existing,{id:p.id,name:p.name,type:'player',init:total,hp:p.hp,maxHp:p.maxHp,color:p.color,cardColor:p.cardColor,pfp:p.pfp,dex:statFinal(p,'DEX')});}
   else initiative.push({id:p.id,name:p.name,type:'player',init:total,hp:p.hp,maxHp:p.maxHp,color:p.color,cardColor:p.cardColor,pfp:p.pfp,dex:statFinal(p,'DEX')});
   pushInit();renderInit();showToast(`🎲 ${p.name} rolled ${roll} ${dexMod>=0?'+':''}${dexMod} DEX = ${total} initiative!`,'#1D9E75','#5dcaa5');
@@ -2020,12 +2286,12 @@ function rollAllInit(){
   playInitiativeMusic();showToast('⚔️ Rolling initiative for everyone!','#E24B4A','#f09595');
   const previousEnemies=initiative.filter(c=>c.type==='enemy');
   const playerEntries=party.map(p=>{
-    const dex=statFinal(p,'DEX');const raw=Math.ceil(Math.random()*20);
-    return {id:p.id,name:p.name,type:'player',roll:raw,init:raw+mod(dex),hp:p.hp,maxHp:p.maxHp,color:p.color,cardColor:p.cardColor,pfp:p.pfp,dex};
+    const dex=statFinal(p,'DEX');const raw=Math.floor(Math.random()*20)+1;
+    return {id:p.id,name:p.name,type:'player',roll:raw,init:raw+mod(dex),hp:p.hp,maxHp:p.maxHp,color:p.color,cardColor:p.cardColor,pfp:p.pfp,dex,tbRoll:undefined,delayed:false,origInit:undefined};
   });
   const enemyEntries=previousEnemies.map(c=>{
-    const raw=Math.ceil(Math.random()*20);const dexMod=c.dexMod||mod(c.dex||10);
-    return {...c,roll:raw,init:raw+dexMod};
+    const raw=Math.floor(Math.random()*20)+1;const dexMod=c.dexMod||mod(c.dex||10);
+    return {...c,roll:raw,init:raw+dexMod,tbRoll:undefined,delayed:false,origInit:undefined};
   });
   initiative=[...playerEntries,...enemyEntries];currentTurn=0;round=1;pushInit();renderInit();
   if(currentPanel!=='init')switchTab('init');
@@ -2040,7 +2306,7 @@ function wireInitButtons(){
   if(resetBtn)resetBtn.style.display=isDM?'inline-block':'none';
   if(rollMine)rollMine.style.display=isDM?'none':'inline-block';
 }
-function nextTurn(){const s=sortedInitList();if(!s.length)return;currentTurn=(currentTurn+1)%s.length;if(!currentTurn)round++;pushInit();renderInit();}
+function nextTurn(){const s=sortedInitList().filter(c=>!c.delayed);if(!s.length)return;currentTurn=(currentTurn+1)%s.length;if(!currentTurn)round++;const newActive=s[currentTurn];if(newActive&&(newActive.laMax||0)>0){newActive.laCurrent=newActive.laMax;setTimeout(()=>showToast(`👑 ${newActive.name} legendary actions recharged (${newActive.laMax}/${newActive.laMax})`,'#EF9F27','#f5c87a'),200);}pushInit();renderInit();if(ttVisible){const wasActive=ttActive;resetTurnTimer();if(wasActive)startTurnTimer();}}
 function resetInit(){initiative=[];currentTurn=0;round=1;pushInit();renderInit();}
 window.rollAllInit=rollAllInit;window.nextTurn=nextTurn;window.resetInit=resetInit;window.rollMyInit=rollMyInit;
 function addEnemy(){
@@ -2298,7 +2564,7 @@ async function addMonsterFromAPI(){
   showToast('🔍 Looking up '+name+'...','#7F77DD','#b8b4f8');const m=await lookupMonster(name);
   if(!m||m.error){showToast('Not found in API — adding manually.','#EF9F27','#f5c87a');addEnemy();return;}
   const hp=m.hit_points||10;const ac=(m.armor_class?.[0]?.value)||10;const dex=m.dexterity||10;
-  const initVal=parseInt(document.getElementById('enemy-init')?.value)||Math.ceil(Math.random()*20)+Math.floor((dex-10)/2);
+  const initVal=parseInt(document.getElementById('enemy-init')?.value)||Math.floor(Math.random()*20)+1+Math.floor((dex-10)/2);
   initiative.push({id:'enemy_'+Date.now(),name:m.name,type:'enemy',init:initVal,hp,maxHp:hp,ac,dex,color:6});pushInit();renderInit();showToast(`💀 ${m.name} added! HP:${hp} AC:${ac}`,'#E24B4A','#f09595');
 }
 
