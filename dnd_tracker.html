@@ -1020,10 +1020,12 @@ function normalizeSpeciesName(name){
 function speciesBonusFor(name){return SPECIES_BONUSES[normalizeSpeciesName(name)]||{};}
 function speciesBonusForFull(race,subrace){
   const rb=RACES_DB[race]?.bonuses||{};
-  const sb=subrace&&SUBRACES_DB[subrace]?.bonuses||{};
+  const srEntry=subrace&&SUBRACES_DB[subrace];
+  const sb=srEntry?(srEntry.bonuses||{}):null;
+  const active=sb||rb;
   const out={};
-  ['STR','DEX','CON','INT','WIS','CHA'].forEach(ab=>out[ab]=(rb[ab]||0)+(sb[ab]||0));
-  out.speed=sb.speed||rb.speed||30;
+  ['STR','DEX','CON','INT','WIS','CHA'].forEach(ab=>out[ab]=(active[ab]||0));
+  out.speed=sb?(sb.speed||rb.speed||30):(rb.speed||30);
   return out;
 }
 function getFullSpeciesName(p){
@@ -1097,7 +1099,7 @@ function dbListen(path,cb){if(!dbReady)return;window._onValue(window._ref(window
 function initDb(){
   dbListen('party',data=>{if(data){party=Object.values(data).map(normalizeCharacter);populateCharacterSelect();renderCurrentPanel();if(viewingCharIdx!==null)renderSheetBody();}});
   dbListen('tokens',data=>{tokens=data||{};renderTokens();});
-  dbListen('initiative',data=>{if(data){initiative=data.list||[];currentTurn=data.currentTurn||0;round=data.round||1;if(currentPanel==='init')renderInit();}});
+  dbListen('initiative',data=>{if(data){initiative=data.list||[];currentTurn=data.currentTurn||0;round=data.round||1;renderInit();}});
   dbListen('rollLog',data=>{if(data){rollLog=Array.isArray(data)?data:Object.values(data);if(currentPanel==='dice')renderDice();}});
   dbListen('map',data=>{
     if(data&&data.img){mapImageData=data.img;applyMapImage(data.img);}
@@ -1131,7 +1133,7 @@ function initDb(){
     if(data.ts===_lastNatTs)return;
     if(data.type==='nat20')showNat20FX(data.who);
     if(data.type==='nat1')showNat1FX(data.who);
-    if(data.type==='rollAllInit'&&!isDM){showToast('⚔️ Rolling initiative for everyone!','#E24B4A','#f09595');playInitiativeMusic();}
+    if(data.type==='rollAllInit'&&!isDM){showToast('⚔️ Rolling initiative for everyone!','#E24B4A','#f09595');playInitiativeMusic();switchTab('init');renderInit();}
     if(data.type==='stable'&&!isDM)showToast(`💚 ${data.who} is stable! (3 successes)`,'#1D9E75','#5dcaa5');
     if(data.type==='dead'&&!isDM)showToast(`💀 ${data.who} has died... (3 failures)`,'#E24B4A','#f09595');
     if(data.type==='conSave'&&!isDM)showToast(`🔮 ${data.who}: Con save DC ${data.dc}!`,'#7F77DD','#b8b4f8');
@@ -1809,7 +1811,8 @@ function spawnSparkles(partyIdx){
 }
 function playXPSound(){try{const ctx=new(window.AudioContext||window.webkitAudioContext)();[523,659,784,1047].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.setValueAtTime(f,ctx.currentTime+i*.12);g.gain.setValueAtTime(.15,ctx.currentTime+i*.12);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.12+.25);o.start(ctx.currentTime+i*.12);o.stop(ctx.currentTime+i*.12+.26);});}catch(e){}}
 function playFanfare(){
-  playYouTubeClip('rgUksX6eM0Y',0,10);
+  if(ytApiReady&&ytPlayer){playYouTubeClip('rgUksX6eM0Y',0,10);return;}
+  playXPSound();
 }
 
 function playGiveItemSound(){
