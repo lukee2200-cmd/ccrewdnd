@@ -342,7 +342,8 @@ body.sidebar-collapsed #media-collapse-tab{display:block}
 .player-dock-actions button{padding:5px 10px;border-radius:7px;border:1px solid #444;font-size:11px;cursor:pointer;background:#1e1e1e;color:#ccc}
 .player-dock-actions button.init-btn{border-color:#7F77DD;color:#b8b4f8;background:#1e1a3a}
 .player-dock-spells{display:flex;flex-wrap:wrap;gap:5px}
-.player-dock-spell-chip{font-size:10px;padding:3px 8px;border-radius:8px;background:#1a1a2a;border:1px solid #333;color:#aaa}
+.player-dock-spell-chip{font-size:10px;padding:3px 8px;border-radius:8px;background:#1a1a2a;border:1px solid #333;color:#aaa;cursor:pointer;transition:all .15s}
+.player-dock-spell-chip:hover{background:#1e1a3a;border-color:#7F77DD;color:#b8b4f8}
 
 #reaction-dock{display:none!important}
 .music-bar{display:none!important}
@@ -1149,7 +1150,7 @@ function initDb(){
     if(data&&data.img){mapImageData=data.img;applyMapImage(data.img);}
     if(data&&data.grid!=null){showGrid=data.grid;document.getElementById('grid-btn').textContent='⊞ Grid: '+(showGrid?'ON':'OFF');drawGrid();}
   });
-  dbListen('spellSlotsUsed',data=>{spellSlotsUsed=data||{};if(currentPanel==='spells')renderSpellsTab();if(viewingCharIdx!==null&&currentSheetTab==='spells')renderSheetBody();});
+  dbListen('spellSlotsUsed',data=>{spellSlotsUsed=data||{};if(currentPanel==='spells')renderSpellsTab();if(viewingCharIdx!==null&&currentSheetTab==='spells')renderSheetBody();renderPlayerDock();});
   dbListen('assetRepo',data=>{assetRepo=data||{maps:{},tokens:{}};renderAssetRepo();populateDMControls();});
   dbListen('sceneImage',data=>{sceneImageData=data||null;applySceneImage(sceneImageData);});
   dbListen('musicState',data=>{musicState=data||{playing:false,videoId:null,label:null,ts:0};applyMusicStateFromDB();});
@@ -2016,6 +2017,14 @@ function renderDice(){
       ${!rollLog.length?'<div style="color:#555;font-size:13px;padding:8px">No rolls yet</div>':''}
     </div>`;
 }
+function rollFromPlayerDock(sides){
+  const mod=parseInt(document.getElementById('player-dock-mod')?.value)||0;
+  rollDie(sides,1,mod,'d'+sides);
+  const r=rollLog[0];const out=document.getElementById('player-dock-roll-result');
+  if(r&&out){
+    out.innerHTML=`<b style="font-size:18px">${r.total}</b> <span style="color:#888">(d${sides}${r.mod?` ${r.mod>=0?'+':''}${r.mod}`:''})</span>${r.nat===20?' 🎉 Nat 20!':r.nat===1?' 💀 Nat 1!':''}`;
+  }
+}
 function rollFromBtn(sides){
   const rollMod=parseInt(document.getElementById('roll-mod')?.value)||0;const count=parseInt(document.getElementById('roll-count')?.value)||1;const btns=document.querySelectorAll('.die-btn');const idx=[4,6,8,10,12,20,100].indexOf(sides);
   if(btns[idx]){btns[idx].classList.add('rolling');setTimeout(()=>btns[idx].classList.remove('rolling'),500);}
@@ -2582,7 +2591,15 @@ function renderPlayerDock(){
   if(!isDM&&p&&currentPanel==='map'){
     dock.style.display='block';map.classList.add('player-docked');
     const pct=p.hp/p.maxHp;
-    const spellLines=(p.spells||'').split('\n').map(s=>s.trim()).filter(Boolean).slice(0,8);
+    const pid=p.id||('p'+idx);
+    const slots=getSpellSlots(p);
+    const usedSlots=spellSlotsUsed[pid]||{};
+    const parsedSpells=(p.spells||'').split('\n').map(s=>s.trim()).filter(Boolean).map(s=>{
+      const parts=s.split('|').map(x=>x.trim());
+      return {level:parseInt(parts[0])||0,name:parts[1]||s,school:parts[2]||''};
+    });
+    const byLevel={};
+    parsedSpells.forEach(sp=>{if(!byLevel[sp.level])byLevel[sp.level]=[];byLevel[sp.level].push(sp);});
     dock.innerHTML=`
       <div class="player-dock-header">
         <div class="avatar" style="width:34px;height:34px;font-size:12px;background:${getCardColors(p).bg};color:${getCardColors(p).color};border-color:${getCardColors(p).border}">${p.pfp?`<img src="${p.pfp}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:p.name.slice(0,2).toUpperCase()}</div>
@@ -2597,15 +2614,51 @@ function renderPlayerDock(){
       <div class="player-dock-actions">
         <button onclick="openSheet(${idx})">📋 Character Sheet</button>
         <button onclick="switchTab('spells')">✨ Spells</button>
-        <button onclick="switchTab('dice')">🎲 Dice Roller</button>
         <button class="init-btn" onclick="switchTab('init');rollMyInit()">⚔️ Roll Initiative</button>
-        ${[4,6,8,10,12,20].map(d=>`<button onclick="rollDie(${d},1,0,'d${d}')">d${d}</button>`).join('')}
       </div>
+      <div class="player-dock-actions">
+        <span style="font-size:11px;color:#666;align-self:center">Mod:</span>
+        <input type="number" id="player-dock-mod" value="0" style="width:44px;border:1px solid #333;border-radius:7px;padding:4px 6px;font-size:11px;background:#111;color:#eee">
+        ${[4,6,8,10,12,20].map(d=>`<button onclick="rollFromPlayerDock(${d})">d${d}</button>`).join('')}
+        <button onclick="switchTab('dice')">📜 Full Dice Log</button>
+      </div>
+      <div id="player-dock-roll-result" style="margin-bottom:8px;font-size:13px;color:#fff;min-height:18px"></div>
+      ${slots?`<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px;font-size:10px;color:#888">
+        ${slots.map((total,si)=>{if(!total)return '';const uc=usedSlots[si]||0;return `<span>Lv${si+1} slots: <b style="color:${total-uc>0?'#7F77DD':'#555'}">${total-uc}/${total}</b></span>`;}).join('')}
+      </div>`:''}
       <div class="player-dock-spells">
-        ${spellLines.length?spellLines.map(s=>`<span class="player-dock-spell-chip">${s}</span>`).join(''):'<span style="font-size:10px;color:#555">No spells listed yet — add them from the character sheet.</span>'}
+        ${Object.keys(byLevel).length?Object.keys(byLevel).sort((a,b)=>a-b).map(lv=>`
+          <span style="width:100%;font-size:9px;color:#666;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">${lv==0?'Cantrips':'Level '+lv}</span>
+          ${byLevel[lv].map(sp=>`<span class="player-dock-spell-chip" onclick="castSpellFromDock('${pid}',${lv},'${sp.name.replace(/'/g,"\\'")}')" title="Click to cast — this will use a spell slot">✨ ${sp.name}</span>`).join('')}
+        `).join(''):'<span style="font-size:10px;color:#555">No spells listed yet — add them from the character sheet.</span>'}
       </div>
       </div>`;
   } else {dock.style.display='none';dock.innerHTML='';map.classList.remove('player-docked');}
+}
+function castSpellFromDock(pid,level,name){
+  level=parseInt(level)||0;
+  const idx=activeCharacter!=='spectator'?parseInt(activeCharacter):NaN;
+  const p=!isNaN(idx)?party[idx]:null;
+  if(!p)return;
+  if(level===0){
+    showToast(`✨ ${p.name} cast ${name} (cantrip — no slot used)`,'#7F77DD','#b8b4f8');
+    dbSet('reactions/latest',{emoji:'✨',label:`cast ${name}`,who:p.name,ts:Date.now()});
+    return;
+  }
+  const slots=getSpellSlots(p);
+  if(!slots){showToast('No spell slots available for this character.','#E24B4A','#f09595');return;}
+  if(!spellSlotsUsed[pid])spellSlotsUsed[pid]={};
+  let castLevel=-1;
+  for(let si=level-1;si<slots.length;si++){
+    const total=slots[si]||0;const uc=spellSlotsUsed[pid][si]||0;
+    if(total>uc){castLevel=si;break;}
+  }
+  if(castLevel===-1){showToast(`⚠️ No available spell slot to cast ${name}!`,'#E24B4A','#f09595');return;}
+  spellSlotsUsed[pid][castLevel]=(spellSlotsUsed[pid][castLevel]||0)+1;
+  dbSet('spellSlotsUsed',spellSlotsUsed);
+  showToast(`✨ ${p.name} cast ${name} using a level ${castLevel+1} slot!`,'#7F77DD','#b8b4f8');
+  dbSet('reactions/latest',{emoji:'✨',label:`cast ${name}`,who:p.name,ts:Date.now()});
+  renderPlayerDock();if(currentPanel==='spells')renderSpellsTab();if(viewingCharIdx!==null)renderSheetBody();
 }
 function levelUpFromDashboard(){
   if(!isDM)return;const idx=parseInt(dashEl('dash-level-target')?.value);
