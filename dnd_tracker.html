@@ -304,6 +304,12 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:#111}
 ::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+.map-canvas-wrap{scrollbar-width:auto;scrollbar-color:#555 #111}
+.map-canvas-wrap::-webkit-scrollbar{width:20px;height:20px}
+.map-canvas-wrap::-webkit-scrollbar-track{background:#111;border-left:1px solid #222;border-top:1px solid #222}
+.map-canvas-wrap::-webkit-scrollbar-thumb{background:#555;border-radius:10px;border:4px solid #111}
+.map-canvas-wrap::-webkit-scrollbar-thumb:hover{background:#7F77DD}
+.map-canvas-wrap::-webkit-scrollbar-corner{background:#111}
 @media(max-width:600px){.sheet-grid-2,.sheet-grid-3{grid-template-columns:1fr}.stat-block{grid-template-columns:repeat(3,1fr)}.skill-list{grid-template-columns:1fr}}
 
 /* ── V3.2 POLISH: SHINY DICE, SNAP DASHBOARD, LEVEL UP, MUSIC SYNC ── */
@@ -316,6 +322,27 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 #dm-bottom-dock .dashboard-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 #map-panel.dm-docked .map-canvas-wrap{padding-bottom:220px}
 .music-bar.dm-only button.dm-music-control,.music-bar.dm-only input.dm-music-control{display:none}
+
+/* ── SIDE TOOLBAR MINIMIZER ── */
+.sidebar-min-btn{position:absolute;top:10px;right:10px;background:transparent;border:1px solid #444;color:#888;border-radius:6px;cursor:pointer;font-size:11px;padding:3px 8px}
+.sidebar-min-btn:hover{color:#fff;border-color:#666}
+#media-collapse-tab{display:none;position:fixed;right:0;top:76px;background:#1e1a3a;color:#b8b4f8;border:1px solid #7F77DD;border-right:none;border-radius:8px 0 0 8px;padding:10px 6px;font-size:11px;cursor:pointer;z-index:97;writing-mode:vertical-rl;letter-spacing:.05em}
+body.sidebar-collapsed #media-slide-panel{display:none}
+body.sidebar-collapsed .panel{margin-right:0}
+body.sidebar-collapsed #dm-bottom-dock,body.sidebar-collapsed #player-bottom-dock{right:0}
+body.sidebar-collapsed #media-collapse-tab{display:block}
+
+/* ── PLAYER BOTTOM DOCK (mirrors DM dock, player-facing) ── */
+#player-bottom-dock{position:fixed;left:0;right:260px;bottom:0;z-index:89;background:#0d0d0d;border-top:1px solid #333;box-shadow:0 -10px 30px rgba(0,0,0,.45);padding:8px 12px;display:none;max-height:42vh;overflow:auto}
+#map-panel.player-docked .map-canvas-wrap{padding-bottom:230px}
+.player-dock-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.player-dock-name{font-size:13px;font-weight:600;color:#fff;flex:1}
+.player-dock-stats{display:flex;gap:10px;font-size:11px;color:#aaa}
+.player-dock-actions{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.player-dock-actions button{padding:5px 10px;border-radius:7px;border:1px solid #444;font-size:11px;cursor:pointer;background:#1e1e1e;color:#ccc}
+.player-dock-actions button.init-btn{border-color:#7F77DD;color:#b8b4f8;background:#1e1a3a}
+.player-dock-spells{display:flex;flex-wrap:wrap;gap:5px}
+.player-dock-spell-chip{font-size:10px;padding:3px 8px;border-radius:8px;background:#1a1a2a;border:1px solid #333;color:#aaa}
 
 #reaction-dock{display:none!important}
 .music-bar{display:none!important}
@@ -425,6 +452,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 <!-- Media slide panel for when controls are hidden -->
 <div id="media-collapse-tab" onclick="openMediaPanel()" title="Open media controls">🎵 Media</div>
 <div id="media-slide-panel">
+  <button class="sidebar-min-btn" onclick="closeMediaPanel()" title="Minimize this toolbar">✕ Hide</button>
   <!-- Role / Login controls -->
   <div style="border-bottom:1px solid #222;padding-bottom:10px;margin-bottom:10px">
     <div style="font-size:10px;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Session</div>
@@ -625,6 +653,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
     </div>
     <div class="stat-grid-edit">
       <div><label>AC</label><input type="number" id="modal-ac" min="1"></div>
+      <div><label>Temp AC</label><input type="number" id="modal-tempac" min="0"></div>
       <div><label>Speed (ft)</label><input type="number" id="modal-speed" min="0"></div>
       <div><label>Passive Perc.</label><input type="number" id="modal-pp" min="1"></div>
     </div>
@@ -760,6 +789,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 </div>
 
 <div id="dm-bottom-dock"></div>
+<div id="player-bottom-dock"></div>
 
 <div id="pin-overlay" style="display:none">
   <div class="pin-box">
@@ -1102,7 +1132,7 @@ function getClass(p){return p.cls.split('·')[0].trim();}
 function getSubclass(p){const parts=p.cls.split('·');return parts.length>1?parts[1].trim():'';}
 function hpColor(pct){return pct>.5?'#1D9E75':pct>.25?'#EF9F27':'#E24B4A';}
 function fmtBonus(n){return (n>=0?'+':'')+n;}
-function normalizeCharacter(p){p.xp=p.xp||0;p.inventory=p.inventory||[];p.charPin=p.charPin||'';if(!p.id)p.id='p_'+Date.now()+'_'+Math.floor(Math.random()*9999);return p;}
+function normalizeCharacter(p){p.xp=p.xp||0;p.inventory=p.inventory||[];p.charPin=p.charPin||'';p.tempHp=p.tempHp||0;p.tempAc=p.tempAc||0;if(!p.id)p.id='p_'+Date.now()+'_'+Math.floor(Math.random()*9999);return p;}
 
 // ── DB ────────────────────────────────────────────────────────────────
 function dbSet(path,val){if(!dbReady)return;window._set(window._ref(window._db,path),val);}
@@ -1234,15 +1264,21 @@ function playerCard(p,i){
       <input class="hp-input" type="number" id="hpval-${i}" placeholder="amt" min="1" onclick="event.stopPropagation()">
       <button onclick="event.stopPropagation();changeHp(${i},'dmg')">− dmg</button>
       <button onclick="event.stopPropagation();changeHp(${i},'heal')">+ heal</button>
+      <button onclick="event.stopPropagation();changeHp(${i},'temp')" style="border-color:#EF9F2755;color:#f5c87a">+ temp</button>
     </div>
     <div class="quick-hp-row">
       ${[1,5,10].map(n=>`<button class="quick-dmg" onclick="event.stopPropagation();quickHp(${i},'dmg',${n})">-${n}</button>`).join('')}
       ${[1,5,10].map(n=>`<button class="quick-heal" onclick="event.stopPropagation();quickHp(${i},'heal',${n})">+${n}</button>`).join('')}
     </div>
     <div class="mini-stats">
-      <div class="mini-stat"><div class="mini-stat-val">${p.ac}</div><div class="mini-stat-lbl">AC</div></div>
+      <div class="mini-stat"><div class="mini-stat-val">${p.ac}${p.tempAc?`<span style="color:#5DA9E9;font-size:10px"> +${p.tempAc}</span>`:''}</div><div class="mini-stat-lbl">AC</div></div>
       <div class="mini-stat"><div class="mini-stat-val">${fmtBonus(mod(statFinal(p,'DEX')))}</div><div class="mini-stat-lbl">Init</div></div>
       <div class="mini-stat"><div class="mini-stat-val">${p.speed}ft</div><div class="mini-stat-lbl">Speed</div></div>
+    </div>
+    <div class="hp-btns" style="margin-top:4px" onclick="event.stopPropagation()">
+      <input class="hp-input" type="number" id="acval-${i}" placeholder="amt" min="1" onclick="event.stopPropagation()">
+      <button onclick="event.stopPropagation();changeTempAc(${i})" style="border-color:#378ADD55;color:#9cc5f0">+ temp AC</button>
+      ${p.tempAc?`<button onclick="event.stopPropagation();clearTempAc(${i})">clear AC</button>`:''}
     </div>
     ${renderXPBar(p)}
     ${renderInventoryPreview(p,c)}
@@ -1273,8 +1309,19 @@ function renderInventoryPreview(p,c){
 function changeHp(i,type){
   const inp=document.getElementById('hpval-'+i);
   const amt=parseInt(inp.value)||0;if(!amt)return;
-  party[i].hp=type==='dmg'?Math.max(0,party[i].hp-amt):Math.min(party[i].maxHp,party[i].hp+amt);
+  if(type==='temp')party[i].tempHp=(party[i].tempHp||0)+amt;
+  else party[i].hp=type==='dmg'?Math.max(0,party[i].hp-amt):Math.min(party[i].maxHp,party[i].hp+amt);
   inp.value='';dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
+}
+function changeTempAc(i){
+  const inp=document.getElementById('acval-'+i);
+  const amt=parseInt(inp.value)||0;if(!amt)return;
+  party[i].tempAc=(party[i].tempAc||0)+amt;
+  inp.value='';dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
+}
+function clearTempAc(i){
+  party[i].tempAc=0;
+  dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));renderParty();
 }
 function quickHp(i,type,amt){
   party[i].hp=type==='dmg'?Math.max(0,party[i].hp-amt):Math.min(party[i].maxHp,party[i].hp+amt);
@@ -1371,7 +1418,7 @@ function renderSheetCore(p){
     <div class="sheet-section">
       <h3>Combat</h3>
       <div class="combat-row" style="margin-bottom:10px">
-        <div class="combat-box"><div class="combat-val">${p.ac}</div><div class="combat-lbl">AC</div></div>
+        <div class="combat-box"><div class="combat-val">${p.ac}${p.tempAc?`<span style="color:#5DA9E9;font-size:12px"> +${p.tempAc}</span>`:''}</div><div class="combat-lbl">AC</div></div>
         <div class="combat-box"><div class="combat-val">${fmtBonus(mod(statFinal(p,'DEX')))}</div><div class="combat-lbl">Initiative</div></div>
         <div class="combat-box"><div class="combat-val">${p.speed}ft</div><div class="combat-lbl">Speed</div></div>
       </div>
@@ -1382,6 +1429,11 @@ function renderSheetCore(p){
       </div>
       ${spellAtk?`<div style="margin-top:8px;font-size:11px;color:#888">Spell attack: <span style="color:#b8b4f8;font-weight:600">${spellAtk}</span></div>`:''}
       ${p.armor?`<div style="margin-top:6px;font-size:11px;color:#888">Armor: <span style="color:#ccc">${p.armor}</span></div>`:''}
+      <div class="hp-edit-row">
+        <input type="number" id="sheet-ac-amt" placeholder="amount" min="1">
+        <button onclick="sheetChangeTempAc('add')">+ Temp AC</button>
+        ${p.tempAc?`<button onclick="sheetChangeTempAc('clear')">Clear Temp AC</button>`:''}
+      </div>
     </div>
   </div>
 
@@ -1569,6 +1621,16 @@ function sheetChangeHp(type){
   dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));
   renderSheetBody();renderParty();
 }
+function sheetChangeTempAc(type){
+  const i=viewingCharIdx;if(i===null)return;
+  if(type==='clear'){party[i].tempAc=0;}
+  else{
+    const amt=parseInt(document.getElementById('sheet-ac-amt')?.value)||0;if(!amt)return;
+    party[i].tempAc=(party[i].tempAc||0)+amt;
+  }
+  dbSet('party',Object.fromEntries(party.map((p,k)=>[k,p])));
+  renderSheetBody();renderParty();
+}
 function toggleDeathSave(i,type,j){
   if(!party[i].deathSaves)party[i].deathSaves={s:[false,false,false],f:[false,false,false]};
   party[i].deathSaves[type][j]=!party[i].deathSaves[type][j];
@@ -1651,6 +1713,8 @@ function applySkillTextToSelects(){
   [['modal-profskills','modal-profskills-select'],['modal-expertskills','modal-expertskills-select']].forEach(([txt,selId])=>{const values=(document.getElementById(txt)?.value||'').split(',').map(s=>s.trim());const sel=document.getElementById(selId);if(sel)[...sel.options].forEach(o=>o.selected=values.includes(o.value));});
 }
 function autoFillFeatures(){
+  // NOTE: this never wipes what the user has already typed — it only appends
+  // any auto-generated class/species feature lines that aren't already present.
   const cls=document.getElementById('modal-class-name')?.value||'Fighter';
   const sub=document.getElementById('modal-subclass-name')?.value||'';
   const lvl=parseInt(document.getElementById('modal-level')?.value)||1;
@@ -1658,7 +1722,11 @@ function autoFillFeatures(){
   const temp={cls:makeClassString(cls,sub,lvl),species};
   const lines=featureLinesFor(temp);
   const box=document.getElementById('modal-features');
-  if(box)box.value=lines.join('\n');
+  if(!box)return;
+  const existingLines=box.value.split('\n').map(s=>s.trim()).filter(Boolean);
+  const existingSet=new Set(existingLines.map(s=>s.toLowerCase()));
+  const toAppend=lines.map(l=>l.trim()).filter(l=>l&&!existingSet.has(l.toLowerCase()));
+  if(toAppend.length)box.value=[...existingLines,...toAppend].join('\n');
 }
 
 // ── EDIT MODAL ────────────────────────────────────────────────────────
@@ -1683,6 +1751,7 @@ function openModal(i){
   document.getElementById('modal-hp').value=p.hp;
   document.getElementById('modal-temphp').value=p.tempHp||0;
   document.getElementById('modal-ac').value=p.ac;
+  document.getElementById('modal-tempac').value=p.tempAc||0;
   document.getElementById('modal-pp').value=p.pp;
   document.getElementById('modal-speed').value=p.speed;
   document.getElementById('modal-armor').value=p.armor||'Unarmored';
@@ -1729,6 +1798,7 @@ function saveModal(){
   p.hp=Math.min(parseInt(document.getElementById('modal-hp').value)||p.hp,p.maxHp);
   p.tempHp=parseInt(document.getElementById('modal-temphp').value)||0;
   p.ac=parseInt(document.getElementById('modal-ac').value)||p.ac;
+  p.tempAc=parseInt(document.getElementById('modal-tempac').value)||0;
   p.pp=parseInt(document.getElementById('modal-pp').value)||p.pp;
   p.speed=parseInt(document.getElementById('modal-speed').value)||p.speed;
   p.armor=document.getElementById('modal-armor').value;
@@ -1770,7 +1840,7 @@ function populateCharacterSelect(){
   activeCharacter=(activeCharacter!=='spectator'&&party[parseInt(activeCharacter)])?activeCharacter:'spectator';
   ['active-character','sidebar-character'].forEach(id=>{const sel=document.getElementById(id);if(sel)sel.value=activeCharacter;});
 }
-function selectCharacter(val){activeCharacter=val;if(currentPanel==='dice')renderDice();}
+function selectCharacter(val){activeCharacter=val;if(currentPanel==='dice')renderDice();renderPlayerDock();}
 function canAccessCharacter(i,requireEdit=false){
   const p=party[i];if(!p)return false;
   if(isDM)return true;
@@ -2503,6 +2573,39 @@ function renderDockedDashboard(){
   </div>
   <div id="dock-content" class="dashboard-grid">${grid.innerHTML}</div>`:'';
   } else {dock.style.display='none';dock.innerHTML='';map.classList.remove('dm-docked');}
+  renderPlayerDock();
+}
+function renderPlayerDock(){
+  const dock=document.getElementById('player-bottom-dock');const map=document.getElementById('map-panel');if(!dock||!map)return;
+  const idx=activeCharacter!=='spectator'?parseInt(activeCharacter):NaN;
+  const p=!isNaN(idx)?party[idx]:null;
+  if(!isDM&&p&&currentPanel==='map'){
+    dock.style.display='block';map.classList.add('player-docked');
+    const pct=p.hp/p.maxHp;
+    const spellLines=(p.spells||'').split('\n').map(s=>s.trim()).filter(Boolean).slice(0,8);
+    dock.innerHTML=`
+      <div class="player-dock-header">
+        <div class="avatar" style="width:34px;height:34px;font-size:12px;background:${getCardColors(p).bg};color:${getCardColors(p).color};border-color:${getCardColors(p).border}">${p.pfp?`<img src="${p.pfp}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:p.name.slice(0,2).toUpperCase()}</div>
+        <div class="player-dock-name">${p.name}</div>
+        <div class="player-dock-stats">
+          <span>❤️ ${p.hp}/${p.maxHp}${p.tempHp?` <span style="color:#EF9F27">+${p.tempHp}</span>`:''}</span>
+          <span>🛡 ${p.ac}${p.tempAc?` <span style="color:#5DA9E9">+${p.tempAc}</span>`:''}</span>
+        </div>
+        <button class="dock-collapse-btn" id="player-dock-collapse-btn" onclick="togglePlayerDockCollapse()">▼ Collapse</button>
+      </div>
+      <div id="player-dock-content">
+      <div class="player-dock-actions">
+        <button onclick="openSheet(${idx})">📋 Character Sheet</button>
+        <button onclick="switchTab('spells')">✨ Spells</button>
+        <button onclick="switchTab('dice')">🎲 Dice Roller</button>
+        <button class="init-btn" onclick="switchTab('init');rollMyInit()">⚔️ Roll Initiative</button>
+        ${[4,6,8,10,12,20].map(d=>`<button onclick="rollDie(${d},1,0,'d${d}')">d${d}</button>`).join('')}
+      </div>
+      <div class="player-dock-spells">
+        ${spellLines.length?spellLines.map(s=>`<span class="player-dock-spell-chip">${s}</span>`).join(''):'<span style="font-size:10px;color:#555">No spells listed yet — add them from the character sheet.</span>'}
+      </div>
+      </div>`;
+  } else {dock.style.display='none';dock.innerHTML='';map.classList.remove('player-docked');}
 }
 function levelUpFromDashboard(){
   if(!isDM)return;const idx=parseInt(dashEl('dash-level-target')?.value);
@@ -2658,8 +2761,8 @@ function showReactionLocally(reaction){
 }
 function initReactionListener(){dbListen('reactions/latest',data=>{if(data&&Date.now()-(data.ts||0)<8000)showReactionLocally(data);});}
 
-function openMediaPanel(){ /* always visible */ }
-function closeMediaPanel(){ /* always visible */ }
+function openMediaPanel(){document.body.classList.remove('sidebar-collapsed');}
+function closeMediaPanel(){document.body.classList.add('sidebar-collapsed');}
 function playURLFromPanel(){
   const url=document.getElementById('sp-music-url').value.trim();
   const match=url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
@@ -2708,6 +2811,11 @@ let dockCollapsed=false;
 function toggleDockCollapse(){
   dockCollapsed=!dockCollapsed;const content=document.getElementById('dock-content');const btn=document.getElementById('dock-collapse-btn');
   if(content)content.style.display=dockCollapsed?'none':'';if(btn)btn.textContent=dockCollapsed?'▶ Expand':'▼ Collapse';
+}
+let playerDockCollapsed=false;
+function togglePlayerDockCollapse(){
+  playerDockCollapsed=!playerDockCollapsed;const content=document.getElementById('player-dock-content');const btn=document.getElementById('player-dock-collapse-btn');
+  if(content)content.style.display=playerDockCollapsed?'none':'';if(btn)btn.textContent=playerDockCollapsed?'▶ Expand':'▼ Collapse';
 }
 
 // ── BOOT ─────────────────────────────────────────────────────────────
