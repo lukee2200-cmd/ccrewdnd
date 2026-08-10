@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>D&D Party Tracker</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<meta name="theme-color" content="#111111">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Chaos Crew">
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -41,8 +47,8 @@ onAuthStateChanged(auth, (user) => {
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:#1a1a1a;color:#eee;min-height:100vh;display:flex;flex-direction:column}
-nav{background:#111;border-bottom:1px solid #333;display:flex;align-items:center;gap:4px;padding:8px 12px;flex-wrap:wrap;flex-shrink:0}
+body{font-family:system-ui,sans-serif;background:#1a1a1a;color:#eee;min-height:100vh;display:flex;flex-direction:column;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+nav{background:#111;border-bottom:1px solid #333;display:flex;align-items:center;gap:4px;padding:calc(8px + env(safe-area-inset-top)) 12px 8px;flex-wrap:wrap;flex-shrink:0}
 nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:nowrap}
 .tab{padding:5px 12px;border-radius:8px;border:1px solid #333;font-size:12px;cursor:pointer;background:transparent;color:#aaa;white-space:nowrap}
 .tab.active{background:#2a2a2a;color:#fff;border-color:#555}
@@ -318,7 +324,7 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .die-btn:hover{transform:translateY(-1px) scale(1.04);box-shadow:0 0 18px rgba(255,255,255,.35), inset 0 0 18px rgba(255,255,255,.22)}
 @keyframes glitterSweep{0%{opacity:0;left:-35%}25%{opacity:.95}65%{opacity:.5}100%{opacity:0;left:55%}}
 @keyframes metalShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-#dm-bottom-dock{position:fixed;left:0;right:260px;bottom:0;z-index:90;background:#0d0d0d;border-top:1px solid #333;box-shadow:0 -10px 30px rgba(0,0,0,.45);padding:8px 12px;display:none;max-height:38vh;overflow:auto}
+#dm-bottom-dock{position:fixed;left:0;right:260px;bottom:0;z-index:90;background:#0d0d0d;border-top:1px solid #333;box-shadow:0 -10px 30px rgba(0,0,0,.45);padding:8px 12px calc(8px + env(safe-area-inset-bottom));display:none;max-height:38vh;overflow:auto}
 #dm-bottom-dock .dashboard-grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
 #map-panel.dm-docked .map-canvas-wrap{padding-bottom:220px}
 .music-bar.dm-only button.dm-music-control,.music-bar.dm-only input.dm-music-control{display:none}
@@ -333,7 +339,7 @@ body.sidebar-collapsed #dm-bottom-dock,body.sidebar-collapsed #player-bottom-doc
 body.sidebar-collapsed #media-collapse-tab{display:block}
 
 /* ── PLAYER BOTTOM DOCK (mirrors DM dock, player-facing) ── */
-#player-bottom-dock{position:fixed;left:0;right:260px;bottom:0;z-index:89;background:#0d0d0d;border-top:1px solid #333;box-shadow:0 -10px 30px rgba(0,0,0,.45);padding:8px 12px;display:none;max-height:42vh;overflow:auto}
+#player-bottom-dock{position:fixed;left:0;right:260px;bottom:0;z-index:89;background:#0d0d0d;border-top:1px solid #333;box-shadow:0 -10px 30px rgba(0,0,0,.45);padding:8px 12px calc(8px + env(safe-area-inset-bottom));display:none;max-height:42vh;overflow:auto}
 #map-panel.player-docked .map-canvas-wrap{padding-bottom:230px}
 .player-dock-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .player-dock-name{font-size:13px;font-weight:600;color:#fff;flex:1}
@@ -2878,6 +2884,13 @@ if(window._dbReady){dbReady=true;initDb();} else window.addEventListener('db-rea
 
 renderGifButtons();renderQuickDiceButtons();
 dbListen('reactions/gif',data=>{if(data&&Date.now()-(data.ts||0)<8000)showGifReaction(data.url);});
+
+// ── PWA: register service worker (safe no-op if sw.js isn't hosted alongside this file) ──
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').catch(()=>{/* offline caching unavailable, app still works online */});
+  });
+}
 </script>
 </body>
 </html>
