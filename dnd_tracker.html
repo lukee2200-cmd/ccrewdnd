@@ -77,6 +77,15 @@ nav h1{font-size:15px;font-weight:600;color:#fff;margin-right:10px;white-space:n
 .token-hp-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:#333}
 .token-hp-fill{height:100%;transition:width .3s}
 #map-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#444;gap:12px;pointer-events:none}
+#stickers-layer{position:absolute;top:0;left:0}
+.sticker{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:10px;cursor:grab;user-select:none;text-align:center;gap:3px;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.sticker:active{cursor:grabbing}
+.sticker-icon{font-size:22px;line-height:1;pointer-events:none}
+.sticker-label{font-size:9px;font-weight:600;color:#fff;background:rgba(0,0,0,.55);padding:1px 6px;border-radius:6px;white-space:nowrap;max-width:92%;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+.sticker.sticker-hidden{opacity:.9}
+.sticker-dm-badge{position:absolute;top:-9px;right:-9px;display:flex;gap:3px}
+.sticker-mini-btn{width:18px;height:18px;border-radius:50%;border:1px solid #444;background:#111;color:#ccc;font-size:9px;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1;padding:0}
+.sticker-mini-btn:hover{background:#2a2a2a;color:#fff}
 
 /* ── PARTY ── */
 .party-wrap{flex:1;overflow-y:auto;padding:1rem}
@@ -609,12 +618,14 @@ body.sidebar-collapsed #media-collapse-tab{display:block}
     <button onclick="clearMap()" id="clear-map-btn" style="display:none">🗑 Clear</button>
     <div class="sep"></div>
     <button id="add-token-btn" style="display:none" onclick="openAddToken()">＋ Token</button>
+    <button id="add-sticker-btn" style="display:none" onclick="openAddSticker()">🪤 Sticker</button>
     <button id="dm-dashboard-btn" style="display:none" onclick="openDMDashboard()">👑 DM Dashboard</button>
   </div>
   <div class="map-canvas-wrap">
     <div id="map-canvas">
       <img id="map-img" src="" alt="" draggable="false">
       <canvas id="grid-overlay"></canvas>
+      <div id="stickers-layer"></div>
       <div id="tokens-layer"></div>
     </div>
     <div id="scene-panel" class="scene-panel"><button class="scene-close" onclick="clearSceneImage()">×</button><div class="scene-panel-title">Scene Image</div><img id="scene-img" src="" alt="Scene"></div>
@@ -873,6 +884,45 @@ body.sidebar-collapsed #media-collapse-tab{display:block}
     <div class="modal-actions">
       <button class="btn-ghost" onclick="closeTokenModal()">Cancel</button>
       <button class="btn-primary" onclick="placeToken()">Place</button>
+    </div>
+  </div>
+</div>
+
+<div id="sticker-modal-bg" class="modal-bg" style="display:none">
+  <div class="modal" style="max-width:360px">
+    <h2>Add Environment Sticker</h2>
+    <div><label>Type</label>
+      <select id="sticker-kind" onchange="updateStickerForm()">
+        <option value="trap">🪤 Trap</option>
+        <option value="terrain">🌾 Difficult Terrain</option>
+        <option value="hazard">⚠️ Hazard</option>
+        <option value="fire">🔥 Fire</option>
+        <option value="water">💧 Water / Hazard Liquid</option>
+        <option value="darkness">🌑 Darkness / Fog</option>
+        <option value="custom">❓ Custom</option>
+      </select>
+    </div>
+    <div id="sticker-custom-fields" style="display:none">
+      <label>Icon (emoji)</label><input type="text" id="sticker-icon" placeholder="⚡" maxlength="4">
+    </div>
+    <div><label>Label</label><input type="text" id="sticker-label" placeholder="Trap"></div>
+    <div><label>Size</label>
+      <select id="sticker-size">
+        <option value="1x1">Small (1×1 square)</option>
+        <option value="2x2" selected>Medium (2×2 squares)</option>
+        <option value="3x3">Large (3×3 squares)</option>
+        <option value="3x1">Wide (3×1 squares)</option>
+        <option value="1x3">Tall (1×3 squares)</option>
+      </select>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <input type="checkbox" id="sticker-hidden" style="width:auto">
+      <label style="margin:0" for="sticker-hidden">Hide from players until revealed</label>
+    </div>
+    <p class="autofill-note">Hidden stickers are only visible to the DM (shown with a dashed outline). Click the 👁 badge on a placed sticker to reveal it to players.</p>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeStickerModal()">Cancel</button>
+      <button class="btn-primary" onclick="placeSticker()">Place</button>
     </div>
   </div>
 </div>
@@ -1229,7 +1279,16 @@ let party=[
 ];
 let rollLog=[],initiative=[],currentTurn=0,round=1,selectedRoller='DM';
 let spellSlots={},spellSlotsUsed={};
-let mapImageData=null,showGrid=false,gridTool='move',tokens={},assetRepo={maps:{},tokens:{}},sceneImageData=null;
+let mapImageData=null,showGrid=false,gridTool='move',tokens={},stickers={},assetRepo={maps:{},tokens:{}},sceneImageData=null;
+const STICKER_KINDS={
+  trap:{icon:'🪤',label:'Trap',color:'#E24B4A',defaultHidden:true},
+  terrain:{icon:'🌾',label:'Difficult Terrain',color:'#8a7a3b',defaultHidden:false},
+  hazard:{icon:'⚠️',label:'Hazard',color:'#EF9F27',defaultHidden:false},
+  fire:{icon:'🔥',label:'Fire',color:'#E24B4A',defaultHidden:false},
+  water:{icon:'💧',label:'Water',color:'#378ADD',defaultHidden:false},
+  darkness:{icon:'🌑',label:'Darkness',color:'#555555',defaultHidden:false},
+  custom:{icon:'❓',label:'Custom',color:'#7F77DD',defaultHidden:false}
+};
 let editingIdx=null,pendingPfp=null,dbReady=false;
 
 // ── HELPER FUNS ───────────────────────────────────────────────────────
@@ -1324,6 +1383,7 @@ function dbListen(path,cb){if(!dbReady)return;window._onValue(window._ref(window
 function initDb(){
   dbListen('party',data=>{if(data){party=Object.values(data).map(normalizeCharacter);populateCharacterSelect();renderCurrentPanel();if(viewingCharIdx!==null)renderSheetBody();}});
   dbListen('tokens',data=>{tokens=data||{};renderTokens();});
+  dbListen('stickers',data=>{stickers=data||{};renderStickers();});
   dbListen('initiative',data=>{if(data){initiative=data.list||[];currentTurn=data.currentTurn||0;round=data.round||1;renderInit();}});
   dbListen('rollLog',data=>{if(data){rollLog=Array.isArray(data)?data:Object.values(data);if(currentPanel==='dice')renderDice();}});
   dbListen('map',data=>{
@@ -1376,6 +1436,8 @@ function applyRole(){
   const mobileRoleBtn=document.getElementById('mobile-role-btn');if(mobileRoleBtn){mobileRoleBtn.style.borderColor=isDM?'#7F77DD':'#444';mobileRoleBtn.style.color=isDM?'#b8b4f8':'#bbb';mobileRoleBtn.style.background=isDM?'#1e1a3a':'#1d1d1d';}
   document.getElementById('upload-map-btn').style.display=isDM?'inline-block':'none';
   document.getElementById('add-token-btn').style.display=isDM?'inline-block':'none';
+  const addStickerBtn=document.getElementById('add-sticker-btn'); if(addStickerBtn)addStickerBtn.style.display=isDM?'inline-block':'none';
+  renderStickers();
   const dashBtn=document.getElementById('dm-dashboard-btn'); if(dashBtn)dashBtn.style.display=isDM?'inline-block':'none';
   document.getElementById('clear-map-btn').style.display=(isDM&&mapImageData)?'inline-block':'none';
   document.getElementById('add-char-btn').style.display=isDM?'inline-block':'none';
@@ -2665,7 +2727,7 @@ function applyMapImage(src){
   const img=document.getElementById('map-img');img.style.display='block';img.src=src;
   img.onload=()=>{
     const canvas=document.getElementById('map-canvas');canvas.style.width=img.naturalWidth+'px';canvas.style.height=img.naturalHeight+'px';
-    document.getElementById('map-placeholder').style.display='none';drawGrid();renderTokens();
+    document.getElementById('map-placeholder').style.display='none';drawGrid();renderTokens();renderStickers();
   };
 }
 function clearMap(){
@@ -2734,6 +2796,73 @@ function makeDraggable(el,tokId){
   el.addEventListener('touchstart',e=>{if(gridTool!=='move')return;e.stopPropagation();e.preventDefault();dragging=true;const t=e.touches[0],r=document.getElementById('map-canvas').getBoundingClientRect();ox=t.clientX-r.left-el.offsetLeft;oy=t.clientY-r.top-el.offsetTop;},{passive:false});
   el.addEventListener('touchmove',e=>{if(!dragging)return;e.preventDefault();const t=e.touches[0],r=document.getElementById('map-canvas').getBoundingClientRect();let nx=t.clientX-r.left-ox,ny=t.clientY-r.top-oy;if(showGrid){nx=Math.round(nx/GRID_SIZE)*GRID_SIZE;ny=Math.round(ny/GRID_SIZE)*GRID_SIZE;}el.style.left=Math.max(0,nx)+'px';el.style.top=Math.max(0,ny)+'px';},{passive:false});
   el.addEventListener('touchend',()=>{dragging=false;dbUpdate('tokens/'+tokId,{x:parseInt(el.style.left),y:parseInt(el.style.top)});});
+}
+
+// ── ENVIRONMENT STICKERS (traps, difficult terrain, hazards) ──────────
+function openAddSticker(){
+  if(!isDM)return;
+  document.getElementById('sticker-kind').value='trap';updateStickerForm();
+  document.getElementById('sticker-modal-bg').style.display='flex';
+}
+function closeStickerModal(){document.getElementById('sticker-modal-bg').style.display='none';}
+document.getElementById('sticker-modal-bg').addEventListener('click',e=>{if(e.target===document.getElementById('sticker-modal-bg'))closeStickerModal();});
+function updateStickerForm(){
+  const k=document.getElementById('sticker-kind').value,info=STICKER_KINDS[k]||STICKER_KINDS.custom;
+  document.getElementById('sticker-custom-fields').style.display=k==='custom'?'block':'none';
+  document.getElementById('sticker-label').value=info.label;
+  document.getElementById('sticker-hidden').checked=!!info.defaultHidden;
+}
+function placeSticker(){
+  if(!isDM)return;
+  const kind=document.getElementById('sticker-kind').value,info=STICKER_KINDS[kind]||STICKER_KINDS.custom;
+  const icon=kind==='custom'?(document.getElementById('sticker-icon').value.trim()||'❓'):info.icon;
+  const label=document.getElementById('sticker-label').value.trim()||info.label;
+  const [gw,gh]=document.getElementById('sticker-size').value.split('x').map(Number);
+  const hidden=document.getElementById('sticker-hidden').checked;
+  const sticker={id:'sticker_'+Date.now(),kind,icon,label,color:info.color,w:gw*GRID_SIZE,h:gh*GRID_SIZE,x:60,y:60,hidden};
+  dbUpdate('stickers/'+sticker.id,sticker);closeStickerModal();
+}
+function renderStickers(){
+  const layer=document.getElementById('stickers-layer');if(!layer)return;layer.innerHTML='';
+  Object.values(stickers).forEach(s=>{if(s.hidden&&!isDM)return;layer.appendChild(createStickerEl(s));});
+}
+function hexToRgba(hex,alpha){
+  hex=(hex||'#7F77DD').replace('#','');if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');
+  const num=parseInt(hex,16)||0x7F77DD;const r=(num>>16)&255,g=(num>>8)&255,b=num&255;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+function createStickerEl(s){
+  const div=document.createElement('div');
+  div.className='sticker'+(s.hidden?' sticker-hidden':'');div.id='sticker-'+s.id;
+  div.style.cssText=`left:${s.x||0}px;top:${s.y||0}px;width:${s.w||GRID_SIZE*2}px;height:${s.h||GRID_SIZE*2}px;`+
+    `background:${hexToRgba(s.color,s.hidden?0.22:0.32)};border:${s.hidden?'2px dashed rgba(255,255,255,.6)':'1px solid '+(s.color||'#7F77DD')};`+
+    `pointer-events:${isDM?'auto':'none'}`;
+  const icon=document.createElement('div');icon.className='sticker-icon';icon.textContent=s.icon||'❓';div.appendChild(icon);
+  if(s.label){const lbl=document.createElement('div');lbl.className='sticker-label';lbl.textContent=s.label;div.appendChild(lbl);}
+  if(isDM){
+    const badge=document.createElement('div');badge.className='sticker-dm-badge';
+    const eyeBtn=document.createElement('button');eyeBtn.type='button';eyeBtn.className='sticker-mini-btn';
+    eyeBtn.title=s.hidden?'Reveal to players':'Hide from players';eyeBtn.textContent=s.hidden?'👁':'🙈';
+    eyeBtn.onclick=e=>{e.stopPropagation();toggleStickerHidden(s.id);};
+    const delBtn=document.createElement('button');delBtn.type='button';delBtn.className='sticker-mini-btn';
+    delBtn.title='Remove sticker';delBtn.textContent='✕';
+    delBtn.onclick=e=>{e.stopPropagation();deleteSticker(s.id);};
+    badge.appendChild(eyeBtn);badge.appendChild(delBtn);div.appendChild(badge);
+  }
+  makeStickerDraggable(div,s.id);
+  div.addEventListener('contextmenu',e=>{e.preventDefault();deleteSticker(s.id);});
+  return div;
+}
+function toggleStickerHidden(id){if(!isDM)return;const s=stickers[id];if(!s)return;dbUpdate('stickers/'+id,{hidden:!s.hidden});}
+function deleteSticker(id){if(!isDM)return;if(confirm('Remove this sticker?'))dbRemove('stickers/'+id);}
+function makeStickerDraggable(el,id){
+  let ox,oy,dragging=false;
+  el.addEventListener('mousedown',e=>{if(!isDM||gridTool!=='move')return;e.stopPropagation();dragging=true;const r=document.getElementById('map-canvas').getBoundingClientRect();ox=e.clientX-r.left-el.offsetLeft;oy=e.clientY-r.top-el.offsetTop;el.style.zIndex=500;});
+  document.addEventListener('mousemove',e=>{if(!dragging)return;const r=document.getElementById('map-canvas').getBoundingClientRect();let nx=e.clientX-r.left-ox,ny=e.clientY-r.top-oy;if(showGrid){nx=Math.round(nx/GRID_SIZE)*GRID_SIZE;ny=Math.round(ny/GRID_SIZE)*GRID_SIZE;}el.style.left=Math.max(0,nx)+'px';el.style.top=Math.max(0,ny)+'px';});
+  document.addEventListener('mouseup',()=>{if(!dragging)return;dragging=false;el.style.zIndex='';dbUpdate('stickers/'+id,{x:parseInt(el.style.left),y:parseInt(el.style.top)});});
+  el.addEventListener('touchstart',e=>{if(!isDM||gridTool!=='move')return;e.stopPropagation();e.preventDefault();dragging=true;const t=e.touches[0],r=document.getElementById('map-canvas').getBoundingClientRect();ox=t.clientX-r.left-el.offsetLeft;oy=t.clientY-r.top-el.offsetTop;},{passive:false});
+  el.addEventListener('touchmove',e=>{if(!dragging)return;e.preventDefault();const t=e.touches[0],r=document.getElementById('map-canvas').getBoundingClientRect();let nx=t.clientX-r.left-ox,ny=t.clientY-r.top-oy;if(showGrid){nx=Math.round(nx/GRID_SIZE)*GRID_SIZE;ny=Math.round(ny/GRID_SIZE)*GRID_SIZE;}el.style.left=Math.max(0,nx)+'px';el.style.top=Math.max(0,ny)+'px';},{passive:false});
+  el.addEventListener('touchend',()=>{if(!dragging)return;dragging=false;dbUpdate('stickers/'+id,{x:parseInt(el.style.left),y:parseInt(el.style.top)});});
 }
 
 // ── DM DASHBOARD, ASSET REPOSITORY, SCENE IMAGE ───────────────────────
